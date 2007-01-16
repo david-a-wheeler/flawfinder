@@ -971,6 +971,14 @@ c_ruleset = {
         "or embedded spaces could allow an attacker to force a different program to run",
       "shell", "", {'check_for_null' : 1}),
 
+  "atoi|atol":
+     (normal, 2,
+      "Unless checked, the resulting number can exceed the expected range",
+      " If source untrusted, check both minimum and maximum, even if the" +
+      " input had no minus sign (large numbers can roll over into negative" +
+      " number; consider saving to an unsigned value if that is intended)",
+      "integer", "dangers-c", {}),
+
   # Random values.  Don't trigger on "initstate", it's too common a term.
   "drand48|erand48|jrand48|lcong48|lrand48|mrand48|nrand48|random|seed48|setstate|srand|strfry|srandom":
      (normal, 3,
