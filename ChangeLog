@@ -33,6 +33,8 @@
 	  (this makes it work nicely with many SCM systems).
 	  Added "--followdotdir" option if you WANT it to enter
 	  such directories.
+	* Fixed divide-by-zero when no code found (not exactly common
+	  in normal use, but anyway!)
 
 2004-06-15 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Released version 1.26.
