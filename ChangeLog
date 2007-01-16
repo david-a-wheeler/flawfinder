@@ -1,3 +1,7 @@
+2007-01-16 Sebastien Tandel <sebastien, at, tandel (doht) be)
+	* Cleaned up code for patch handling, fix bug in subdir handling,
+	  include patch info in help.
+
 2007-01-15 Steve Kemp <steve at shellcode dot org>
 	* Fix Debian bug #268236.
 	  http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=268236

@@ -127,6 +127,7 @@ blank_line     = re.compile( r'(?m)^\s+$' )
 # format, use "patch" to apply it, and then use "diff -u" to create a
 # unified format.
 # 
+
 diff_index_filename = re.compile( r'^Index:\s+(?P<filename>.*)' )
 diff_newfile = re.compile( r'^\+\+\+\s(?P<filename>.*)$' )
 diff_hunk = re.compile( r'^@@ -\d+(,\d+)?\s+\+(?P<linenumber>\d+)[, ].*@@$' )
@@ -140,6 +141,24 @@ diff_line_del = re.compile( r'^-[^-].*' )
 # Also, "newfile" can have " (comment)" postpended.  Find and eliminate this.
 # Note that the expression below is Y10K (and Y100K) ready. :-).
 diff_findjunk = re.compile( r'^(?P<filename>.*)((\s\d\d\d\d+-\d\d-\d\d\s+\d\d:\d[0-9:.]+Z?(\s+[\-\+0-9A-Z]+)?)|(\s[A-Za-z][a-z]+\s[A-za-z][a-z]+\s\d+\s\d+:\d[0-9:.]+Z?(\s[\-\+0-9]*)?\s\d\d\d\d+)|(\s\(.*\)))\s*$')
+
+def is_svn_diff(sLine):
+  if (sLine.find('Index:') != -1):
+    return True
+  return False
+
+def svn_diff_get_filename(sLine):
+  return diff_index_filename.match(sLine)
+
+def gnu_diff_get_filename(sLine):
+  newfile_match = diff_newfile.match(sLine)
+  if (newfile_match):
+    patched_filename = string.strip(newfile_match.group('filename'))
+    # Clean up filename - remove trailing timestamp and/or (comment).
+    return diff_findjunk.match(patched_filename)
+
+  return None
+
 
 # For each file found in the file patch_file, keep the
 # line numbers of the new file (after patch is applied) which are added.
@@ -157,68 +176,56 @@ def load_patch_info(patch_file):
 
   patched_filename = "" # Name of new file patched by current hunk.
 
+  sLine = hPatch.readline()
+  #Heuristic to determine if it's a svn diff or a GNU diff.
+  #Read the first line. If it contains 'Index:', it's a svn diff else it is a
+  #GNU diff.
+  #By default we try to get filename in svn diff
+  fn_get_filename=svn_diff_get_filename
+  if (is_svn_diff(sLine) == False):
+    fn_get_filename=gnu_diff_get_filename
+
   while True: # Loop-and-half construct.  Read a line, end loop when no more
-    sLine = hPatch.readline()
-    if (sLine == ''): break  # Done reading.
 
     # This is really a sequence of if ... elsif ... elsif..., but
     # because Python forbids '=' in conditions, we do it this way.
-    index_filename_match = diff_index_filename.match(sLine)
-    if (index_filename_match):
-      patched_filename = string.strip(index_filename_match.group('filename'))
-      index_statement = True
-      # Should never happen (like below):
+    filename_match = fn_get_filename(sLine)
+    if (filename_match):
+      patched_filename = string.strip(filename_match.group('filename'))
       if (patch.has_key(patched_filename) == True):
         error("filename occurs more than once in the patch: %s" %
                patched_filename)
+	sys.exit(1)
       else:
         patch[patched_filename] = {}
-
     else:
-      newfile_match = diff_newfile.match(sLine)
-      # We'll ignore the match if patched_filename already set.  This makes
-      # "Index:" takes precedence over "+++". We do this because "Index:"
-      # doesn't have junk after it that might be mistaken for part
-      # of the filename.
-      if ( (not index_statement) and newfile_match):
-        patched_filename = string.strip(newfile_match.group('filename'))
-        # Clean up filename - remove trailing timestamp and/or (comment).
-        findjunk_match = diff_findjunk.match(patched_filename)
-        if (findjunk_match):
-          patched_filename = string.strip(findjunk_match.group('filename'))
-        # Now we have the filename! Check if we've already seen it
-        # (we should not have), just like above:
-        if (patch.has_key(patched_filename)):
-  	  error("filename occurs more than once in the patch: %s" %
-                patched_filename)
-        else:
-          patch[patched_filename] = {}
-
+      hunk_match = diff_hunk.match(sLine)
+      if (hunk_match):
+	if (patched_filename == ""):
+	    error("wrong type of patch file : we have a line number without having seen a filename")
+	    sys.exit(1)
+	initial_number= hunk_match.group('linenumber')
+	line_counter= 0
       else:
-        hunk_match = diff_hunk.match(sLine)
-        if (hunk_match):
-          if (patched_filename == ""):
-              error("wrong type of patch file : we have a line number without having seen a filename")
-          initial_number= hunk_match.group('linenumber')
-          line_counter= 0
+	line_added_match = diff_line_added.match(sLine)
+	if (line_added_match):
+	  line_added = line_counter + int(initial_number)
+	  patch[patched_filename][line_added] = True
+	  # Let's also warn about the lines above and below this one,
+	  # so that errors that "leak" into adjacent lines are caught.
+	  # Besides, if you're creating a patch, you had to at least look
+	  # at adjacent lines, so you're in a position to fix them.
+	  patch[patched_filename][line_added - 1] = True
+	  patch[patched_filename][line_added + 1] = True
+	  line_counter += 1
+	else:
+	  line_del_match = diff_line_del.match(sLine)
+	  if (line_del_match == None):
+	    line_counter += 1
 
-        else:
-          line_added_match = diff_line_added.match(sLine)
-          if (line_added_match):
-            line_added = line_counter + int(initial_number)
-            patch[patched_filename][line_added] = True
-            # Let's also warn about the lines above and below this one,
-            # so that errors that "leak" into adjacent lines are caught.
-            # Besides, if you're creating a patch, you had to at least look
-            # at adjacent lines, so you're in a position to fix them.
-            patch[patched_filename][line_added - 1] = True
-            patch[patched_filename][line_added + 1] = True
-            line_counter += 1
+    sLine = hPatch.readline()
+    if (sLine == ''): break  # Done reading.
 
-          else:
-            line_del_match = diff_line_del.match(sLine)
-            if (line_del_match == None):
-              line_counter += 1
   return patch
 
 
@@ -1448,7 +1455,8 @@ def maybe_process_file(f, patch_infos):
       if not quiet: print "Warning: skipping symbolic link directory", h(f)
       num_links_skipped = num_links_skipped + 1
       return
-    if (skipdotdir and ("." == os.path.basename(f)[0])):
+    base_filename = os.path.basename(f)
+    if (skipdotdir and len(base_filename) > 0 and ("." == base_filename[0])):
       if not quiet: print "Warning: skipping directory with initial dot", h(f)
       num_dotdirs_skipped = num_dotdirs_skipped + 1
       return
@@ -1512,7 +1520,7 @@ flawfinder [--help] [--context]  [-c]  [--columns | -C] [--html]
            [--dataonly | -D]
            [--minlevel=X | -m X]
            [--immediate] [-i] [--inputs | -I] [--neverignore | -n]
-           [--quiet | -Q] [--singleline | -S ]
+           [ --patch=F ] [--quiet | -Q] [--singleline | -S ]
            [--loadhitlist=F ] [ --savehitlist=F ] [ --diffhitlist=F ]
            [--listrules]
            [--] [ source code file or source root directory ]+
