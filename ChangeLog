@@ -1,3 +1,10 @@
+2007-01-15 cmorgan <cmorgan47, at earthlink dooot net>
+	* Fixed Debian bug #271287 (flawfinder).  See:
+ 	   http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=271287
+	  Fixed skipping newlines when line ended with \,
+	  which caused incorrect line number reporting.
+	  Skip multiple whitespace at one time.
+
 2007-01-15 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Modified Sebastien Tandel's code so that it also supports GNU diff
 	  (his code worked only for svn diff)

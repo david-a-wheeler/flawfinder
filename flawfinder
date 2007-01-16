@@ -1204,6 +1204,7 @@ def process_directive():
 numberset=string.hexdigits+"_x.Ee"
 
 # Patterns for various circumstances:
+p_whitespace = re.compile( r'[ \t\v\f]+' )
 p_include = re.compile( r'#\s*include\s+(<.*?>|".*?")' )
 p_digits  = re.compile( r'[0-9]' )
 p_alphaunder = re.compile( r'[A-Za-z_]' )  # Alpha chars and underline.
@@ -1274,6 +1275,12 @@ def process_c_file(f, patch_infos):
     # It doesn't bother to tokenize anything else, since it's not used.
     # The following is a state machine with 3 states: incomment, instring,
     # and "normal", and a separate state "linebegin" if at BOL.
+
+    # Skip any whitespace
+    m = p_whitespace.match(text,i)
+    if m:
+      i = m.end(0)
+
     c = text[i]
     if linebegin:  # If at beginning of line, see if #include is there.
        linebegin = 0
@@ -1291,8 +1298,6 @@ def process_c_file(f, patch_infos):
       i = i +1
       continue
     i = i + 1   # From here on, text[i] points to next character.
-    # Skip whitespace:
-    if (c == " ") or (c == "\t") or (c == "\v") or (c == "\f"): continue
     if i < len(text): nextc = text[i]
     else:             nextc = ''
     if incomment:
@@ -1300,7 +1305,7 @@ def process_c_file(f, patch_infos):
            i = i + 1
            incomment = 0
     elif instring:
-       if c == '\\': i = i + 1
+       if c == '\\' and (nextc != "\n"): i = i + 1
        elif c == '"' and instring == 1: instring = 0
        elif c == "'" and instring == 2: instring = 0
     else:
