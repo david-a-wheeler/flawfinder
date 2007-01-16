@@ -15,9 +15,6 @@ version="1.27"
 # Optionally ":column_number" can be added after the line number.
 #
 # Currently this program can only analyze C/C++ code.
-# Note: this code is designed to run under both Python 1.5 and 2.
-# Thus, it avoids constructs not in Python 1.5 such as "+="
-# and "print >> stderr".
 #
 # Copyright (C) 2001-2007 David A. Wheeler
 # This is released under the General Public License (GPL):
