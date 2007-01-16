@@ -1,4 +1,4 @@
-Flawfinder version 1.25, (C) 2001-2004 David A. Wheeler.
+Flawfinder version 1.27, (C) 2001-2004 David A. Wheeler.
 Number of dangerous functions in C/C++ ruleset: 158
 Examining test.c
 Examining test2.c

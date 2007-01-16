@@ -1,3 +1,20 @@
+2007-01-15 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Modified Sebastien Tandel's code so that it also supports GNU diff
+	  (his code worked only for svn diff)
+	* When using a patchfile, skip analysis of any file not
+	  listed in the patchfile.
+
+2007-01-15 Sebastien Tandel <sebastien, at, tandel (doht) be)
+	* Add support for using "svn diff" created patch files, based
+	  on the approach described by David A. Wheeler on how it
+	  could be done.
+
+2007-01-15 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* By default, now skips directories beginning with "."
+	  (this makes it work nicely with many SCM systems).
+	  Added "--followdotdir" option if you WANT it to enter
+	  such directories.
+
 2004-06-15 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Released version 1.26.
 	* NOTE: Due to an error on my part,

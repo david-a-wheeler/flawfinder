@@ -6,7 +6,7 @@
 
  See the man page for a description of the options."""
 
-version="1.26"
+version="1.27"
 
 # The default output is as follows:
 # filename:line_number [risk_level] (type) function_name: message
@@ -18,8 +18,8 @@ version="1.26"
 # Note: this code is designed to run under both Python 1.5 and 2.
 # Thus, it avoids constructs not in Python 1.5 such as "+="
 # and "print >> stderr".
-
-# Copyright (C) 2001-2004 David A. Wheeler
+#
+# Copyright (C) 2001-2007 David A. Wheeler
 # This is released under the General Public License (GPL):
 #
 #    This program is free software; you can redistribute it and/or modify
@@ -52,10 +52,14 @@ show_immediately = 0
 show_inputs = 0          # Only show inputs?
 falsepositive = 0        # Work to remove false positives?
 allowlink = 0            # Allow symbolic links?
+skipdotdir = 1           # If 1, don't recurse into dirs beginning with "."
+                         # Note: This doesn't affect the command line.
 num_links_skipped = 0    # Number of links skipped.
+num_dotdirs_skipped = 0  # Number of dotdirs skipped.
 show_columns = 0
 never_ignore = 0         # If true, NEVER ignore problems, even if directed.
 list_rules = 0           # If true, list the rules (helpful for debugging)
+patch_file = ""          # File containing (unified) diff output.
 loadhitlist = None
 savehitlist = None
 diffhitlist = None
@@ -88,6 +92,138 @@ starttime = time.time()  # Used to determine analyzed lines/second.
 
 line_beginning = re.compile( r'(?m)^' )
 blank_line     = re.compile( r'(?m)^\s+$' )
+
+
+# The following code accepts unified diff format from both subversion (svn)
+# and GNU diff, which aren't well-documented.  It gets filenames from
+# "Index:" if exists, else from the "+++ FILENAME ..." entry.
+# Note that this is different than some tools (which will use "+++" in
+# preference to "Index:"), but subversion's nonstandard format is easier
+# to handle this way.
+# Since they aren't well-documented, here's some info on the diff formats:
+# GNU diff format:
+#    --- OLDFILENAME OLDTIMESTAMP
+#    +++ NEWFILENAME NEWTIMESTAMP
+#    @@ -OLDSTART,OLDLENGTH +NEWSTART,NEWLENGTH @@
+#    ... Changes where preceeding "+" is add, "-" is remove, " " is unchanged.
+#
+#    ",OLDLENGTH" and ",NEWLENGTH" are optional  (they default to 1).
+#    GNU unified diff format doesn't normally output "Index:"; you use
+#    the "+++/---" to find them (presuming the diff user hasn't used --label
+#    to mess it up).
+#
+# Subversion format:
+#    Index: FILENAME
+#    --- OLDFILENAME (comment)
+#    +++ NEWFILENAME (comment)
+#    @@ -OLDSTART,OLDLENGTH +NEWSTART,NEWLENGTH @@
+#
+#    In subversion, the "Index:" always occurs, and note that paren'ed
+#    comments are in the oldfilename/newfilename, NOT timestamps like
+#    everyone else.
+#
+# Single Unix Spec version 3 (http://www.unix.org/single_unix_specification/)
+# does not specify unified format at all; it only defines the older
+# (obsolete) context diff format.  That format DOES use "Index:", but
+# only when the filename isn't specified otherwise.
+# We're only supporting unified format directly; if you have an older diff
+# format, use "patch" to apply it, and then use "diff -u" to create a
+# unified format.
+# 
+diff_index_filename = re.compile( r'^Index:\s+(?P<filename>.*)' )
+diff_newfile = re.compile( r'^\+\+\+\s(?P<filename>.*)$' )
+diff_hunk = re.compile( r'^@@ -\d+(,\d+)?\s+\+(?P<linenumber>\d+)[, ].*@@$' )
+diff_line_added = re.compile( r'^\+[^+].*' )
+diff_line_del = re.compile( r'^-[^-].*' )
+# The "+++" newfile entries have the filename, followed by a timestamp
+# or " (comment)" postpended.
+# Timestamps can be of these forms:
+#   2005-04-24 14:21:39.000000000 -0400
+#   Mon Mar 10 15:13:12 1997
+# Also, "newfile" can have " (comment)" postpended.  Find and eliminate this.
+# Note that the expression below is Y10K (and Y100K) ready. :-).
+diff_findjunk = re.compile( r'^(?P<filename>.*)((\s\d\d\d\d+-\d\d-\d\d\s+\d\d:\d[0-9:.]+Z?(\s+[\-\+0-9A-Z]+)?)|(\s[A-Za-z][a-z]+\s[A-za-z][a-z]+\s\d+\s\d+:\d[0-9:.]+Z?(\s[\-\+0-9]*)?\s\d\d\d\d+)|(\s\(.*\)))\s*$')
+
+# For each file found in the file patch_file, keep the
+# line numbers of the new file (after patch is applied) which are added.
+# We keep this information in a hash table for a quick access later.
+#
+def load_patch_info(patch_file):
+  patch={}
+  line_counter= 0
+  initial_number= 0
+  index_statement = False # Set true if we see "Index:".
+  try: hPatch = open(patch_file, 'r')
+  except:
+    print "Error: failed to open", h(patch_file)
+    sys.exit(1)
+
+  patched_filename = "" # Name of new file patched by current hunk.
+
+  while True: # Loop-and-half construct.  Read a line, end loop when no more
+    sLine = hPatch.readline()
+    if (sLine == ''): break  # Done reading.
+
+    # This is really a sequence of if ... elsif ... elsif..., but
+    # because Python forbids '=' in conditions, we do it this way.
+    index_filename_match = diff_index_filename.match(sLine)
+    if (index_filename_match):
+      patched_filename = string.strip(index_filename_match.group('filename'))
+      index_statement = True
+      # Should never happen (like below):
+      if (patch.has_key(patched_filename) == True):
+        error("filename occurs more than once in the patch: %s" %
+               patched_filename)
+      else:
+        patch[patched_filename] = {}
+
+    else:
+      newfile_match = diff_newfile.match(sLine)
+      # We'll ignore the match if patched_filename already set.  This makes
+      # "Index:" takes precedence over "+++". We do this because "Index:"
+      # doesn't have junk after it that might be mistaken for part
+      # of the filename.
+      if ( (not index_statement) and newfile_match):
+        patched_filename = string.strip(newfile_match.group('filename'))
+        # Clean up filename - remove trailing timestamp and/or (comment).
+        findjunk_match = diff_findjunk.match(patched_filename)
+        if (findjunk_match):
+          patched_filename = string.strip(findjunk_match.group('filename'))
+        # Now we have the filename! Check if we've already seen it
+        # (we should not have), just like above:
+        if (patch.has_key(patched_filename)):
+  	  error("filename occurs more than once in the patch: %s" %
+                patched_filename)
+        else:
+          patch[patched_filename] = {}
+
+      else:
+        hunk_match = diff_hunk.match(sLine)
+        if (hunk_match):
+          if (patched_filename == ""):
+              error("wrong type of patch file : we have a line number without having seen a filename")
+          initial_number= hunk_match.group('linenumber')
+          line_counter= 0
+
+        else:
+          line_added_match = diff_line_added.match(sLine)
+          if (line_added_match):
+            line_added = line_counter + int(initial_number)
+            patch[patched_filename][line_added] = True
+            # Let's also warn about the lines above and below this one,
+            # so that errors that "leak" into adjacent lines are caught.
+            # Besides, if you're creating a patch, you had to at least look
+            # at adjacent lines, so you're in a position to fix them.
+            patch[patched_filename][line_added - 1] = True
+            patch[patched_filename][line_added + 1] = True
+            line_counter += 1
+
+          else:
+            line_del_match = diff_line_del.match(sLine)
+            if (line_del_match == None):
+              line_counter += 1
+  return patch
+
 
 def htmlize(s):
   # Take s, and return legal (UTF-8) HTML.
@@ -1083,7 +1219,7 @@ p_directive = re.compile( r'(?i)\s*(ITS4|Flawfinder|RATS):\s*([^\*]*)' )
 
 max_lookahead=500  # Lookahead limit for c_static_array.
 
-def process_c_file(f):
+def process_c_file(f, patch_infos):
   global filename, linenumber, ignoreline, sumlines, num_links_skipped
   global sloc
   filename=f
@@ -1094,6 +1230,16 @@ def process_c_file(f):
   instring = 0
   linebegin = 1
   codeinline = 0 # 1 when we see some code (so increment sloc at newline)
+
+  if ((patch_infos != None) and (not patch_infos.has_key(f))):
+    # This file isn't in the patch list, so don't bother analyzing it.
+    if not quiet:
+      if output_format:
+        print "Skipping unpatched file ", h(f), "<br>"
+      else:
+        print "Skipping unpatched file", f
+      sys.stdout.flush()
+    return
 
   if f == "-":
    input = sys.stdin
@@ -1189,23 +1335,24 @@ def process_c_file(f):
             word = text[startpos:endpos]
             # print "Word is:", text[startpos:endpos]
             if c_ruleset.has_key(word) and c_valid_match(text, endpos):
-              # FOUND A MATCH, setup & call hook.
-              # print "HIT: #%s#\n" % word
-              # Don't use the tuple assignment form, e.g., a,b=c,d
-              # because Python (least 2.2.2) does that slower
-              # (presumably because it creates & destroys temporary tuples)
-              hit = Hit(c_ruleset[word])
-              hit.name = word
-              hit.start = startpos
-              hit.end = endpos
-              hit.line = linenumber
-              hit.column = find_column(text, startpos)
-              hit.filename=filename
-              hit.context_text = get_context(text, startpos)
-              hit.parameters = extract_c_parameters(text, endpos)
-              if hit.extract_lookahead:
-                hit.lookahead = text[startpos:startpos+max_lookahead]
-              apply(hit.hook, (hit, ))
+	      if ( (patch_infos == None) or ((patch_infos != None) and patch_infos[f].has_key(linenumber))):
+		# FOUND A MATCH, setup & call hook.
+		# print "HIT: #%s#\n" % word
+		# Don't use the tuple assignment form, e.g., a,b=c,d
+		# because Python (least 2.2.2) does that slower
+		# (presumably because it creates & destroys temporary tuples)
+		hit = Hit(c_ruleset[word])
+		hit.name = word
+		hit.start = startpos
+		hit.end = endpos
+		hit.line = linenumber
+		hit.column = find_column(text, startpos)
+		hit.filename=filename
+		hit.context_text = get_context(text, startpos)
+		hit.parameters = extract_c_parameters(text, endpos)
+		if hit.extract_lookahead:
+		  hit.lookahead = text[startpos:startpos+max_lookahead]
+		apply(hit.hook, (hit, ))
           elif p_digits.match(c):
             while i<len(text) and p_digits.match(text[i]): # Process a number.
               i = i + 1
@@ -1283,20 +1430,24 @@ c_extensions = { '.c' : 1, '.h' : 1,
                }
 
 
-def maybe_process_file(f):
+def maybe_process_file(f, patch_infos):
   # process f, but only if (1) it's a directory (so we recurse), or
   # (2) it's source code in a language we can handle.
   # Currently, for files that means only C/C++, and we check if the filename
   # has a known C/C++ filename extension.  If it doesn't, we ignore the file.
   # We accept symlinks only if allowlink is true.
-  global num_links_skipped
+  global num_links_skipped, num_dotdirs_skipped
   if os.path.isdir(f):
     if (not allowlink) and os.path.islink(f):
       if not quiet: print "Warning: skipping symbolic link directory", h(f)
       num_links_skipped = num_links_skipped + 1
       return
+    if (skipdotdir and ("." == os.path.basename(f)[0])):
+      if not quiet: print "Warning: skipping directory with initial dot", h(f)
+      num_dotdirs_skipped = num_dotdirs_skipped + 1
+      return
     for file in os.listdir(f):
-      maybe_process_file(os.path.join(f, file))
+      maybe_process_file(os.path.join(f, file), patch_infos)
   # Now we will FIRST check if the file appears to be a C/C++ file, and
   # THEN check if it's a regular file or symlink.  This is more complicated,
   # but I do it this way so that there won't be a lot of pointless
@@ -1314,10 +1465,12 @@ def maybe_process_file(f):
         # device files, etc. won't cause trouble.
         if not quiet: print "Warning: skipping non-regular file", h(f)
       else:
-        process_c_file(f)
+	# We want to know the difference only with files found in the patch.
+	if ( (patch_infos == None) or (patch_infos != None and patch_infos.has_key(f) == True) ):
+	  process_c_file(f, patch_infos)
 
 
-def process_file_args(files):
+def process_file_args(files, patch_infos):
   # Process the list of "files", some of which may be directories,
   # which were given on the command line.
   # This is handled differently than anything not found on the command line
@@ -1336,12 +1489,14 @@ def process_file_args(files):
     elif os.path.isfile(f) or f == "-":
        # If on the command line, FORCE processing of it.
        # Currently, we only process C/C++.
-       process_c_file(f)
+       # check if we only want to review a patch
+       if ( (patch_infos != None and patch_infos.has_key(f) == True) or (patch_infos == None) ):
+	process_c_file(f, patch_infos)
     elif os.path.isdir(f):
        # At one time flawfinder used os.path.walk, but that Python
        # built-in doesn't give us enough control over symbolic links.
        # So, we'll walk the filesystem hierarchy ourselves:
-       maybe_process_file(f)
+       maybe_process_file(f, patch_infos)
     else:
        if not quiet: print "Warning: skipping non-regular file", h(f)
 
@@ -1360,6 +1515,8 @@ flawfinder [--help] [--context]  [-c]  [--columns | -C] [--html]
 
   --allowlink
               Allow symbolic links.
+  --followdotdir
+              Follow directories whose names begin with ".".
 
   --context
   -c          Show context (the line having the "hit"/potential flaw)
@@ -1394,6 +1551,8 @@ flawfinder [--help] [--context]  [-c]  [--columns | -C] [--html]
 
   --omittime  Omit time to run.
 
+  --patch=F   display information related to the patch F. (patch must be already applied)
+
   --Q
   --quiet     Don't display status information (i.e., which files are being
               examined) while the analysis is going on.
@@ -1419,17 +1578,19 @@ flawfinder [--help] [--context]  [-c]  [--columns | -C] [--html]
 """
 
 def process_options():
-  global show_context, show_inputs, allowlink, omit_time
+  global show_context, show_inputs, allowlink, skipdotdir, omit_time
   global output_format, minimum_level, show_immediately, single_line
   global falsepositive
   global show_columns, never_ignore, quiet, showheading, list_rules
   global loadhitlist, savehitlist, diffhitlist
+  global patch_file
   try:
     # Note - as a side-effect, this sets sys.argv[].
-    optlist, args = getopt.getopt(sys.argv[1:], "cm:nih?CSDQIF",
+    optlist, args = getopt.getopt(sys.argv[1:], "cm:nih?CSDQIFP:",
                     ["context", "minlevel=", "immediate", "inputs", "input",
                      "nolink", "falsepositive", "falsepositives",
-                     "columns", "listrules", "omittime", "allowlink",
+                     "columns", "listrules", "omittime", "allowlink", "patch=",
+                     "followdotdir",
                      "neverignore", "quiet", "dataonly", "html", "singleline",
                      "loadhitlist=", "savehitlist=", "diffhitlist=",
                      "version", "help" ])
@@ -1453,6 +1614,8 @@ def process_options():
         omit_time = 1
       elif opt == "--allowlink":
         allowlink = 1
+      elif opt == "--followdotdir":
+        skipdotdir = 0
       elif opt == "--listrules":
         list_rules = 1
       elif opt == "--html":
@@ -1466,6 +1629,14 @@ def process_options():
         show_immediately = 1
       elif opt == "-n" or opt == "--neverignore":
         never_ignore = 1
+      elif opt == "-P" or opt == "--patch":
+	# Note: This is -P, so that a future -p1 option can strip away
+	# pathname prefixes (with the same option name as "patch").
+	patch_file = value
+	# If we consider ignore comments we may change a line which was
+	# previously ignored but which will raise now a valid warning without
+	# noticing it now.  So, set never_ignore.
+	never_ignore = 1
       elif opt == "--loadhitlist":
         loadhitlist = value
         display_header()
@@ -1509,11 +1680,14 @@ def process_files():
     f = open(loadhitlist)
     hitlist = pickle.load(f)
   else:
+    patch_infos = None
+    if (patch_file != ""):
+      patch_infos = load_patch_info(patch_file)
     files = sys.argv[1:]
     if not files:
         print "*** No input files"
         return None
-    process_file_args(files)
+    process_file_args(files, patch_infos)
     return 1
 
 
@@ -1612,9 +1786,10 @@ def show_final_results():
       print "<br>"
     else:
       print
-    print "Hits/KSLOC@level+ =",
-    for i in range(0,6):
-      print "[%d+] %3g" % (i, count_per_level_and_up[i]*1000.0/sloc),
+    if (sloc > 0):
+      print "Hits/KSLOC@level+ =",
+      for i in range(0,6):
+        print "[%d+] %3g" % (i, count_per_level_and_up[i]*1000.0/sloc),
     if output_format:
       print "<br>"
     else:
@@ -1622,6 +1797,10 @@ def show_final_results():
     #
     if num_links_skipped:
       print "Symlinks skipped =", num_links_skipped, "(--allowlink overrides but see doc for security issue)"
+      if output_format:
+        print "<br>"
+    if num_dotdirs_skipped:
+      print "Dot directories skipped =", num_dotdirs_skipped, "(--followdotdir overrides)"
       if output_format:
         print "<br>"
     if num_ignored_hits > 0:

@@ -1,6 +1,6 @@
 Name: flawfinder
 Summary: Examines C/C++ source code for security flaws
-Version: 1.26
+Version: 1.27
 Release: 1
 License: GPL
 Group: Development/Tools
