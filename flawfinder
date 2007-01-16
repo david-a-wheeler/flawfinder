@@ -1005,16 +1005,16 @@ c_ruleset = {
   "chroot":
      (normal, 3,
       "chroot can be very helpful, but is hard to use correctly",
-      "Make sure the program immediately chdir(\"/\"), closes file descriptors, " +
-        "and drops root privileges, and that all necessary files (and no more!) are " +
-        "in the new root",
+      "Make sure the program immediately chdir(\"/\")," +
+      " closes file descriptors," +
+      " and drops root privileges, and that all necessary files" +
+      " (and no more!) are in the new root",
       "misc", "", {}),
 
   "getenv|curl_getenv":
-     (normal, 3, "Environment variables are untrustable input if they can be"
-                 "it returns untrustable input if the environment can be" +
-                 "set by an attacker.  It can have any content and length, " +
-                 "and the same variable can be set more than once",
+     (normal, 3, "Environment variables are untrustable input if they can be" +
+                 " set by an attacker.  They can have any content and" +
+                 " length, and the same variable can be set more than once",
       "Check environment variables carefully before using them",
       "buffer", "", {'input' : 1}),
 
