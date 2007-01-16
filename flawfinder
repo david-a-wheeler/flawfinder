@@ -1437,7 +1437,8 @@ def display_header():
 c_extensions = { '.c' : 1, '.h' : 1,
                  '.ec': 1, '.ecp': 1,  # Informix embedded C.
                  '.pgc': 1,            # Postgres embedded C.
-                 '.C': 1, '.cpp': 1, '.CPP': 1, '.cxx': 1, '.cc': 1, '.CC' : 1,   # C++.
+                 '.C': 1, '.cpp': 1, '.CPP': 1, '.cxx': 1, '.cc': 1, # C++
+                 '.CC' : 1, '.c++' :1,  # C++.
                  '.pcc': 1,            # Oracle C++
                  '.hpp': 1, '.H' : 1,  # .h - usually C++.
                }
