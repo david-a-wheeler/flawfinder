@@ -1242,12 +1242,16 @@ def process_c_file(f, patch_infos):
   if f == "-":
    input = sys.stdin
   else:
-    # This should never happen.
+    # Symlinks should never get here, but just in case...
     if ((not allowlink) and os.path.islink(f)):
       print "BUG! Somehow got a symlink in process_c_file!"
       num_links_skipped = num_links_skipped + 1
       return
-    input = open(f, "r")
+    try:
+      input = open(f, "r")
+    except: 
+      print "Error: failed to open", h(f)
+      sys.exit(1)
 
   # Read ENTIRE file into memory.  Use readlines() to convert \n if necessary.
   # This turns out to be very fast in Python, even on large files, and it

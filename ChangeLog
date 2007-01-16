@@ -1,3 +1,11 @@
+2007-01-15 Steve Kemp <steve at shellcode dot org>
+	* Fix Debian bug #268236.
+	  http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=268236
+	  This complains that flawfinder crashes when presented with a
+	  file it cannot read.  The patch obviously can't prevent
+	  the problem, since the tool can't review what it can't read,
+	  but at least it halts with a cleaner error message.
+
 2007-01-15 cmorgan <cmorgan47, at earthlink dooot net>
 	* Fixed Debian bug #271287 (flawfinder).  See:
  	   http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=271287
