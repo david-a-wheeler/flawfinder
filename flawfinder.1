@@ -30,9 +30,11 @@ flawfinder \- find potential security flaws ("hits") in source code
 .\" Selecting Hits:
 .RB [ \-\-allowlink ]
 .RB [ \-\-inputs | \-I ]
-[ \fB\-\-minlevel=\fR\fIX\fR | \fB-m\fR \fIX\fR ]
+[ \fB\-\-minlevel=\fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
 .RB [ \-\-falsepositive | \-F ]
 .RB [ \-\-neverignore | \-n ]
+.RB [ \-\-patch=\fIfilename\fR | \-P\ \fIfilename\fR ]
+.RB [ \-\-followdotdir ]
 .\" Selecting Output Format:
 .RB [ \-\-context | \-c ]
 .RB [ \-\-columns | \-C ]
@@ -58,6 +60,9 @@ in that directory (and its subdirectories, recursively) will be examined.
 Thus, for most projects, simply give flawfinder the name of the source
 code's topmost directory (use ``.'' for the current directory),
 and flawfinder will examine all of the project's C/C++ source code.
+If you only want to have \fIchanges\fR reviewed, save a unified diff
+of those changes (created by "diff -u" or "svn diff") in a patch file,
+and include --patch=\fIdiff\fR as an option.
 .PP
 Flawfinder will produce a list of ``hits'' (potential
 security flaws), sorted by risk; the riskiest hits are shown first.
@@ -269,6 +274,18 @@ Shows (just) the version number and exits.
 .SS "Selecting Hits to Display"
 
 .TP 12
+.BI \-\-patch= filename
+Only report hits that are changed by the given patch file.
+The patch file must be in unified diff format (e.g., the output of
+"diff -u" or "svn diff").
+Beware that the "new" file names given in the patch file must match exactly,
+including upper/lower case, path prefix, and directory
+separator (\\ vs. /).
+Only hits that occur on resultant changed lines, or immediately
+above and below them, are reported.
+This option implies --neverignore.
+
+.TP 12
 .BI \-\-allowlink
 Allow the use of symbolic links; normally symbolic links are skipped.
 Don't use this option if you're analyzing code by others;
@@ -322,6 +339,11 @@ clauses and calls through function pointers will be missed.
 Never ignore security issues, even if they have an ``ignore'' directive
 in a comment.
 
+.TP
+.BI \-\-followdotdir
+Enter directories whose names begin with ".".
+Normally such directories are ignored, since they normally
+include version control private data, configurations, and so on.
 
 .SS "Selecting Output Format"
 
