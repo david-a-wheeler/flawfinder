@@ -1,0 +1,29 @@
+
+I've just released "flawfinder", a program that can scan source code
+and identify out potential security flaws, ranking them by likely severity.
+Unlike ITS4, flawfinder is completely open source / free software
+(it's released under the GPL license).
+
+Flawfinder will miss some security problems, and point out issues that aren't
+really security problems, but nevertheless I think it can help track
+down security problems in code so that the code can be fixed.
+
+You can download flawfinder from:
+  http://www.dwheeler.com/flawfinder
+
+Flawfinder is in its very early stages - I'm labelling it version "0.12".
+It works reliably, but its ruleset is currently small and rudimentary.
+It can already find some security problems now, but expanding its ruleset
+will give it much more power.  Also, it currently can only examine C/C++ code.
+
+After I wrote flawfinder - and just before I released it - I found out that
+Secure Software Solutions was also writing a program (RATS) to perform this
+same task, also to be released under the GPL.  We agreed to release our
+programs simultaneously, and to mention each other's programs in our
+announcements.  Now that we've released our programs, we plan to coordinate
+so that there will be a single open source / free software
+source code scanner that will be a ``best of breed.''
+
+--- David A. Wheeler
+    dwheeler@dwheeler.com
+

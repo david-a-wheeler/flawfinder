@@ -1,0 +1,14 @@
+include COPYING
+include README
+include announcement
+include ChangeLog
+include flawfinder.1*
+include flawfinder.pdf
+include flawfinder.ps
+
+include flawfinder
+include makefile
+include setup.cfg
+include setup.py
+include test.c
+include test_result

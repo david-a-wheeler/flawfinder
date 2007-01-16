@@ -1,0 +1,65 @@
+To install flawfinder:
+
+If you use an RPM-based system (e.g., Red Hat) or deb-based system
+(e.g., Debian), use their respective RPM or debian installation program
+and just install it; then ignore the rest of these instructions.
+For a ports-based system where you have a current port, just use that.
+
+Otherwise, you'll need to install from the tarball.
+So, here's how to do that.
+
+* Install the "tarball" and uncompress it.
+  GNU-based systems can run "tar xvzf flawfinder*.tar.gz" to do so,
+  then "cd" into the directory created.  If that doesn't work
+  (e.g., you have an old tar program), use:
+    gunzip flawfinder*.tar.gz
+    tar xvf flawfinder*.tar
+    cd flawfinder-*
+
+* Decide where you want to put it.  Flawfinder normally installs
+  in /usr/local, with the program in /usr/local/bin and the manual in
+  /usr/local/man, per GNU conventions.  You can override this
+  using the normal GNU conventions when installing (with "make install")
+  by setting INSTALL_DIR (defaults to /usr/local),
+  INSTALL_DIR_BIN for the program location (defaults to INSTALL_DIR/bin), and
+  INSTALL_DIR_MAN for the manual location (defaults to INSTALL_DIR/man).
+
+* If you're using Cygwin on Windows, you can install it using "make install"
+  but you need to tell the makefile to use the .py extension
+  whenever you use make.  This will be another make install override.
+  If you'll just install it, do this:
+
+  make PYTHONEXT=.py install
+
+  If you don't want to pass the "PYTHONEXT" extension each time,
+  you can change the file "makefile" to remember this. Just change
+  the line beginning with "PYTHONEXT=" so that it reads as follows:
+  PYTHONEXT=.py
+
+* Now install it, giving whatever overrides you need.
+  In most cases, you'll need to be root, so run this first:
+  su
+
+  Then give the "make install" command appropriate for your system.
+  For an all-default installation, which is what you need for most cases:
+  make install
+
+  (you need to be root; "make uninstall" reverses it).
+
+  To install in /usr (the program in /usr/bin, the manual in /usr/man):
+  make INSTALL_DIR=/usr install
+
+  To put the binaries in /usr/bin, and the manuals in /usr/share/man
+  (common for Red Hat Linux), do:
+  make INSTALL_DIR=/usr INSTALL_DIR_MAN=/usr/share/man install
+
+
+* Windows systems should be able to run this on the command line (cmd.exe)
+  directly, but I haven't tried that.
+
+* You can also simply run the program in the directory you've unpacked it
+  into.   It's a simple Python program, just type into a command line:
+
+  ./flawfinder files_or_directory
+
+

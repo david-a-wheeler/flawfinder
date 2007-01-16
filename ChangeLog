@@ -1,0 +1,529 @@
+2004-06-15 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.26.
+	* NOTE: Due to an error on my part,
+	  the tar file for version 1.25 was for a short period
+	  (after 2004-06-05) actually version 1.26,
+	  incorrectly labelled as 1.25.
+	  My sincere apologies!!  Please upgrade to 1.26, since that
+	  way you'll be SURE to get the right version.
+
+2004-06-04 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Reviewed and modified Jared's code somewhat, and added
+	  support for _TEXT() as well as _T().
+	  See http://www.rpi.edu/~pudeyo/articles/unicode.html for more info
+	  on Microsoft's approach to internationalization involving TCHAR.
+	* Wrote ChangeLog entries for Jared's code.
+
+2004-06-04 Jared Robinson (jarrob, at, symantec.com)
+	* Added more support for Microsoft's approach to internationalization.
+	  Thus, it accepts _T() just like gettext(), and adds many more
+	  functions: _getts(), vswprintf(), _stprintf(), _vstprintf(),
+	  vwprintf(), vfwprintf(), _vtprintf(), _ftprintf(), _vftprintf(),
+	  _sntprintf(), _vsntprintf(), _ftscanf(), _gettc().
+	  In this approach, TCHAR and various macros are typically used.
+	  In particular, _T() of tchar.h converts character strings
+	  to long character strings, if _UNICODE is defined
+	  (this makes TCHAR a long 16-bit character). Thus, T() is:
+	  #ifdef _UNICODE
+	  #define _T(x) L ## x
+	  #else
+	  #define _T(x) x
+	  #endif
+
+2004-06-02 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Added two new rules for GLib functions,
+	  "g_get_home_dir" and "g_get_tmp_dir", per a suggestion by
+	  Steve Kemp, lead of the Debian Security Auditing Project.
+	  This closes the wishlist item in Debian bug report #250432
+	  (see http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=250432).
+	  Contributors - please email wishlist items to me;
+	  I can't monitor every distribution's local bug tracking system.
+	  PLEASE tell upstream developers when there's a bug/wishlist
+	  item, we can't fix it if we don't know.
+	* Added curl_getenv().  Kemp's suggestion reminded me to search
+	  for other getenv()-like functions, and that one popped up.
+	* Added several rules for input functions (for -I) -
+	  recv, recvfrom, recvmsg, fread, and readv.
+	* Tightened the false positive test slightly; if a name is
+	  followed by = or - or + it's unlikely to be a function call,
+	  so it'll be quietly discarded.
+	* Modified the summary report format slightly.
+	* Modified the getpass text to remove an extraneous character,
+	  thanks to a bug report from Joerg Beyer (job, at, webde-ag.de)
+	* Modified installation instructions to clarify how to set
+	  INSTALL_DIR at run-time so it installs elsewhere.
+	  It uses the standard GNU conventions, but not everyone
+	  knows about them. By default, it installs in /usr/local.
+	  Just use normal make overrides to change that, e.g.,
+	  make INSTALL_DIR=/usr INSTALL_DIR_MAN=/usr/share/man install
+	  I do NOT use the ?= macro-setting commands in the makefile,
+	  because that's not standard (e.g., it's not in SUSv3), so
+	  while that would work in GNU make, it wouldn't work in others.
+
+2004-05-31 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.25.
+
+
+2004-05-30 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Added more rules for finding problems by examining the
+	  Red Hat Linux 9 documentation (the man3 man pages),
+	  looking for phrases like "do not use", "security", and "obsolete".
+	  Thus, added rules for
+	  cuserid, getlogin, getpass, mkstemp, getpw, memalign, as
+	  well as the obsolete functions gsignal, ssignal, ulimit, usleep.
+	* Modified text for strncat to clarify it.
+	  My thanks to Christian Biere, christianbiere, at, gmx.de, for
+	  reporting the problem.
+	* Added lengthy text to the manual to explain exactly how to use
+	  flawfinder with vim and emacs.  This should also help
+	  integrate flawfinder into other text editors/IDEs.
+	* Fixed error in --columns format, so that the output is simply
+	  "filename:linenumber:columnnumber" when --columns (-C) is used.
+	* Eliminated "Number of" phrase in the footer report
+	  (it was redundant anyway)
+	* Added more statistical information to the footer report.
+	* Changed makefile to simplify running tests.
+	* Tests now autogenerate html and txt versions.
+	* Added shortcut single-letter commands (-D for --dataonly,
+	  -Q for --quiet, -C for --columns), so that invoking from
+	  editors is easier.
+	* Tries to autoremove some false positives.  In particular, a function
+	  name followed immediately by "=" (ignoring whitespace)
+	  is automatically considered to be a variable and NOT a function,
+	  and thus doesn't register as a hit.  There are exotic cases
+	  where this won't be correct, but they're pretty unlikely in
+	  real code.
+	* Added a "--falsepositive" (-F) option, which tries to remove
+	  many more likely false positives.  The current heuristic is:
+	  if -F is enabled, any function name must be
+	  followed by "(" (ignoring whitespace) to be considered a
+	  possible hit; otherwise, it's thrown away.
+	  Thus, if you often use variable names that are
+	  also the names of risky functions, like "access", you
+	  might consider using this option.  Note that flawfinder
+	  uses simple lexical analysis; eliminating many more false positives
+	  would require deeper code analysis
+	  (to examine type information, buffer size declarations, etc.).
+	  This option also disables reporting of static character
+	  buffer arrays.
+	  This -F option and the autoremoving of false positives above is
+	  in response to a problem report from
+	  Mike Ruscher (Mike.Ruscher, at, cse-cst.gc.ca),
+	  though the approach and code is my own.  This may not completely
+	  solve Mr. Ruscher's problem, but it's a start.
+	* Documented that flawfinder output can be misunderstood if
+	  there are source filenames whose names contain newline, linefeed, or
+	  colon.  Source filenames shouldn't have such characters anyway;
+	  while flawfinder can handle them, many other tools can't.
+	* Modified the documentation to make it clear in the synopsis
+	  which one-letter flags are short for which long names.
+	* Modified "make install" script slightly so that it creates
+	  directories that don't yet exist when installing.
+	  My thanks to Joerg Beyer (job, at webde-ag.de) for reporting
+	  the problem and suggesting a solution.
+	  This solution requires that "mkdir" support the "-p" option,
+	  which shouldn't be a problem for nearly all users.
+
+2003-10-29 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.24.
+	* Fixed an incredibly obscure parsing error that caused some
+	  false positives.  If a constant C string, after the closing
+	  double-quote, is followed by a \ and newline (instead of a comma),
+	  the string might not be recognized as a constant string
+	  (thus triggering warnings about non-constant values in some cases).
+	  This kind of formatting is quite ugly and rare.
+	  My thanks to Sascha Nitsch (sascha, at spsn.ath.cx) for pointing
+	  this bug out and giving me a test case to work with.
+	* Added a warning for readlink.  The implementation and warning
+	  are mine, but the idea of warning about readlink came from
+	   Stefan Kost (kost, at imn.htwk-leipzig.de).  Thanks!!
+
+2003-09-27 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.23.  Minor bugfixes.
+
+2003-09-27 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Fixed subtle bug - in some circumstances single character constants
+	  wouldn't be parsed correctly.  My thanks to Scott Renfro
+	  (scottdonotspam, at, renfro.org) for notifying me about this bug.
+	  Scott Renfro also sent me a patch; I didn't use it
+	  (the patch didn't handle other cases), but I'm grateful since it
+	  illustrated the problem.
+	* Fixed documentation bug in man page.
+	  The option "--minlevel=X" must be preceded by two dashes,
+	  as are all GNU-style long options. The man page accidentally only
+	  had one dash in the summary (it was correct elsewhere); it now
+	  correctly shows both dashes.
+	* Modified man page to list filename extensions that are
+	  interpreted as C/C++.
+	* Removed index.html from distribution - it's really only for the
+	  website.
+
+2003-03-08 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.22.  Output format slightly changed (colon added),
+	  so that it's compatible with tools that expect compiler warnings
+	  in the typical format "filename:line-number: warning".
+	  To get the fully expected format (all in one line), use "-S".
+	  Also, improved RPM packaging.
+
+2003-03-08 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Changed makefile to be consistent with new RPM packaging approach.
+	* Changed makefile: now for testing, will automatically uninstall
+	  old sloccount when creating rpm.  Also (for me), make my_install
+	  works (well, it helps me anyway).
+
+2003-02-01 Jose Pedro Oliveira
+	* Improved RPM packaging.
+
+2003-09-22 Jukka A. Ukkonen
+	* Recommended an extra colon in the output format, so that the
+	  output format would like like typical compiler output (and thus
+	  more compatible with existing tools that report warnings).
+
+2002-09-07 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.21, with the following changes:
+	* Improved the default output so it creates multiple formatted lines
+	  instead of single very long lines for each hit.
+	  Use the new "--singleline" (-S) option to get the original
+	  "long line" format.
+	* Removed duplicate "getpass" entry in the ruleset;
+	  this didn't hurt anything, but was unnecessary.
+	  Thanks to the user who gave me that feedback, wish I'd kept your
+	  email address so I could credit you properly :-).
+	* Added a short tutorial to man page.
+	* Fixed initial upper/lower case on many entries in the ruleset.
+	* Allow "--input" as a synonym for "--inputs".
+
+2002-07-07 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.20, with many more changes:
+	* Entries have been added to the database to detect file openings and
+	  static character array definitions.
+	* The HTML format has been significantly improved.
+	* Joerg Beyer provided several nice improvements to flawfinder,
+	  including a timing report.
+	* Now Flawfinder by default skips symbolic links,
+	  and always skips special files, to counter attackers who
+	  insert malicious files in their source code directories.
+	* The documentation has been improved in various ways.
+
+2002-07-05 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Completely rewrote the functions handling opening the
+	  files/directories named on the command line and when
+	  walking down the directory tree.  This was in part
+	  to handle a new security requirement for source code web
+	  hosting services, which may analyze code written by someone else
+	  AND then send reports to someone else who doesn't have the
+	  same rights to view files as the analysis program.
+	  It's the last part that's different - the attacker may control
+	  the code being analyzed and insert non-regular files or
+	  symbolic links to "bad" files like /etc/passwd (to expose its
+	  contents) or /dev/zero (to stall analysis).  These are
+	  annoying but not really a problem when the analyst is running on
+	  his OWN machine.
+	  To deal with this, now flawfinder NEVER opens a file type that isn't
+	  a file or directory, and it skips symbolic
+	  links by default (though this can be changed),
+	  no matter if they're listed at the top or inside
+	  a directory descendent.  This is actually reasonable behavior
+	  for everyone, since others may be analyzing programs
+	  that they don't trust either.
+	* Added open() and fopen() as entries, now it has 127 entries
+	  in the database.  Modified test code to test it.
+	* Warning messages about skipping symlinks and
+	  files that aren't regular files are now controlled by --quiet
+	  instead of --dataonly; since --quiet controls printing
+	  status messages this seems more reasonable.
+	* Changed the format of the HTML output - now it creates a list.
+	  The ending is now in regular type, instead of <pre>...</pre>.
+	  This seemed too look nicer.
+	* Reworked Beyer's patch that prints speed somewhat, e.g., to print
+	  floating point time (on small programs or fast machines
+	  the time would be reported as "0") and to avoid
+	  divide-by-zero on systems where time really is reported
+	  as zero.
+	* Added "--omittime", so that the regression test
+	  results won't vary depending on the time the analysis takes.
+	* Fixed minor bug: now the filename "-" works to mean
+	  standard input.  This is rarely used, since usually files
+	  are analyzed instead.
+	* Modified documentation to make clear that in many circumstances
+	  you need to copy the source code to a separate area.
+	  I removed the reference to "--nolink", since this is now
+	  the default.
+	* Modified makefile to generate correct-results.html and
+	  correct-results.txt, so that (1) there will be a standard
+	  to compare with and (2) the web page has a demo.
+
+2002-07-05 Joerg Beyer <job, at, webde-ag.de>
+	* Tiny patch to report the number of lines analyzed and
+	  the analysis speed in lines/second.
+
+2002-07-04 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Changed Joerg Beyer's patch that gives a nicer error
+	  message if an invalid option flag is given.  Now the patch
+	  also works in Python 1.5.  This involved using getopt.error
+	  instead of getopt.GetoptError.
+	* Added a comment explicitly documenting that flawfinder
+	  is written to run under both Python 1.5 and Python 2.
+	  Lots of systems only include Python 1.5, or use Python 1.5
+	  as the default Python (e.g., Red Hat 7.2).
+	  Someday that won't be a concern, but there's no reason it
+	  can't easily port between the two for a while.
+	* Ran PyChecker and modified code to eliminate the errors it reports.
+
+2002-07-03 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Changed the default to IGNORE symbolic links, and added the
+	  --allowlink option to use symbolic links.  This is a safer default,
+	  and few people will really want to follow symbolic links anyway.
+	* Added option --dataonly to suppress headers and footers;
+	  use this along with --quiet to get "just the facts"
+	  (e.g., when processing the output with other tools).
+	  This was inspired by a comment from A.T. Hofkamp.
+
+2002-07-03 Joerg Beyer <job, at, webde-ag.de>
+	* Various small patches - thanks!!  There were as follows:
+	* If you call flawfinder without input,
+	  state that there was no input, not state that there's no hit.
+	* If interrupted with Control-C, flawfinder now prints cleanly
+	  that it was interrupted.
+	* Print a nicer error message if an invalid option flag
+	  is given.
+	* Just for completeness' sake, I'm including two of the patches:	
+	  --- flawfinder_orig     Wed Jul  3 09:56:34 2002
+	  +++ flawfinder  Wed Jul  3 10:25:49 2002
+	  @@ -1216,10 +1216,15 @@
+	      if loadhitlist:
+	        f = open(loadhitlist)
+	        hitlist = pickle.load(f)
+	      else:
+	  -    for f in sys.argv[1:]:
+	  +    files = sys.argv[1:]
+	  +    if not files:
+	  +        print "*** no input files"
+	  +        return None
+	  +    for f in files:
+	          process_dir_or_file(f)
+	  +    return 1
+	  
+	    def show_final_results():
+	      global hitlist
+	      count = 0
+	  @@ -1275,11 +1280,14 @@
+	    def flawfind():
+	      process_options()
+	      display_header()
+	      initialize_ruleset()
+	  -  process_files()
+	  -  show_final_results()
+	  -  save_if_desired()
+	  +  if process_files():
+	  +      show_final_results()
+	  +      save_if_desired()
+	  
+	  
+	  Detect control-C:
+	  
+	  --- flawfinder_orig     Wed Jul  3 09:56:34 2002
+	  +++ flawfinder  Wed Jul  3 09:58:37 2002
+	  @@ -1281,5 +1281,8 @@
+	     save_if_desired()
+	  
+	   if __name__ == '__main__':
+	  -  flawfind()
+	  +  try:
+	  +    flawfind()
+	  +  except KeyboardInterrupt:
+	  +    print "*** Flawfinder interrupted"
+	  
+	  --- flawfinder_orig     Wed Jul  3 09:56:34 2002
+	  +++ flawfinder  Wed Jul  3 09:58:37 2002
+	  @@ -1280,6 +1280,9 @@
+	     show_final_results()
+	     save_if_desired()
+	  
+	   if __name__ == '__main__':
+	  -  flawfind()
+	  +  try:
+	  +    flawfind()
+	  +  except KeyboardInterrupt:
+	  +    print "*** Flawfinder interrupted"
+
+
+2002-07-02 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Added detection of static arrays of char, wchar_t, and TCHAR.
+	* Fixed typo in makefile uninstall script. My thanks to
+	  Andrew Dalgleish for pointing this out.
+	* Modified installation to be friendlier to Cygwin.  My thanks to
+	  Andrew Dalgleish for pointing this out, too.
+          One step involved creating PYTHONEXT in the makefile
+	  and documenting it, which was no problem.
+	  A more surprising problem was that the INSTALL file needed to
+	  be renamed to "INSTALL.txt", because otherwise "make install"
+	  thinks that everything is already installed.
+	  This is a nasty problem caused by Windows' type insensitivity
+	  conflicting with normal Unix standards... this should really
+	  be noted somewhere in various standard documents!!
+	  I eventually added a ".PHONY:" target to the makefile,
+	  which also solves the problem when using GNU make.
+	* Fixed ChangeLog - the 2002 dates were accidentally 2001.
+
+2002-07-02 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Changed correct-results so that the version numbers are right.
+	* Created "make test-is-correct" which moves the test results
+	  into the "correct-results" file.
+
+2002-07-02 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.01.
+	* Bugfix: Programs with getopt() or getopt_long() could trigger
+	  a problem with flawfinder itself.  Now fixed.
+	* Added the --nolink option, and a detailed description in the
+	  man page.  Basically, this foils attacks where malicious
+	  programmers insert into their source tree symbolic links
+	  to files like /etc/passwd or /dev/zero.
+	  You still need to copy source code files into a separate area
+	  if you are worried about malicious programmers; see the
+	  new man page discussion about this.
+
+2002-07-01 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 1.00, a major step forward.
+	* I have significantly enlarged the database, from 55 rules
+	  to 122 rules.  Making the database this large is such a
+	  major improvement in its usefulness that I've bumped the
+	  version number up to 1.00.  A number are from my book,
+	  while others are suggested by "Writing Secure Code" by
+	  Howard and LeBlanc (for the Windows-specific issues).
+	* Added HTML generation support.
+	* Significantly enlarged the test suite.
+
+2002-5-6 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 0.22, a very minor improvement.
+	* Modified the report about %s in scanf when a limit for %s
+	  was provided; some found the error report very
+	  confusing.  My thanks to Agustin.Lopez, who asked a question
+	  that led me to this understanding.
+
+2001-12-18 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 0.21.
+	* Fixed an error in the database entry for syslog(3), which
+	  would cause incorrect hits.  This resolves the Debian bug
+	  "Bug#124009: flawfinder: wrong reports of format
+	   fulnerabilities for syslog".
+	* Added simple "INSTALL" file.
+	* Fixed documentation, documenting --version and fixing a
+	  format problem with "--neverignore".
+	* I accidentally wrote over version 0.20 with version 0.21's
+	  contents. Sigh.
+
+2001-12-11 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 0.20.
+	* Added --version, which prints JUST the version number without
+	  actually analyzing any programs.
+
+2001-11-08 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Fixed MANIFEST.in to include "flawfinder.1*"; that way the
+	  compressed man page is included when using MANIFEST.in.
+	  Thanks to Jon Nelson for noting this.
+	  The effect of this is quite tiny -
+	  my tar file & rpm files already included the compressed
+	  man page, so this error affects very few people.
+	  Note also that this just meant that only the uncompressed
+	  man page was in the MANIFEST, so I don't expect that this
+	  error had any user-visible effects other than a few more K of man
+	  page space (and with multi-Gigabyte drives, that's hard to notice).
+
+2001-11-04 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 0.19
+	* Fixed a minor bug - flawfinder didn't realize that multiline strings
+	  passed to gettext() are still constant strings.
+	  My thanks to "Arthur", who reported this bug, and
+	  Adam Lazur (Debian) who passed it on to me.
+	  This closes Debian Bug#118025.
+	* Minor change - precomputed internationalization pattern for
+	  a minor performance improvement.
+	* Output a reminder that not all hits are actually security
+	  vulnerabilities, as well as that there may be other vulnerabilities.
+	  The documentation mentioned this too, but including that in
+	  the output of the program makes it clearer (apparantly some
+	  expect flawfinder to perform amazing magic far beyond the
+	  possible).  I think ALL programs like this should include this
+	  reminder; otherwise sane software developers somehow expect
+	  programs like this to work miracles, instead of simply reporting
+	  likely spots based on heuristics.
+
+2001-11-03 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Added a "help" option and support for DistUtils, as well as
+	  modification of the RPM spec file so it can be built by non-root.
+	  My thanks to Jon Nelson for the patches to do this.
+	* Added "syslog" to the vulnerability database.
+	  My thanks to Dave Aitel for this contribution.
+	* Generate and install compressed man page, rather than uncompressed.
+	  My thanks to Marius Tomaschewski for this suggestion.
+
+2001-10-29 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 0.17.
+	* Created an RPM package, to simplify installation.
+	* Accepts RATS' "ignore" directive, as well as ITS4's, for
+	  compatibility's sake with RATS.
+	* Trivial change: shortened processing status phrase to
+	  "Processing" so long filenames are more likely to fit on one line.
+	* Modified the man page, in the hopes that the new one is even
+	  easier to understand.
+
+2001-10-28 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Released version 0.16.
+	* Added support for directories.  If a directory (instead of a
+	  file) is given on the command line as something to examine,
+	  C/C++ files in that directory and its subdirectories (recursively)
+	  are examined.  This should make it easy to analyze entire projects,
+	  and to make it easy to integrate flawfinder into project websites.
+	* Added to the vulnerability database: randomizing functions & getenv.
+	* Reports the number of hits at the end.
+	* Minor cleanup of text output.
+	* Print "processing" status every time a file is opened; this is
+	  flushed, so that monitoring the status with "less" works well.
+	* Added the "--quiet" option, so that status information can be
+	  suppressed.
+
+2001-06-06 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Added support for file globbing on Windows/NT/DOS
+	  (it's not needed for Cygwin - it's only needed when
+	  run natively).  File globbing characters are
+	  correctly ignored in Unix-like ("posix") systems, since
+	  the Unix shell does this for us.
+
+2001-05-29 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Fixed manual page to close the "/*" comment with "*/".
+
+2001-05-29 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Fixed a bug in directive handling, now directives work properly.
+	  I only noticed this AFTER release of 0.14, sigh.
+	* Fixed the ChangeLog, to note the addition of --neverignore.
+	* Released version 0.15.
+
+2001-05-29 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Fixed a minor problem in string handling; a string containing
+	  \\ followed immediately by the double-quote mark (end of the string)
+	  wasn't correctly handled.  Now it is.
+	* Added information in the documentation describing how to ignore
+	  hits on a specific line (a comment directive).  Flawfinder has
+	  always had this ability (since 0.12), but now it's documented.
+	  Before, you had to read the test file test.c or the actual
+	  flawfinder code to learn about this ability.
+ 	* Added the "--neverignore" / "-n" option.
+	* Having a number of conversations with John Viega comparing
+	  RATS and flawfinder, with the goal of finding a way to
+	  coordinate and have a "best of breed" scanner.  This hasn't
+	  produced a concrete result, but Viega will soon post a comparison
+	  paper that I've had input on.
+	* Released version 0.14.
+
+2001-05-25 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Fixed a minor error in that parameter parser; previously it
+	  might have trouble with embedded preprocessor commands in
+	  the middle of parameter lists.
+	* Added this ChangeLog.
+	* Released version 0.13.
+
+2001-05-21 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Initial release of flawfinder version 0.12.
+
+

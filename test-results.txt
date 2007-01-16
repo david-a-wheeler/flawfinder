@@ -1,0 +1,139 @@
+Flawfinder version 1.25, (C) 2001-2004 David A. Wheeler.
+Number of dangerous functions in C/C++ ruleset: 158
+Examining test.c
+Examining test2.c
+test.c:32:  [5] (buffer) gets:
+  Does not check for buffer overflows. Use fgets() instead. 
+test.c:56:  [5] (buffer) strncat:
+  Easily used incorrectly (e.g., incorrectly computing the correct
+  maximum size to add). Consider strlcat or automatically resizing strings.
+  Risk is high; the length parameter appears to be a constant, instead of
+  computing the number of characters left.
+test.c:57:  [5] (buffer) _tcsncat:
+  Easily used incorrectly (e.g., incorrectly computing the correct
+  maximum size to add). Consider strlcat or automatically resizing strings.
+  Risk is high; the length parameter appears to be a constant, instead of
+  computing the number of characters left.
+test.c:60:  [5] (buffer) MultiByteToWideChar:
+  Requires maximum length in CHARACTERS, not bytes. Risk is high, it
+  appears that the size is given as bytes, but the function requires size as
+  characters.
+test.c:62:  [5] (buffer) MultiByteToWideChar:
+  Requires maximum length in CHARACTERS, not bytes. Risk is high, it
+  appears that the size is given as bytes, but the function requires size as
+  characters.
+test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
+  Never create NULL ACLs; an attacker can set it to Everyone (Deny All
+  Access), which would even forbid administrator access. 
+test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
+  Never create NULL ACLs; an attacker can set it to Everyone (Deny All
+  Access), which would even forbid administrator access. 
+test.c:17:  [4] (buffer) strcpy:
+  Does not check for buffer overflows when copying to destination.
+  Consider using strncpy or strlcpy (warning, strncpy is easily misused). 
+test.c:20:  [4] (buffer) sprintf:
+  Does not check for buffer overflows. Use snprintf or vsnprintf. 
+test.c:21:  [4] (buffer) sprintf:
+  Does not check for buffer overflows. Use snprintf or vsnprintf. 
+test.c:22:  [4] (format) sprintf:
+  Potential format string problem. Make format string constant. 
+test.c:23:  [4] (format) printf:
+  If format strings can be influenced by an attacker, they can be
+  exploited. Use a constant for the format specification. 
+test.c:25:  [4] (buffer) scanf:
+  The scanf() family's %s operation, without a limit specification,
+  permits buffer overflows. Specify a limit to %s, or use a different input
+  function. 
+test.c:27:  [4] (buffer) scanf:
+  The scanf() family's %s operation, without a limit specification,
+  permits buffer overflows. Specify a limit to %s, or use a different input
+  function. 
+test.c:38:  [4] (format) syslog:
+  If syslog's format strings can be influenced by an attacker, they can
+  be exploited. Use a constant format string for syslog. 
+test.c:49:  [4] (buffer) _mbscpy:
+  Does not check for buffer overflows when copying to destination.
+  Consider using a function version that stops copying at the end of the
+  buffer. 
+test.c:52:  [4] (buffer) lstrcat:
+  Does not check for buffer overflows when concatenating to destination. 
+test.c:75:  [3] (shell) CreateProcess:
+  This causes a new process to execute and is difficult to use safely.
+  Specify the application path in the first argument, NOT as part of the
+  second, or embedded spaces could allow an attacker to force a different
+  program to run. 
+test.c:75:  [3] (shell) CreateProcess:
+  This causes a new process to execute and is difficult to use safely.
+  Specify the application path in the first argument, NOT as part of the
+  second, or embedded spaces could allow an attacker to force a different
+  program to run. 
+test.c:91:  [3] (buffer) getopt_long:
+  Some older implementations do not protect against internal buffer
+  overflows . Check implementation on installation, or limit the size of all
+  string inputs. 
+test.c:16:  [2] (buffer) strcpy:
+  Does not check for buffer overflows when copying to destination.
+  Consider using strncpy or strlcpy (warning, strncpy is easily misused). Risk
+  is low because the source is a constant string.
+test.c:19:  [2] (buffer) sprintf:
+  Does not check for buffer overflows. Use snprintf or vsnprintf. Risk
+  is low because the source has a constant maximum length.
+test.c:45:  [2] (buffer) char:
+  Statically-sized arrays can be overflowed. Perform bounds checking,
+  use functions that limit length, or ensure that the size is larger than
+  the maximum possible length. 
+test.c:46:  [2] (buffer) char:
+  Statically-sized arrays can be overflowed. Perform bounds checking,
+  use functions that limit length, or ensure that the size is larger than
+  the maximum possible length. 
+test.c:50:  [2] (buffer) memcpy:
+  Does not check for buffer overflows when copying to destination. Make
+  sure destination can always hold the source data. 
+test.c:51:  [2] (buffer) CopyMemory:
+  Does not check for buffer overflows when copying to destination. Make
+  sure destination can always hold the source data. 
+test.c:97:  [2] (misc) fopen:
+  Check when opening files - can an attacker redirect it (via symlinks),
+  force the opening of special file type (e.g., device files), move
+  things around to create a race condition, control its ancestors, or change
+  its contents?. 
+test.c:15:  [1] (buffer) strcpy:
+  Does not check for buffer overflows when copying to destination.
+  Consider using strncpy or strlcpy (warning, strncpy is easily misused). Risk
+  is low because the source is a constant character.
+test.c:18:  [1] (buffer) sprintf:
+  Does not check for buffer overflows. Use snprintf or vsnprintf. Risk
+  is low because the source is a constant character.
+test.c:26:  [1] (buffer) scanf:
+  it's unclear if the %s limit in the format string is small enough.
+  Check that the limit is sufficiently small, or use a different input
+  function. 
+test.c:53:  [1] (buffer) strncpy:
+  Easily used incorrectly; doesn't always \0-terminate or check for
+  invalid pointers. 
+test.c:54:  [1] (buffer) _tcsncpy:
+  Easily used incorrectly; doesn't always \0-terminate or check for
+  invalid pointers. 
+test.c:55:  [1] (buffer) strncat:
+  Easily used incorrectly (e.g., incorrectly computing the correct
+  maximum size to add). Consider strlcat or automatically resizing strings. 
+test.c:58:  [1] (buffer) strlen:
+  Does not handle strings that are not \0-terminated (it could cause a
+  crash if unprotected). 
+test.c:64:  [1] (buffer) MultiByteToWideChar:
+  Requires maximum length in CHARACTERS, not bytes. Risk is very low,
+  the length appears to be in characters not bytes.
+test.c:66:  [1] (buffer) MultiByteToWideChar:
+  Requires maximum length in CHARACTERS, not bytes. Risk is very low,
+  the length appears to be in characters not bytes.
+
+Hits = 36
+Lines analyzed = 118
+Physical Source Lines of Code (SLOC) = 80
+Hits@level = [0]   0 [1]   9 [2]   7 [3]   3 [4]  10 [5]   7
+Hits@level+ = [0+]  36 [1+]  36 [2+]  27 [3+]  20 [4+]  17 [5+]   7
+Hits/KSLOC@level+ = [0+] 450 [1+] 450 [2+] 337.5 [3+] 250 [4+] 212.5 [5+] 87.5
+Suppressed hits = 2 (use --neverignore to show them)
+Minimum risk level = 1
+Not every hit is necessarily a security vulnerability.
+There may be other security vulnerabilities; review your code!

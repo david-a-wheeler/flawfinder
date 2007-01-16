@@ -1,0 +1,7 @@
+This is "flawfinder" by David A. Wheeler, <dwheeler@dwheeler.com>.
+It's a simple Python program for scanning source code for security problems.
+
+For more information, see:
+ http://www.dwheeler.com/flawfinder
+
+See INSTALL for installation instructions.

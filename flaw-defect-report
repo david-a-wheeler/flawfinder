@@ -1,0 +1,114 @@
+From - Sun Nov  4 11:39:04 2001
+X-UIDL: 4bd5a7eeb0e24a21ff091e0d7f4cec01
+X-Mozilla-Status: 0001
+X-Mozilla-Status2: 00000000
+Return-Path: <laz@clustermonkey.org>
+Received: from cs.ida.org by fricka.csed.ida.org (SMI-8.6/SMI-SVR4)
+	id WAA06993; Fri, 2 Nov 2001 22:22:00 -0500
+Received: from mailhost.nl (webframe.nl [212.204.207.201])
+	by cs.ida.org (Switch-2.2.0/Switch-2.2.0) with SMTP id fA33Lxp18254
+	for <dwheeler@ida.org>; Fri, 2 Nov 2001 22:21:59 -0500 (EST)
+Received: from x-o.clustermonkey.org (postfix@x-o.clustermonkey.org [64.242.77.225])
+	by mailhost.nl (8.9.3/8.9.3) with ESMTP id EAA12369
+	for <dwheeler@dwheeler.com>; Sat, 3 Nov 2001 04:21:56 +0100
+Received: by x-o.clustermonkey.org (Postfix, from userid 1000)
+	id 6B96B61E92B; Fri,  2 Nov 2001 22:21:54 -0500 (EST)
+Date: Fri, 2 Nov 2001 22:21:54 -0500
+From: Adam Lazur <zal@debian.org>
+To: "David A. Wheeler" <dwheeler@dwheeler.com>
+Subject: [arthur@tiefighter.et.tudelft.nl: Bug#118025: flawfinder does not detect multiline strings right]
+Message-ID: <20011102222154.B24827@clustermonkey.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="rwEMma7ioTxnRzrJ"
+Content-Disposition: inline
+User-Agent: Mutt/1.3.23i
+X-UIDL: 4bd5a7eeb0e24a21ff091e0d7f4cec01
+
+
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Attached is the first bug report from the Debian package of flawfinder.
+
+Replies can be sent to 118025@bugs.debian.org and they will be appended
+to the bug's history and also sent to the bug submitter. The bug history
+can be found at: http://bugs.debian.org/118025
+
+-- 
+Adam Lazur, Cluster Monkey
+
+--rwEMma7ioTxnRzrJ
+Content-Type: message/rfc822
+Content-Disposition: inline
+
+X-Envelope-From: debbugs@master.debian.org  Fri Nov  2 10:09:37 2001
+Return-Path: <debbugs@master.debian.org>
+Delivered-To: laz@clustermonkey.org
+Received: from master.debian.org (unknown [216.234.231.5])
+	by x-o.clustermonkey.org (Postfix) with ESMTP id 981EF61E913
+	for <adam@lazur.org>; Fri,  2 Nov 2001 10:09:37 -0500 (EST)
+Received: from debbugs by master.debian.org with local (Exim 3.12 1 (Debian))
+	id 15zfqY-0007Zt-00; Fri, 02 Nov 2001 09:03:02 -0600
+Subject: Bug#118025: flawfinder does not detect multiline strings right
+Reply-To: arthur@tiefighter.et.tudelft.nl, 118025@bugs.debian.org
+Resent-From: arthur@tiefighter.et.tudelft.nl
+Resent-To: debian-bugs-dist@lists.debian.org
+Resent-Cc: Adam Lazur <zal@debian.org>
+Resent-Date: Fri, 02 Nov 2001 15:03:02 GMT
+Resent-Message-ID: <handler.118025.B.100471287428113@bugs.debian.org>
+X-Debian-PR-Message: report 118025
+X-Debian-PR-Package: flawfinder
+X-Loop: owner@bugs.debian.org
+Received: via spool by submit@bugs.debian.org id=B.100471287428113
+          (code B ref -1); Fri, 02 Nov 2001 15:03:02 GMT
+From: arthur@tiefighter.et.tudelft.nl
+X-Authentication-Warning: ch.twi.tudelft.nl: arthur owned process doing -bs
+Date: Fri, 2 Nov 2001 15:54:02 +0100 (CET)
+X-Sender: arthur@ch.twi.tudelft.nl
+To: submit@bugs.debian.org
+Message-ID: <Pine.LNX.4.21.0111021507380.11135-100000@ch.twi.tudelft.nl>
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
+Delivered-To: submit@bugs.debian.org
+Resent-Sender: Debian BTS <debbugs@master.debian.org>
+
+
+Package: flawfinder
+Version: 0.17-1
+Severity: normal
+
+
+Does strange things with respect to strings that are spread over multiple
+lines.
+
+Sample code:
+
+1: static void a()
+2: {
+3:   printf(_("a"));
+4:   printf(_("b"
+5:            "c"));
+6:   printf("a");
+7:   printf("b"
+8:          "c");
+9: }
+
+Flawfinder output (partial):
+/tmp/tst.c:4 [4] (format) printf: if format strings can be influenced by an attacker, they can be exploited. Use a constant for the format specification. 
+
+One would expect flawfinder either to report lines 3 and 4 as possible
+security riscs or lines 4 and 7. This is not expected behaviour.
+
+On a sindenote a disclaimer may be in order about the accuracy of the
+results. All things flawfinder reported on my code were no security
+threats.
+
+-- arthur - arthur@tiefighter.et.tudelft.nl - http://tiefighter.et.tudelft.nl/~arthur --
+
+
+
+--rwEMma7ioTxnRzrJ--
+
+
+
