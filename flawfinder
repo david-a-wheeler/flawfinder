@@ -195,33 +195,33 @@ def load_patch_info(patch_file):
       if (patch.has_key(patched_filename) == True):
         error("filename occurs more than once in the patch: %s" %
                patched_filename)
-	sys.exit(1)
+        sys.exit(1)
       else:
         patch[patched_filename] = {}
     else:
       hunk_match = diff_hunk.match(sLine)
       if (hunk_match):
-	if (patched_filename == ""):
-	    error("wrong type of patch file : we have a line number without having seen a filename")
-	    sys.exit(1)
-	initial_number= hunk_match.group('linenumber')
-	line_counter= 0
+        if (patched_filename == ""):
+            error("wrong type of patch file : we have a line number without having seen a filename")
+            sys.exit(1)
+        initial_number= hunk_match.group('linenumber')
+        line_counter= 0
       else:
-	line_added_match = diff_line_added.match(sLine)
-	if (line_added_match):
-	  line_added = line_counter + int(initial_number)
-	  patch[patched_filename][line_added] = True
-	  # Let's also warn about the lines above and below this one,
-	  # so that errors that "leak" into adjacent lines are caught.
-	  # Besides, if you're creating a patch, you had to at least look
-	  # at adjacent lines, so you're in a position to fix them.
-	  patch[patched_filename][line_added - 1] = True
-	  patch[patched_filename][line_added + 1] = True
-	  line_counter += 1
-	else:
-	  line_del_match = diff_line_del.match(sLine)
-	  if (line_del_match == None):
-	    line_counter += 1
+        line_added_match = diff_line_added.match(sLine)
+        if (line_added_match):
+          line_added = line_counter + int(initial_number)
+          patch[patched_filename][line_added] = True
+          # Let's also warn about the lines above and below this one,
+          # so that errors that "leak" into adjacent lines are caught.
+          # Besides, if you're creating a patch, you had to at least look
+          # at adjacent lines, so you're in a position to fix them.
+          patch[patched_filename][line_added - 1] = True
+          patch[patched_filename][line_added + 1] = True
+          line_counter += 1
+        else:
+          line_del_match = diff_line_del.match(sLine)
+          if (line_del_match == None):
+            line_counter += 1
 
     sLine = hPatch.readline()
     if (sLine == ''): break  # Done reading.
@@ -1348,24 +1348,24 @@ def process_c_file(f, patch_infos):
             word = text[startpos:endpos]
             # print "Word is:", text[startpos:endpos]
             if c_ruleset.has_key(word) and c_valid_match(text, endpos):
-	      if ( (patch_infos == None) or ((patch_infos != None) and patch_infos[f].has_key(linenumber))):
-		# FOUND A MATCH, setup & call hook.
-		# print "HIT: #%s#\n" % word
-		# Don't use the tuple assignment form, e.g., a,b=c,d
-		# because Python (least 2.2.2) does that slower
-		# (presumably because it creates & destroys temporary tuples)
-		hit = Hit(c_ruleset[word])
-		hit.name = word
-		hit.start = startpos
-		hit.end = endpos
-		hit.line = linenumber
-		hit.column = find_column(text, startpos)
-		hit.filename=filename
-		hit.context_text = get_context(text, startpos)
-		hit.parameters = extract_c_parameters(text, endpos)
-		if hit.extract_lookahead:
-		  hit.lookahead = text[startpos:startpos+max_lookahead]
-		apply(hit.hook, (hit, ))
+              if ( (patch_infos == None) or ((patch_infos != None) and patch_infos[f].has_key(linenumber))):
+        	# FOUND A MATCH, setup & call hook.
+        	# print "HIT: #%s#\n" % word
+        	# Don't use the tuple assignment form, e.g., a,b=c,d
+        	# because Python (least 2.2.2) does that slower
+        	# (presumably because it creates & destroys temporary tuples)
+        	hit = Hit(c_ruleset[word])
+        	hit.name = word
+        	hit.start = startpos
+        	hit.end = endpos
+        	hit.line = linenumber
+        	hit.column = find_column(text, startpos)
+        	hit.filename=filename
+        	hit.context_text = get_context(text, startpos)
+        	hit.parameters = extract_c_parameters(text, endpos)
+        	if hit.extract_lookahead:
+        	  hit.lookahead = text[startpos:startpos+max_lookahead]
+        	apply(hit.hook, (hit, ))
           elif p_digits.match(c):
             while i<len(text) and p_digits.match(text[i]): # Process a number.
               i = i + 1
@@ -1479,9 +1479,9 @@ def maybe_process_file(f, patch_infos):
         # device files, etc. won't cause trouble.
         if not quiet: print "Warning: skipping non-regular file", h(f)
       else:
-	# We want to know the difference only with files found in the patch.
-	if ( (patch_infos == None) or (patch_infos != None and patch_infos.has_key(f) == True) ):
-	  process_c_file(f, patch_infos)
+        # We want to know the difference only with files found in the patch.
+        if ( (patch_infos == None) or (patch_infos != None and patch_infos.has_key(f) == True) ):
+          process_c_file(f, patch_infos)
 
 
 def process_file_args(files, patch_infos):
@@ -1505,7 +1505,7 @@ def process_file_args(files, patch_infos):
        # Currently, we only process C/C++.
        # check if we only want to review a patch
        if ( (patch_infos != None and patch_infos.has_key(f) == True) or (patch_infos == None) ):
-	process_c_file(f, patch_infos)
+        process_c_file(f, patch_infos)
     elif os.path.isdir(f):
        # At one time flawfinder used os.path.walk, but that Python
        # built-in doesn't give us enough control over symbolic links.
@@ -1644,13 +1644,13 @@ def process_options():
       elif opt == "-n" or opt == "--neverignore":
         never_ignore = 1
       elif opt == "-P" or opt == "--patch":
-	# Note: This is -P, so that a future -p1 option can strip away
-	# pathname prefixes (with the same option name as "patch").
-	patch_file = value
-	# If we consider ignore comments we may change a line which was
-	# previously ignored but which will raise now a valid warning without
-	# noticing it now.  So, set never_ignore.
-	never_ignore = 1
+        # Note: This is -P, so that a future -p1 option can strip away
+        # pathname prefixes (with the same option name as "patch").
+        patch_file = value
+        # If we consider ignore comments we may change a line which was
+        # previously ignored but which will raise now a valid warning without
+        # noticing it now.  So, set never_ignore.
+        never_ignore = 1
       elif opt == "--loadhitlist":
         loadhitlist = value
         display_header()
