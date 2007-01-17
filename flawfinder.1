@@ -30,10 +30,10 @@ flawfinder \- find potential security flaws ("hits") in source code
 .\" Selecting Hits:
 .RB [ \-\-allowlink ]
 .RB [ \-\-inputs | \-I ]
-[ \fB\-\-minlevel=\fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
+[ \fB\-\-minlevel \fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
 .RB [ \-\-falsepositive | \-F ]
 .RB [ \-\-neverignore | \-n ]
-.RB [ \-\-patch=\fIfilename\fR | \-P\ \fIfilename\fR ]
+.RB [ \-\-patch\ \fIfilename\fR | \-P\ \fIfilename\fR ]
 .RB [ \-\-followdotdir ]
 .\" Selecting Output Format:
 .RB [ \-\-context | \-c ]
@@ -45,9 +45,9 @@ flawfinder \- find potential security flaws ("hits") in source code
 .RB [ \-\-omittime ]
 .RB [ \-\-quiet | \-Q ]
 .\" Managing hit list.
-[ \fB\-\-loadhitlist=\fR\fIF\fR ]
-[ \fB\-\-savehitlist=\fR\fIF\fR ]
-[ \fB\-\-diffhitlist=\fR\fIF\fR ]
+[ \fB\-\-loadhitlist\ \fR\fIF\fR ]
+[ \fB\-\-savehitlist\ \fR\fIF\fR ]
+[ \fB\-\-diffhitlist\ \fR\fIF\fR ]
 .RB [ \-\- ]
 .I [ source code file or source root directory ]+
 .SH DESCRIPTION
@@ -61,8 +61,8 @@ Thus, for most projects, simply give flawfinder the name of the source
 code's topmost directory (use ``.'' for the current directory),
 and flawfinder will examine all of the project's C/C++ source code.
 If you only want to have \fIchanges\fR reviewed, save a unified diff
-of those changes (created by "diff -u" or "svn diff") in a patch file,
-and include --patch=\fIdiff\fR as an option.
+of those changes (created by "diff -u" or "svn diff") in a patch file
+and use the \-\-patch (\-P) option.
 .PP
 Flawfinder will produce a list of ``hits'' (potential
 security flaws), sorted by risk; the riskiest hits are shown first.
@@ -274,13 +274,21 @@ Shows (just) the version number and exits.
 .SS "Selecting Hits to Display"
 
 .TP 12
-.BI \-\-patch= filename
+.BI \-\-patch patchfile
+.BI \-P patchfile
 Only report hits that are changed by the given patch file.
 The patch file must be in unified diff format (e.g., the output of
-"diff -u" or "svn diff").
-Beware that the "new" file names given in the patch file must match exactly,
+"diff -u old new" or "svn diff"), where the new files are the ones that are
+being examined by flawfinder.
+The line numbers given in the patch file are used to determine which
+lines were changed, so if you have modified the files since the
+patch file was created, regenerate the patch file first.
+Beware that the file names of the new files
+given in the patch file must match exactly,
 including upper/lower case, path prefix, and directory
 separator (\\ vs. /).
+Only unified diff format is accepted (either GNU diff or svn diff output is
+okay); if you have a different format, again regenerate it first.
 Only hits that occur on resultant changed lines, or immediately
 above and below them, are reported.
 This option implies --neverignore.
