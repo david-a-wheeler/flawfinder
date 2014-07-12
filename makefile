@@ -9,7 +9,7 @@
 # Eventually switch to using DistUtils to autogenerate.
 
 NAME=flawfinder
-VERSION=1.27
+VERSION=1.28
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
@@ -97,12 +97,17 @@ time:
 test: flawfinder test.c test2.c
 	# Omit time report so that results are always the same textually.
 	./flawfinder --omittime test.c test2.c > test-results.txt
+	echo >> test-results.txt
+	echo "Testing for no ending newline:" >> test-results.txt
+	./flawfinder --omittime no-ending-newline.c | \
+	  grep 'Lines analyzed' >> test-results.txt
 	./flawfinder --omittime --html --context test.c test2.c > test-results.html
-	less test-results.txt
+	@echo "Differences from expected results:"
+	@diff -u correct-results.txt test-results.txt
 
-check:
-	diff -u correct-results.txt test-results.txt
+check: test
 
+# Run "make test-is-correct" if the results are as expected.
 test-is-correct: test-results.txt
 	mv test-results.txt correct-results.txt
 	mv test-results.html correct-results.html

@@ -1,4 +1,4 @@
-Flawfinder version 1.27, (C) 2001-2004 David A. Wheeler.
+Flawfinder version 1.28, (C) 2001-2007 David A. Wheeler.
 Number of dangerous functions in C/C++ ruleset: 160
 Examining test.c
 Examining test2.c
@@ -137,3 +137,6 @@ Suppressed hits = 2 (use --neverignore to show them)
 Minimum risk level = 1
 Not every hit is necessarily a security vulnerability.
 There may be other security vulnerabilities; review your code!
+
+Testing for no ending newline:
+Lines analyzed = 32
