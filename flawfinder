@@ -1207,7 +1207,7 @@ def process_directive():
   hitfound = 0
   # Iterate backwards over hits, to be careful about the destructive iterator
   for i in xrange(len(hitlist)-1, -1, -1):
-    if hitlist[i].line == linenumber:
+    if hitlist[i].filename == filename and hitlist[i].line == linenumber:
       del hitlist[i] # DESTROY - this is a DESTRUCTIVE iterator.
       hitfound = 1   # Don't break, because there may be more than one.
       num_ignored_hits = num_ignored_hits + 1
