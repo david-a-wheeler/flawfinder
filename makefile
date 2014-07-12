@@ -35,6 +35,10 @@ RPMBUILD=rpmbuild
 all: flawfinder.pdf flawfinder.1.gz
 	chmod -R a+rX *
 
+# We use the "-p" option of mkdir; some very old Unixes
+# might not support this option, but it's a really common option
+# and required by SUSv3 (and probably earlier, I haven't checked).
+MKDIR_P=mkdir -p
 
 # This installer doesn't install the compiled Python bytecode.
 # It doesn't take long to compile the short Python code, so
@@ -42,13 +46,10 @@ all: flawfinder.pdf flawfinder.1.gz
 # makes it easier to see what it does.  It also avoids the
 # (admittedly rare) problem of bad date/timestamps causing the
 # compiled code to override later uncompiled Python code.
-# Note that this uses the "-p" option of mkdir; some very old Unixes
-# might not support this option, but it's a really common option
-# and required by SUSv3 (and probably earlier, I haven't checked).
 install:
-	-mkdir -p $(INSTALL_DIR_BIN)
+	-$(MKDIR_P) $(INSTALL_DIR_BIN)
 	cp flawfinder$(PYTHONEXT) $(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
-	-mkdir -p $(INSTALL_DIR_MAN)
+	-$(MKDIR_P) $(INSTALL_DIR_MAN)
 	cp flawfinder.1 $(INSTALL_DIR_MAN)/flawfinder.1
 
 uninstall:
