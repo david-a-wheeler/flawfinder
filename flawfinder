@@ -1301,7 +1301,7 @@ def process_c_file(f, patch_infos):
       i = m.end(0)
 
     if i >= len(text):
-      c = ''
+      c = "\n" # Last line with no newline, we're done
     else:
       c = text[i]
     if linebegin:  # If at beginning of line, see if #include is there.
