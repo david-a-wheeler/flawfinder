@@ -1300,7 +1300,10 @@ def process_c_file(f, patch_infos):
     if m:
       i = m.end(0)
 
-    c = text[i]
+    if i >= len(text):
+      c = ''
+    else:
+      c = text[i]
     if linebegin:  # If at beginning of line, see if #include is there.
        linebegin = 0
        if c == "#": codeinline = 1  # A directive, count as code.
@@ -1436,9 +1439,9 @@ def display_header():
       print "<h1>Flawfinder Results</h1>"
       print "Here are the security scan results from"
       print '<a href="http://www.dwheeler.com/flawfinder">Flawfinder version %s</a>,' % version
-      print '(C) 2001-2004 <a href="http://www.dwheeler.com">David A. Wheeler</a>.'
+      print '(C) 2001-2007 <a href="http://www.dwheeler.com">David A. Wheeler</a>.'
     else:
-      print "Flawfinder version %s, (C) 2001-2004 David A. Wheeler." % version
+      print "Flawfinder version %s, (C) 2001-2007 David A. Wheeler." % version
     displayed_header = 1
 
 
