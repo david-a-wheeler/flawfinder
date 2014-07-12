@@ -26,6 +26,7 @@ flawfinder \- find potential security flaws ("hits") in source code
 .B flawfinder
 .\" Documentation:
 .RB [ \-\-help ]
+.RB [ \-\-listrules ]
 .RB [ \-\-version ]
 .\" Selecting Hits:
 .RB [ \-\-allowlink ]
@@ -266,6 +267,12 @@ and perform hitlist management.
 .\" Leave -h and -? undocumented... they also invoke help, but it's
 .\" easier just to document the single help option.
 Show usage (help) information.
+
+.TP 12
+.BI \-\-listrules
+List the terms that trigger further examination and their default risk level.
+Note that risk levels for code may be different than the default,
+depending on how the term is used.
 
 .TP
 .BI \-\-version
