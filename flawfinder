@@ -1468,7 +1468,7 @@ def maybe_process_file(f, patch_infos):
       num_links_skipped = num_links_skipped + 1
       return
     base_filename = os.path.basename(f)
-    if (skipdotdir and len(base_filename) > 0 and ("." == base_filename[0])):
+    if (skipdotdir and len(base_filename) > 1 and ("." == base_filename[0])):
       if not quiet: print "Warning: skipping directory with initial dot", h(f)
       num_dotdirs_skipped = num_dotdirs_skipped + 1
       return
