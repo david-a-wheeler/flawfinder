@@ -1793,7 +1793,7 @@ def show_final_results():
     time_analyzing = time.time() - starttime
     print "Lines analyzed = %d" % sumlines,
     if time_analyzing > 0 and not omit_time:  # Avoid divide-by-zero.
-      print "in %.2f seconds (%.0f lines/second)" % (
+      print "in approximately %.2f seconds (%.0f lines/second)" % (
              time_analyzing,
              (sumlines * 1.0 / time_analyzing) )
     else:
