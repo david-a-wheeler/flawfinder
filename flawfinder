@@ -1554,6 +1554,15 @@ flawfinder [--help] [--context]  [-c]  [--columns | -C] [--html]
   
   --html      Display as HTML output.
 
+  -F          Do not include hits that are likely to be false  positives.
+              Currently,  this  means  that function names are ignored if
+              they're not followed by "(", and that declarations of char-
+              acter  arrays  aren't noted.  Thus, if you have use a vari-
+              able named "access" everywhere, this will eliminate  refer-
+              ences  to  this ordinary variable.  This isn't the default,
+              because this  also  increases  the  likelihood  of  missing
+              important  hits;  in  particular, function names in #define
+              clauses and calls through function pointers will be missed.
   -m X
   --minlevel=X
               Set minimum risk level to X for inclusion in hitlist.  This
