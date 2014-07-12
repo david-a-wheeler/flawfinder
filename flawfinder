@@ -559,7 +559,15 @@ p_dangerous_sprintf_format = re.compile(r'%-?([0-9]+|\*)?s')
 # sprintf has both buffer and format vulnerabilities.
 def c_sprintf(hit):
   source_position = hit.source_position
-  if source_position <= len(hit.parameters)-1:
+  if hit.parameters is None:
+    # Serious parameter problem, e.g., none, or a string constant that
+    # never finishes.
+    hit.warning = "format string parameter problem"
+    hit.suggestion = "Check if required parameters present and quotes close."
+    hit.level = 4
+    hit.category = "format"
+    hit.url = ""
+  elif source_position <= len(hit.parameters)-1:
     source=hit.parameters[source_position]
     if c_singleton_string(source):
       hit.level = 1
