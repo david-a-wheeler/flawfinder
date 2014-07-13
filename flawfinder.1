@@ -40,6 +40,7 @@ flawfinder \- find potential security flaws ("hits") in source code
 [ \fB\-\-minlevel \fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
 .RB [ \-\-falsepositive | \-F ]
 .RB [ \-\-neverignore | \-n ]
+.RB [ \-\-regex | \-e ]
 .br
 .\" Selecting Output Format:
 .RB [ \-\-context | \-c ]
@@ -412,6 +413,16 @@ clauses and calls through function pointers will be missed.
 Never ignore security issues, even if they have an ``ignore'' directive
 in a comment.
 
+.TP
+.BI \-\-regexp PATTERN
+.TP
+.BI -e PATTERN
+Only report hits with text that matches the regular expression pattern PATTERN.
+For example, to only report hits containing the text "CWE-120",
+use ``\-\-regex CWE-120''.
+These option flag names are the same as grep.
+
+
 .SS "Selecting Output Format"
 
 .TP 12
@@ -682,18 +693,34 @@ of compilation error messages.
 
 .SH COMMON WEAKNESS ENUMERATION (CWE)
 .PP
-Hit descriptions typically include a relevant
-Common Weakness Enumeration (CWE) identifier in parentheses.
+The Common Weakness Enumeration (CWE)
+is "a formal list or dictionary of common software weaknesses
+that can occur in software's architecture, design, code or implementation
+that can lead to exploitable security vulnerabilities [that]
+was created to serve as a common language for
+describing software security weaknesses"
+(http://cwe.mitre.org/about/faq.html).
+For more information on CWEs, see http://cwe.mitre.org.
+
+.PP
+Flawfinder supports CWE.
+Hit descriptions typically a relevant
+Common Weakness Enumeration (CWE) identifier in parentheses
+where there is known to be a relevant CWE.
 For example, many of the buffer-related hits mention
 CWE-120, the CWE identifier for
 ``buffer copy without checking size of input''
 (aka ``Classic Buffer Overflow'').
-CWE version 2.7 (released June 23, 2014) was used.
+Flawfinder is designed to meet the CWE-Output requirement.
+CWE version 2.7 (released June 23, 2014) was used for the mapping.
 Note that many of these CWEs are identified in the CWE/SANS top 25 list
 (http://cwe.mitre.org/top25/).
 
 .PP
-Flawfinder can report the following CWEs:
+
+.PP
+Flawfinder can report on the following CWEs
+(these are the CWEs that flawfinder covers):
 CWE-22
 CWE-78
 CWE-119
@@ -711,10 +738,25 @@ CWE-829.
 
 .PP
 Flawfinder may fail to find a
-vulnerability, even if it is covered by one of these weaknesses.
+vulnerability, even if the vulnerability
+is covered by one of these CWE weaknesses listed above.
+That said, flawfinder does find vulnerabilities listed by the CWEs it covers,
+and it will not report lines without those vulnerabilities in many cases.
+Thus, flawfinder has a rate of false positives less than 100%,
+and a rate of false negatives less than 100%, as required for
+any tool intending to be CWE compatible.
+
 
 .PP
-For more information on CWEs, see http://cwe.mitre.org.
+You can select a specific subset of CWEs to report by using
+the ``\-\-regex'' (-e) option.
+This option accepts a regular expression, so you can select multiple CWEs,
+e.g., ``\-\-regex "CWE-119|CWE-120"''.
+If you select multiple CWEs with ``|'' on a command line
+you will typically need to quote the parameters (since an
+unquoted ``|'' is the pipe symbol).
+Flawfinder is designed to meet the CWE-Searchable requirement.
+
 
 .SH SECURITY
 

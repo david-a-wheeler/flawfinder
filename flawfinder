@@ -65,6 +65,8 @@ showheading = 1          # --dataonly turns this off
 output_format = 0        # 0 = normal, 1 = html.
 single_line = 0          # 1 = singleline (can 't be 0 if html)
 omit_time = 0            # 1 = omit time-to-run (needed for testing)
+required_regex = None    # If non-None, regex that must be met to report
+required_regex_compiled = None
 
 displayed_header = 0    # Have we displayed the header yet?
 num_ignored_hits = 0    # Number of ignored hits (used if never_ignore==0)
@@ -393,6 +395,8 @@ hitlist = []
 def add_warning(hit):
   global hitlist, num_ignored_hits
   if show_inputs and not hit.input: return
+  if required_regex and (required_regex_compiled.search(hit.warning) is None):
+    return
   if hit.level >= minimum_level:
     if linenumber == ignoreline:
       num_ignored_hits = num_ignored_hits + 1
@@ -1612,6 +1616,8 @@ flawfinder [--help | -h] [--listrules] [--version]
   --neverignore | -n
               Never ignore security issues, even if they have an ``ignore''
               directive in a comment.
+  --regex PATTERN | -e PATTERN
+              Only report hits that match the regular expression PATTERN.
 
   Selecting Output Format:
   --columns   Show  the  column  number  (as well as the file name and
@@ -1649,18 +1655,20 @@ flawfinder [--help | -h] [--listrules] [--version]
 def process_options():
   global show_context, show_inputs, allowlink, skipdotdir, omit_time
   global output_format, minimum_level, show_immediately, single_line
+  global required_regex, required_regex_compiled
   global falsepositive
   global show_columns, never_ignore, quiet, showheading, list_rules
   global loadhitlist, savehitlist, diffhitlist
   global patch_file
   try:
     # Note - as a side-effect, this sets sys.argv[].
-    optlist, args = getopt.getopt(sys.argv[1:], "cm:nih?CSDQIFP:",
+    optlist, args = getopt.getopt(sys.argv[1:], "ce:m:nih?CSDQIFP:",
                     ["context", "minlevel=", "immediate", "inputs", "input",
                      "nolink", "falsepositive", "falsepositives",
                      "columns", "listrules", "omittime", "allowlink", "patch=",
                      "followdotdir",
-                     "neverignore", "quiet", "dataonly", "html", "singleline",
+                     "neverignore", "regex=",
+                     "quiet", "dataonly", "html", "singleline",
                      "loadhitlist=", "savehitlist=", "diffhitlist=",
                      "version", "help" ])
     for (opt,value) in optlist:
@@ -1698,6 +1706,10 @@ def process_options():
         show_immediately = 1
       elif opt == "-n" or opt == "--neverignore":
         never_ignore = 1
+      elif opt == "-e" or opt == "--regex":
+        required_regex = value
+        # This will raise an exception if it can't be compiled as a regex:
+        required_regex_compiled = re.compile(required_regex)
       elif opt == "-P" or opt == "--patch":
         # Note: This is -P, so that a future -p1 option can strip away
         # pathname prefixes (with the same option name as "patch").
@@ -1825,6 +1837,8 @@ def show_final_results():
     # By computing time here, we also include the time for
     # producing the list of hits, which is reasonable.
     time_analyzing = time.time() - starttime
+    if required_regex:
+      print "Hits limited to regular expression " + required_regex
     print "Lines analyzed = %d" % sumlines,
     if time_analyzing > 0 and not omit_time:  # Avoid divide-by-zero.
       print "in approximately %.2f seconds (%.0f lines/second)" % (
