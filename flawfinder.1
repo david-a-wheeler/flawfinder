@@ -93,6 +93,17 @@ Normally flawfinder shows all hits with a risk level of at least 1,
 but you can use the \-\-minlevel option
 to show only hits with higher risk levels if you wish.
 .PP
+Hit descriptions typically include a relevant
+Common Weakness Enumeration (CWE) identifier in parentheses.
+For example, many of the buffer-related hits mention
+CWE-120, the CWE identifier for
+``buffer copy without checking size of input''
+(aka ``Classic Buffer Overflow'').
+For more information on CWEs, see http://cwe.mitre.org.
+CWEs were preferentially assigned from the CWE/SANS top 25 list
+(http://cwe.mitre.org/top25/),
+though in some cases a more specific or general CWE is used.
+.PP
 Not every hit is actually a security vulnerability, 
 and not every security vulnerability is necessarily found.
 Nevertheless, flawfinder can be an aid in finding and removing
