@@ -694,29 +694,26 @@ of compilation error messages.
 .SH COMMON WEAKNESS ENUMERATION (CWE)
 .PP
 The Common Weakness Enumeration (CWE)
-is "a formal list or dictionary of common software weaknesses
+is ``a formal list or dictionary of common software weaknesses
 that can occur in software's architecture, design, code or implementation
 that can lead to exploitable security vulnerabilities [that]
 was created to serve as a common language for
-describing software security weaknesses"
+describing software security weaknesses''
 (http://cwe.mitre.org/about/faq.html).
 For more information on CWEs, see http://cwe.mitre.org.
 
 .PP
-Flawfinder supports CWE.
-Hit descriptions typically a relevant
+Flawfinder supports the CWE.
+Hit descriptions typically include a relevant
 Common Weakness Enumeration (CWE) identifier in parentheses
 where there is known to be a relevant CWE.
 For example, many of the buffer-related hits mention
 CWE-120, the CWE identifier for
 ``buffer copy without checking size of input''
 (aka ``Classic Buffer Overflow'').
-Flawfinder is designed to meet the CWE-Output requirement.
-CWE version 2.7 (released June 23, 2014) was used for the mapping.
+In this way, flawfinder is designed to meet the CWE-Output requirement.
 Note that many of these CWEs are identified in the CWE/SANS top 25 list
 (http://cwe.mitre.org/top25/).
-
-.PP
 
 .PP
 Flawfinder can report on the following CWEs
@@ -735,17 +732,16 @@ CWE-676
 CWE-732
 CWE-807
 CWE-829.
+CWE version 2.7 (released June 23, 2014) was used for the mapping.
 
 .PP
-Flawfinder may fail to find a
-vulnerability, even if the vulnerability
-is covered by one of these CWE weaknesses listed above.
+Flawfinder may fail to find a vulnerability, even if flawfinder covers
+one of these CWE weaknesses listed above.
 That said, flawfinder does find vulnerabilities listed by the CWEs it covers,
 and it will not report lines without those vulnerabilities in many cases.
-Thus, flawfinder has a rate of false positives less than 100%,
-and a rate of false negatives less than 100%, as required for
-any tool intending to be CWE compatible.
-
+Thus, as required for any tool intending to be CWE compatible,
+flawfinder has a rate of false positives less than 100%
+and a rate of false negatives less than 100%.
 
 .PP
 You can select a specific subset of CWEs to report by using
