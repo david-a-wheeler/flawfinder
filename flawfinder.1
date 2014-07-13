@@ -70,7 +70,7 @@ Thus, for most projects, simply give flawfinder the name of the source
 code's topmost directory (use ``.'' for the current directory),
 and flawfinder will examine all of the project's C/C++ source code.
 If you only want to have \fIchanges\fR reviewed, save a unified diff
-of those changes (created by "diff -u" or "svn diff" or "git diff")
+of those changes (created by GNU "diff -u" or "svn diff" or "git diff")
 in a patch file and use the \-\-patch (\-P) option.
 .PP
 Flawfinder will produce a list of ``hits'' (potential
@@ -120,20 +120,12 @@ The comment must have one of the two following formats:
 .IP \(bu
 /* Flawfinder: ignore */
 .PP
-If someone has previously audited a program, and you are skeptical
-of their comments that suppress warnings, use the \-\-neverignore (-n)
-option, which causes flawfinder to report all security issues at the
-relevant level even if there is an ignore directive.
-.PP
-Note that, for compatibility's sake, you can replace "Flawfinder:" with
+For compatibility's sake, you can replace "Flawfinder:" with
 "ITS4:" or "RATS:" in these specially-formatted comments.
 Since it's possible that such lines are wrong, you can use
 the \-\-neverignore option, which causes flawfinder to never ignore any line
-no matter what the comments say.
-Thus, responses that would otherwise be ignored would be included
-(or, more confusingly, \-\-neverignore ignores the ignores).
-This comment syntax is actually a more general syntax for special directives
-to flawfinder, but currently only ignoring lines is supported.
+no matter what the comment directives say
+(more confusingly, \-\-neverignore ignores the ignores).
 .PP
 Flawfinder uses an internal database called the ``ruleset'';
 the ruleset identifies functions that are common causes of security flaws.
@@ -356,7 +348,7 @@ behavior is now the default.
 Examine the selected files or directories, but only report hits in lines
 that are added or modified by the given patch file.
 The patch file must be in a recognized unified diff format
-(e.g., the output of "diff -u old new", "svn diff", or "git diff [commit]").
+(e.g., the output of GNU "diff -u old new", "svn diff", or "git diff [commit]").
 Flawfinder assumes that the patch has already been applied to the files.
 The patch file can also include changes to irrelevant files
 (they will simply be ignored).
@@ -718,25 +710,42 @@ CWE-120, the CWE identifier for
 (aka ``Classic Buffer Overflow'').
 In this way, flawfinder is designed to meet the CWE-Output requirement.
 Note that many of these CWEs are identified in the CWE/SANS top 25 list
-(http://cwe.mitre.org/top25/).
+2011 (http://cwe.mitre.org/top25/).
 
 .PP
 Flawfinder can report on the following CWEs
-(these are the CWEs that flawfinder covers):
-CWE-22,
-CWE-78,
-CWE-119,
-CWE-120,
-CWE-134,
-CWE-190,
-CWE-250,
-CWE-327,
-CWE-362,
-CWE-377,
-CWE-676,
-CWE-732,
-CWE-807,
-CWE-829.
+(these are the CWEs that flawfinder covers; ``*'' marks those in the
+CWE/SANS top 25 list):
+.IP \(bu 2
+CWE-22: Improper Limitation of a Pathname to a Restricted Directory (``Path Traversal'')
+.IP \(bu
+CWE-78: Improper Neutralization of Special Elements used in an OS Command (``OS Command Injection'')*
+.IP \(bu
+CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
+.IP \(bu
+CWE-120: Buffer Copy without Checking Size of Input (``Classic Buffer Overflow'')*
+.IP \(bu
+CWE-134: Uncontrolled Format String*
+.IP \(bu
+CWE-190: Integer Overflow or Wraparound*
+.IP \(bu
+CWE-250: Execution with Unnecessary Privileges
+.IP \(bu
+CWE-327: Use of a Broken or Risky Cryptographic Algorithm*
+.IP \(bu
+CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization (``Race Condition'')
+.IP \(bu
+CWE-377: Insecure Temporary File
+.IP \(bu
+CWE-676: Use of Potentially Dangerous Function*
+.IP \(bu
+CWE-732: Incorrect Permission Assignment for Critical Resource*
+.IP \(bu
+CWE-807: Reliance on Untrusted Inputs in a Security Decision*
+.IP \(bu
+CWE-829: Inclusion of Functionality from Untrusted Control Sphere*
+
+.PP
 CWE version 2.7 (released June 23, 2014) was used for the mapping.
 
 .PP
@@ -760,7 +769,28 @@ Flawfinder is designed to meet the CWE-Searchable requirement.
 
 
 .SH SECURITY
+.PP
+The whole point of this tool is to help find vulnerabilities so they
+can be fixed.
+However, developers and reviewers must
+know how to develop secure software to use this tool, because otherwise,
+\fIa fool with a tool is still a fool\fR.
+My book at http://www.dwheeler.com/secure-programs may help.
 
+.PP
+This tool should be, at most, a small part of a larger software
+development process designed
+to eliminate or reduce the impact of vulnerabilities.
+Developers and reviewers need know how to develop secure software,
+and they need to apply this knowledge to reduce the
+risks of vulnerabilities in the first place.
+
+.PP
+Different vulnerability-finding tools tend to find different vulnerabilities.
+Thus, you are best off using human review and a variety of tools.
+This tool can help find some vulnerabilities, but by no means all.
+
+.PP
 You should always analyze a \fIcopy\fP of the source program being analyzed,
 not a directory that can be modified by a developer while flawfinder
 is performing the analysis.
@@ -909,5 +939,3 @@ http://www.dwheeler.com/secure-programs.
 
 .SH AUTHOR
 David A. Wheeler (dwheeler@dwheeler.com).
-
-
