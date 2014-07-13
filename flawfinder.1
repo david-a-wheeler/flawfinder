@@ -579,6 +579,11 @@ older version of the program being analyzed.
 Examine the current directory recursively, but only report lines
 that were changed or added in recent.patch.
 
+.TP
+\fBflawfinder \-\-regex "CWE-119|CWE-120" src/\fR
+Examine directory \fIsrc\fR recursively, but only report hits
+where CWE-119 or CWE-120 apply.
+
 .SS "Invoking from vim"
 
 .PP
@@ -718,19 +723,19 @@ Note that many of these CWEs are identified in the CWE/SANS top 25 list
 .PP
 Flawfinder can report on the following CWEs
 (these are the CWEs that flawfinder covers):
-CWE-22
-CWE-78
-CWE-119
-CWE-120
-CWE-134
-CWE-190
-CWE-250
-CWE-327
-CWE-362
-CWE-377
-CWE-676
-CWE-732
-CWE-807
+CWE-22,
+CWE-78,
+CWE-119,
+CWE-120,
+CWE-134,
+CWE-190,
+CWE-250,
+CWE-327,
+CWE-362,
+CWE-377,
+CWE-676,
+CWE-732,
+CWE-807,
 CWE-829.
 CWE version 2.7 (released June 23, 2014) was used for the mapping.
 
