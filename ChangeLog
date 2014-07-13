@@ -1,3 +1,15 @@
+2014-07-13 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Release 1.28
+	* Common Weakness Enumeration (CWE) references are
+	  now included in most hits
+	* Handle files not ending in newline (thanks to Alexis Wilke)
+	* Documentation clarifications
+	* Added support for "git diff" in patchfile processing
+	* Handles unbalanced double-quotes in sprintf
+	* Fix incorrect time executed report
+	* Fix bug to allow "flawfinder ." (fix bug#3) 
+	* Fix ignore directive when filenames differ (fix bug#6)
+
 2007-01-16 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Release version 1.27
 
