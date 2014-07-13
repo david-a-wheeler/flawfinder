@@ -92,17 +92,9 @@ Flawfinder correctly ignores most text inside comments and strings.
 Normally flawfinder shows all hits with a risk level of at least 1,
 but you can use the \-\-minlevel option
 to show only hits with higher risk levels if you wish.
-.PP
-Hit descriptions typically include a relevant
-Common Weakness Enumeration (CWE) identifier in parentheses.
-For example, many of the buffer-related hits mention
-CWE-120, the CWE identifier for
-``buffer copy without checking size of input''
-(aka ``Classic Buffer Overflow'').
-For more information on CWEs, see http://cwe.mitre.org.
-CWEs were preferentially assigned from the CWE/SANS top 25 list
-(http://cwe.mitre.org/top25/),
-though in some cases a more specific or general CWE is used.
+Hit descriptions also note the relevant
+Common Weakness Enumeration (CWE) identifier(s) in parentheses,
+as discussed below.
 .PP
 Not every hit is actually a security vulnerability, 
 and not every security vulnerability is necessarily found.
@@ -218,6 +210,7 @@ Flawfinder works similarly to another program, ITS4, which is not
 fully open source software (as defined in the Open Source Definition)
 nor free software (as defined by the Free Software Foundation).
 The author of Flawfinder has never seen ITS4's source code.
+
 .SH "BRIEF TUTORIAL"
 
 Here's a brief example of how flawfinder might be used.
@@ -685,6 +678,43 @@ This variable tells Emacs how to
 parse output of a "grep" command, similar to the
 variable "compilation-error-regexp-alist" which lists various formats
 of compilation error messages.
+
+
+.SH COMMON WEAKNESS ENUMERATION (CWE)
+.PP
+Hit descriptions typically include a relevant
+Common Weakness Enumeration (CWE) identifier in parentheses.
+For example, many of the buffer-related hits mention
+CWE-120, the CWE identifier for
+``buffer copy without checking size of input''
+(aka ``Classic Buffer Overflow'').
+CWE version 2.7 (released June 23, 2014) was used.
+Note that many of these CWEs are identified in the CWE/SANS top 25 list
+(http://cwe.mitre.org/top25/).
+
+.PP
+Flawfinder can report the following CWEs:
+CWE-22
+CWE-78
+CWE-119
+CWE-120
+CWE-134
+CWE-190
+CWE-250
+CWE-327
+CWE-362
+CWE-377
+CWE-676
+CWE-732
+CWE-807
+CWE-829.
+
+.PP
+Flawfinder may fail to find a
+vulnerability, even if it is covered by one of these weaknesses.
+
+.PP
+For more information on CWEs, see http://cwe.mitre.org.
 
 .SH SECURITY
 

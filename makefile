@@ -151,7 +151,7 @@ my_install: flawfinder.pdf flawfinder.ps
 show-cwes:
 	flex -o cwe.c cwe.l
 	gcc -o cwe cwe.c -lfl
-	./cwe < flawfinder | sort -u
+	./cwe < flawfinder | sort -u -V
 
 
 .PHONY: install clean test check profile test-is-correct rpm uninstall distribute
