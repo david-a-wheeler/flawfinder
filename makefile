@@ -147,6 +147,13 @@ my_install: flawfinder.pdf flawfinder.ps
 	      test.c test2.c test-results.txt test-results.html \
 	           /home/dwheeler/dwheeler.com/flawfinder
 
+# This is intended to be a local capability to list CWEs
+show-cwes:
+	flex -o cwe.c cwe.l
+	gcc -o cwe cwe.c -lfl
+	./cwe < flawfinder | sort -u
+
+
 .PHONY: install clean test check profile test-is-correct rpm uninstall distribute
 
 
