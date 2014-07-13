@@ -28,14 +28,19 @@ flawfinder \- find potential security flaws ("hits") in source code
 .RB [ \-\-help ]
 .RB [ \-\-listrules ]
 .RB [ \-\-version ]
-.\" Selecting Hits:
+.br
+.\" Selecting Input Data:
 .RB [ \-\-allowlink ]
+.RB [ \-\-followdotdir ]
+.RB [ \-\-nolink ]
+.RB [ \-\-patch\ \fIfilename\fR | \-P\ \fIfilename\fR ]
+.br
+.\" Selecting Hits to Display:
 .RB [ \-\-inputs | \-I ]
 [ \fB\-\-minlevel \fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
 .RB [ \-\-falsepositive | \-F ]
 .RB [ \-\-neverignore | \-n ]
-.RB [ \-\-patch\ \fIfilename\fR | \-P\ \fIfilename\fR ]
-.RB [ \-\-followdotdir ]
+.br
 .\" Selecting Output Format:
 .RB [ \-\-context | \-c ]
 .RB [ \-\-columns | \-C ]
@@ -45,10 +50,12 @@ flawfinder \- find potential security flaws ("hits") in source code
 .RB [ \-\-singleline | \-S ]
 .RB [ \-\-omittime ]
 .RB [ \-\-quiet | \-Q ]
+.br
 .\" Managing hit list.
 [ \fB\-\-loadhitlist\ \fR\fIF\fR ]
 [ \fB\-\-savehitlist\ \fR\fIF\fR ]
 [ \fB\-\-diffhitlist\ \fR\fIF\fR ]
+.br
 .RB [ \-\- ]
 .I [ source code file or source root directory ]+
 .SH DESCRIPTION
@@ -105,14 +112,19 @@ put a specially-formatted comment either on the same
 line (after the source code) or all by itself in the previous line.
 The comment must have one of the two following formats:
 .IP \(bu
- // Flawfinder: ignore
+// Flawfinder: ignore
 .IP \(bu
- /* Flawfinder: ignore */
+/* Flawfinder: ignore */
+.PP
+If someone has previously audited a program, and you are skeptical
+of their comments that suppress warnings, use the \-\-neverignore (-n)
+option, which causes flawfinder to report all security issues at the
+relevant level even if there is an ignore directive.
 .PP
 Note that, for compatibility's sake, you can replace "Flawfinder:" with
 "ITS4:" or "RATS:" in these specially-formatted comments.
 Since it's possible that such lines are wrong, you can use the
-``\-\-neverignore'' option, which causes flawfinder to never ignore any line
+\-\-neverignore option, which causes flawfinder to never ignore any line
 no matter what the comments say.
 Thus, responses that would otherwise be ignored would be included
 (or, more confusingly, \-\-neverignore ignores the ignores).
@@ -132,6 +144,23 @@ run of the program is called the ``hitlist.''
 Hitlists can be saved (using \-\-savehitlist), reloaded back for redisplay
 (using \-\-loadhitlist), and you can show only the hits that are different
 from another run (using \-\-diffhitlist).
+.PP
+Flawfinder works by doing simple lexical tokenization
+(skipping comments and correctly tokenizing strings),
+looing for token matches to the database (particularly to find function calls),
+and then uses code for different
+functions to estimate risk based on the text of the parameters.
+Other tools that apply this approach include RATS and ITS4.
+Unlike tools such as splint, gcc warning flags,
+and clang, flawfinder does not use or have access to
+information about control flow, data flow, or data types when
+estimating the level of risk.
+Thus, flawfinder will necessarily
+produce many false positives and fail to report many vulnerabilities.
+On the other hand, flawfinder can find vulnerabilities in programs that
+cannot be linked, and in some cases, cannot even be compiled.
+Flawfinder also doesn't get as confused by macro definitions
+and other oddities that more sophisticated tools have trouble with.
 .PP
 Any filename given on the command line will be examined (even if
 it doesn't have a usual C/C++ filename extension); thus you can force
@@ -170,7 +199,7 @@ The summary ends with important reminders:
 Not every hit is necessarily a security vulnerability, and
 there may be other security vulnerabilities not reported by the tool.
 .PP
-Flawfinder intentionally works similarly to another program, ITS4, which is not
+Flawfinder works similarly to another program, ITS4, which is not
 fully open source software (as defined in the Open Source Definition)
 nor free software (as defined by the Free Software Foundation).
 The author of Flawfinder has never seen ITS4's source code.
@@ -256,6 +285,7 @@ The next section describes those options in more detail.
 
 Flawfinder has a number of options, which can be grouped into options that
 control its own documentation,
+select input data,
 select which hits to display,
 select the output format,
 and perform hitlist management.
@@ -264,8 +294,8 @@ and perform hitlist management.
 
 .TP 12
 .BI \-\-help
-.\" Leave -h and -? undocumented... they also invoke help, but it's
-.\" easier just to document the single help option.
+.BI \-h
+.\" Leave -? undocumented... it also invokes help.
 Show usage (help) information.
 
 .TP 12
@@ -278,7 +308,37 @@ depending on how the term is used.
 .BI \-\-version
 Shows (just) the version number and exits.
 
-.SS "Selecting Hits to Display"
+.SS "Selecting Input Data"
+
+.TP 12
+.BI \-\-allowlink
+Allow the use of symbolic links; normally symbolic links are skipped.
+Don't use this option if you're analyzing code by others;
+attackers could do many things to cause problems for an analysis
+with this option enabled.
+For example, an attacker
+could insert symbolic links to files such as /etc/passwd
+(leaking information about the file) or create a circular loop,
+which would cause flawfinder to run ``forever''.
+Another problem with enabling this option is that
+if the same file is referenced multiple times using symbolic links,
+it will be analyzed multiple times (and thus reported multiple times).
+Note that flawfinder already includes some protection against symbolic links
+to special file types such as device file types (e.g., /dev/zero or
+C:\\mystuff\\com1).
+Note that for flawfinder version 1.01 and before, this was the default.
+
+.TP
+.BI \-\-followdotdir
+Enter directories whose names begin with ".".
+Normally such directories are ignored, since they normally
+include version control private data, configurations, and so on.
+
+.TP
+.BI \-\-nolink
+Ignored.
+Historically this disabled following symbolic links, but this
+behavior is now the default.
 
 .TP 12
 .BI \-\-patch patchfile
@@ -298,25 +358,10 @@ Only unified diff format is accepted (either GNU diff or svn diff output is
 okay); if you have a different format, again regenerate it first.
 Only hits that occur on resultant changed lines, or immediately
 above and below them, are reported.
-This option implies --neverignore.
+This option implies \-\-neverignore.
 
-.TP 12
-.BI \-\-allowlink
-Allow the use of symbolic links; normally symbolic links are skipped.
-Don't use this option if you're analyzing code by others;
-attackers could do many things to cause problems for an analysis
-with this option enabled.
-For example, an attacker
-could insert symbolic links to files such as /etc/passwd
-(leaking information about the file) or create a circular loop,
-which would cause flawfinder to run ``forever''.
-Another problem with enabling this option is that
-if the same file is referenced multiple times using symbolic links,
-it will be analyzed multiple times (and thus reported multiple times).
-Note that flawfinder already includes some protection against symbolic links
-to special file types such as device file types (e.g., /dev/zero or
-C:\\mystuff\\com1).
-Note that for flawfinder version 1.01 and before, this was the default.
+
+.SS "Selecting Hits to Display"
 
 .TP
 .BI "\-\-inputs"
@@ -353,12 +398,6 @@ clauses and calls through function pointers will be missed.
 .BI -n
 Never ignore security issues, even if they have an ``ignore'' directive
 in a comment.
-
-.TP
-.BI \-\-followdotdir
-Enter directories whose names begin with ".".
-Normally such directories are ignored, since they normally
-include version control private data, configurations, and so on.
 
 .SS "Selecting Output Format"
 
@@ -655,8 +694,8 @@ This protection also doesn't work on Cygwin platforms, unfortunately.
 .PP
 Cygwin systems (Unix emulation on top of Windows)
 have an additional problem if flawfinder is used to analyze
-programs the analyzer cannot trust
-due to a design flaw in Windows (that it inherits from MS-DOS).
+programs that the analyst cannot trust.
+The problem is due to a design flaw in Windows (that it inherits from MS-DOS).
 On Windows and MS-DOS, certain filenames (e.g., ``com1'') are
 automatically treated by the operating system as the names of peripherals,
 and this is true even when a full pathname is given.

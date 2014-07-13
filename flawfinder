@@ -1536,33 +1536,44 @@ def process_file_args(files, patch_infos):
 
 def usage():
   print """
-flawfinder [--help] [--context]  [-c]  [--columns | -C] [--html]
-           [--dataonly | -D]
-           [--minlevel=X | -m X]
-           [--immediate] [-i] [--inputs | -I] [--neverignore | -n]
-           [ --patch=F ] [--quiet | -Q] [--singleline | -S ]
-           [--loadhitlist=F ] [ --savehitlist=F ] [ --diffhitlist=F ]
-           [--listrules]
-           [--] [ source code file or source root directory ]+
+flawfinder [--help | -h] [--listrules] [--version]
+  [--allowlink] [--followdotdir] [--nolink] 
+           [--patch filename | -P filename]
+  [--inputs | -I] [--minlevel X | -m X]
+           [--falsepositive | -F] [--neverignore | -n]
+  [--context | -c] [--columns | -C] [--dataonly | -D]
+           [--html] [--immediate | -i] [--singleline | -S]
+           [--omittime] [--quiet | -Q]
+  [--loadhitlist F] [--savehitlist F] [--diffhitlist F]
+  [--] [source code file or source root directory]+
 
-  --help      Show this usage help
+  The options cover various aspects of flawfinder as follows.
 
-  --allowlink
-              Allow symbolic links.
+  Documentation:
+  --help      Show this usage help.
+  --listrules List the rules in the ruleset (rule database).
+  --version   Show version number.
+
+  Selecting Input Data:
+  --allowlink Allow symbolic links.
   --followdotdir
               Follow directories whose names begin with ".".
+              Normally they are ignored.
+  --nolink    Skip symbolic links (ignored).
+  --patch F | -P F
+              Display information related to the patch F
+              (patch must be already applied).
 
-  --context
-  -c          Show context (the line having the "hit"/potential flaw)
-
-  --columns   Show  the  column  number  (as well as the file name and
-              line number) of each hit; this is shown after the line number
-              by adding a colon and the column number in the line (the first
-              character in a line is column number 1).
-  
-  --html      Display as HTML output.
-
-  -F          Do not include hits that are likely to be false  positives.
+  Selecting Hits to Display:
+  --inputs | -I
+              Show only functions that obtain data from outside the program;
+              this also sets minlevel to 0.
+  -m X | --minlevel=X
+              Set minimum risk level to X for inclusion in hitlist.  This
+              can be from 0 (``no risk'')  to  5  (``maximum  risk'');  the
+              default is 1.
+  --falsepositive | -F
+              Do not include hits that are likely to be false  positives.
               Currently,  this  means  that function names are ignored if
               they're not followed by "(", and that declarations of char-
               acter  arrays  aren't noted.  Thus, if you have use a vari-
@@ -1571,47 +1582,35 @@ flawfinder [--help] [--context]  [-c]  [--columns | -C] [--html]
               because this  also  increases  the  likelihood  of  missing
               important  hits;  in  particular, function names in #define
               clauses and calls through function pointers will be missed.
-  -m X
-  --minlevel=X
-              Set minimum risk level to X for inclusion in hitlist.  This
-              can be from 0 (``no risk'')  to  5  (``maximum  risk'');  the
-              default is 1.
-
-  -S
-  --singleline Single-line output.
-
-  --neverignore
-  -n          Never ignore security issues, even if they have an ``ignore''
+  --neverignore | -n
+              Never ignore security issues, even if they have an ``ignore''
               directive in a comment.
 
-  --immediate
-  -i          Immediately display hits (don't just wait until the end).
-
-  --inputs    Show only functions that obtain data from outside the program;
-  -I          this also sets minlevel to 0.
-
-  --nolink    Skip symbolic links (ignored).
-
+  Selecting Output Format:
+  --columns   Show  the  column  number  (as well as the file name and
+              line number) of each hit; this is shown after the line number
+              by adding a colon and the column number in the line (the first
+              character in a line is column number 1).
+  --context | -c
+              Show context (the line having the "hit"/potential flaw)
+  --dataonly | -D
+              Don't display the headers and footers of the analysis;
+              use this along with --quiet to get just the results.
+  --html      Display as HTML output.
+  --immediate | -i
+              Immediately display hits (don't just wait until the end).
+  --singleline | -S
+              Single-line output.
   --omittime  Omit time to run.
-
-  --patch=F   display information related to the patch F. (patch must be already applied)
-
-  --Q
-  --quiet     Don't display status information (i.e., which files are being
+  --quiet | -Q
+              Don't display status information (i.e., which files are being
               examined) while the analysis is going on.
 
-  --D
-  --dataonly  Don't display the headers and footers of the analysis;
-              use this along with --quiet to get just the results.
-  
-  --listrules List the rules in the ruleset (rule database).
-
-  --loadhitlist=F
-              Load hits from F instead of analyzing source programs.
-
+  Hitlist Management:
   --savehitlist=F
               Save all hits (the "hitlist") to F.
-
+  --loadhitlist=F
+              Load hits from F instead of analyzing source programs.
   --diffhitlist=F
               Show only hits (loaded or analyzed) not in F.
 
