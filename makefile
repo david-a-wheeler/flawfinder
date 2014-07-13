@@ -88,6 +88,7 @@ distribute: clean flawfinder.pdf flawfinder.ps
 	chown --reference=. flawfinder-$(VERSION).tar.gz
 	rm -fr flawfinder-$(VERSION)
 
+dist: distribute
 
 time:
 	echo "Timing the program. First, time taken:"
