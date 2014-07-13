@@ -1,5 +1,5 @@
 # Flawfinder.  Released under the General Public License (GPL).
-# (C) 2001 David A. Wheeler.
+# (C) 2001-2014 David A. Wheeler.
 
 # To change version number, edit this here, the beginning of the
 # "flawfinder" script, flawfinder.spec, setup.py, and index.html.
