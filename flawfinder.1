@@ -344,14 +344,13 @@ behavior is now the default.
 .BI \-\-patch patchfile
 .TP
 .BI \-P patchfile
-Only report hits that are changed by the given patch file.
-The patch file must be in unified diff format (e.g., the output of
-"diff -u old new", "svn diff", or "git diff"),
-where the new files are the ones that are
-being examined by flawfinder.
-The files referenced in the patch files are examined, but only the
-lines changed in the patch are reported on.
+Examine the selected files or directories, but only report hits in lines
+that are added or modified by the given patch file.
+The patch file must be in a recognized unified diff format
+(e.g., the output of "diff -u old new", "svn diff", or "git diff [commit]").
 Flawfinder assumes that the patch has already been applied to the files.
+The patch file can also include changes to irrelevant files
+(they will simply be ignored).
 The line numbers given in the patch file are used to determine which
 lines were changed, so if you have modified the files since the
 patch file was created, regenerate the patch file first.
