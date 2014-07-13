@@ -123,8 +123,8 @@ relevant level even if there is an ignore directive.
 .PP
 Note that, for compatibility's sake, you can replace "Flawfinder:" with
 "ITS4:" or "RATS:" in these specially-formatted comments.
-Since it's possible that such lines are wrong, you can use the
-\-\-neverignore option, which causes flawfinder to never ignore any line
+Since it's possible that such lines are wrong, you can use
+the \-\-neverignore option, which causes flawfinder to never ignore any line
 no matter what the comments say.
 Thus, responses that would otherwise be ignored would be included
 (or, more confusingly, \-\-neverignore ignores the ignores).
@@ -137,6 +137,8 @@ The standard ruleset includes a large number of different potential
 problems, including both general issues that can impact any
 C/C++ program, as well as a number of specific Unix-like and Windows
 functions that are especially problematic.
+The \-\-listrules option reports the list of current rules and their
+default risk levels.
 As noted above, every potential security flaw found in a given source code file
 (matching an entry in the ruleset)
 is called a ``hit,'' and the set of hits found during any particular
@@ -147,11 +149,13 @@ from another run (using \-\-diffhitlist).
 .PP
 Flawfinder works by doing simple lexical tokenization
 (skipping comments and correctly tokenizing strings),
-looing for token matches to the database (particularly to find function calls),
-and then uses code for different
-functions to estimate risk based on the text of the parameters.
-Other tools that apply this approach include RATS and ITS4.
-Unlike tools such as splint, gcc warning flags,
+looking for token matches to the database
+(particularly to find function calls).
+Flawfinder is thus similar to RATS and ITS4, which also
+use simple lexical tokenization.
+Flawfinder then examines the
+text of the function parameters to estimate risk.
+Unlike tools such as splint, gcc's warning flags,
 and clang, flawfinder does not use or have access to
 information about control flow, data flow, or data types when
 estimating the level of risk.
@@ -224,8 +228,8 @@ flawfinder xyzzy | less
 .RE
 
 .PP
-At this point, you will a large number of entries;
-each entry begins with a filename, a colon, a line number, a
+At this point, you will see a large number of entries.
+Each entry has a filename, a colon, a line number, a
 risk level in brackets (where 5 is the most risky), a category,
 the name of the function, and
 a description of why flawfinder thinks the line is a vulnerability.
@@ -499,10 +503,12 @@ show how to integrate flawfinder into vim and emacs.
 .SS "Simple command-line options"
 
 .TP 12
-.B "flawfinder /usr/src/linux-2.4.12"
+.B "flawfinder /usr/src/linux-3.16"
 Examine all the C/C++ files in the directory
-/usr/src/linux-2.4.12 and all its subdirectories (recursively),
+/usr/src/linux-3.16 and all its subdirectories (recursively),
 reporting on all hits found.
+By default flawfinder will skip symbolic links and
+directories with names that start with a period.
 
 .TP
 .B "flawfinder \-\-minlevel=4 ."
@@ -552,6 +558,11 @@ hits that weren't already in the file saved.hits.
 This can be used to show only the ``new'' vulnerabilities in a
 modified program, if saved.hits was created from the
 older version of the program being analyzed.
+
+.TP 12
+.B "flawfinder \-\-patch recent.patch ."
+Examine the current directory recursively, but only report lines
+that were changed or added in recent.patch.
 
 .SS "Invoking from vim"
 
@@ -801,7 +812,7 @@ simply can't get everything "right".
 Security vulnerabilities might not be identified as such by flawfinder,
 and conversely, some hits aren't really security vulnerabilities.
 This is true for all static security scanners, especially those like
-flawfinder that use a simple pattern-based approach to identifying problems.
+flawfinder that use a simple pattern-based approach for identifying problems.
 Still, it can serve as a useful aid for humans, helping to identify
 useful places to examine further, and that's the point of this tool.
 
