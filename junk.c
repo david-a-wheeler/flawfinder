@@ -6,4 +6,5 @@ main() {
 	 FILE *FR = stdin;
 	 fscanf(FR, "%2000s", abuf);
 	 printf("Result = %s\n", abuf);
+	 strcpy(new,old);
 }

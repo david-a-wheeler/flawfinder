@@ -119,6 +119,13 @@ blank_line     = re.compile( r'(?m)^\s+$' )
 #    comments are in the oldfilename/newfilename, NOT timestamps like
 #    everyone else.
 #
+# Git format:
+#    diff --git a/junk.c b/junk.c
+#    index 03d668d..5b005a1 100644
+#    --- a/junk.c
+#    +++ b/junk.c
+#    @@ -6,4 +6,5 @@ main() {
+#
 # Single Unix Spec version 3 (http://www.unix.org/single_unix_specification/)
 # does not specify unified format at all; it only defines the older
 # (obsolete) context diff format.  That format DOES use "Index:", but
@@ -129,6 +136,7 @@ blank_line     = re.compile( r'(?m)^\s+$' )
 # 
 
 diff_index_filename = re.compile( r'^Index:\s+(?P<filename>.*)' )
+diff_git_filename = re.compile( r'^diff --git a/.* b/(?P<filename>.*)$' )
 diff_newfile = re.compile( r'^\+\+\+\s(?P<filename>.*)$' )
 diff_hunk = re.compile( r'^@@ -\d+(,\d+)?\s+\+(?P<linenumber>\d+)[, ].*@@$' )
 diff_line_added = re.compile( r'^\+[^+].*' )
@@ -147,6 +155,16 @@ def is_svn_diff(sLine):
     return True
   return False
 
+def is_gnu_diff(sLine):
+  if (sLine.find('--- ') == 0):
+    return True
+  return False
+
+def is_git_diff(sLine):
+  if sLine.startswith('diff --git a'):
+    return True
+  return False
+
 def svn_diff_get_filename(sLine):
   return diff_index_filename.match(sLine)
 
@@ -156,9 +174,13 @@ def gnu_diff_get_filename(sLine):
     patched_filename = string.strip(newfile_match.group('filename'))
     # Clean up filename - remove trailing timestamp and/or (comment).
     return diff_findjunk.match(patched_filename)
-
   return None
 
+git_splitter=' b/'
+len_git_splitter=len(git_splitter)
+
+def git_diff_get_filename(sLine):
+  return diff_git_filename.match(sLine)
 
 # For each file found in the file patch_file, keep the
 # line numbers of the new file (after patch is applied) which are added.
@@ -177,13 +199,16 @@ def load_patch_info(patch_file):
   patched_filename = "" # Name of new file patched by current hunk.
 
   sLine = hPatch.readline()
-  #Heuristic to determine if it's a svn diff or a GNU diff.
-  #Read the first line. If it contains 'Index:', it's a svn diff else it is a
-  #GNU diff.
-  #By default we try to get filename in svn diff
-  fn_get_filename=svn_diff_get_filename
-  if (is_svn_diff(sLine) == False):
+  #Heuristic to determine if it's a svn diff, git diff, or a GNU diff.
+  if (is_svn_diff(sLine)):
+    fn_get_filename=svn_diff_get_filename
+  elif (is_git_diff(sLine)):
+    fn_get_filename=git_diff_get_filename
+  elif (is_gnu_diff(sLine)):
     fn_get_filename=gnu_diff_get_filename
+  else:
+    print "Error: Unrecognized patch format"
+    sys.exit(1)
 
   while True: # Loop-and-half construct.  Read a line, end loop when no more
 

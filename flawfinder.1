@@ -349,6 +349,9 @@ The patch file must be in unified diff format (e.g., the output of
 "diff -u old new", "svn diff", or "git diff"),
 where the new files are the ones that are
 being examined by flawfinder.
+The files referenced in the patch files are examined, but only the
+lines changed in the patch are reported on.
+Flawfinder assumes that the patch has already been applied to the files.
 The line numbers given in the patch file are used to determine which
 lines were changed, so if you have modified the files since the
 patch file was created, regenerate the patch file first.
