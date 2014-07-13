@@ -69,7 +69,7 @@ flawfinder.pdf: flawfinder.ps
 clean:
 	rm -f *.pyc
 	rm -f flawfinder-$(VERSION).tar.gz
-	rm -f *.tar
+	rm -f *.tar *.exe ./cwe
 
 distribute: clean flawfinder.pdf flawfinder.ps
 	chmod -R a+rX *
