@@ -167,13 +167,14 @@ it doesn't have a usual C/C++ filename extension); thus you can force
 flawfinder to examine any specific files you desire.
 While searching directories recursively, flawfinder only opens and
 examines regular files that have C/C++ filename extensions.
-Flawfinder presumes that, files are C/C++ files if they have the extensions
+Flawfinder presumes that files are C/C++ files if they have the extensions
 ".c", ".h", ".ec", ".ecp", ".pgc", ".C", ".cpp",
 ".CPP", ".cxx", ".cc", ".CC", ".pcc", ".hpp", or ".H".
 The filename ``\-'' means the standard input.
 To prevent security problems,
 special files (such as device special files and named pipes) are
-always skipped, and by default symbolic links are skipped,
+always skipped, and by default symbolic links are skipped
+(the \-\-allowlink option follows symbolic links).
 .PP
 After the list of hits is a brief summary of the results
 (use -D to remove this information).
@@ -301,9 +302,14 @@ Show usage (help) information.
 
 .TP 12
 .BI \-\-listrules
-List the terms that trigger further examination and their default risk level.
-Note that risk levels for code may be different than the default,
+List the terms that trigger further examination, their default risk level,
+and the default warning (including the CWE identifier(s), if applicable),
+all tab-separated.
+Note that the reported risk level and warning
+for some specific code may be different than the default,
 depending on how the term is used.
+Note that version 1.29 changed the separator from spaces to tabs, and
+added the default warning field.
 
 .TP
 .BI \-\-version
@@ -747,6 +753,16 @@ CWE-829: Inclusion of Functionality from Untrusted Control Sphere*
 
 .PP
 CWE version 2.7 (released June 23, 2014) was used for the mapping.
+The current CWE mappings select the most specific CWE the tool can determine.
+In theory, most security elements could theoretically be mapped to
+CWE-676 (Use of Potentially Dangerous Function), but such a mapping would
+not be useful.  Thus, more specific mappings were preferred where one
+could be found.  Flawfinder is a lexical analysis tool; as a result,
+it is impractical for it to be much more specific than the mappings
+currently implemented.  This also means that it is unlikely to need much
+updating for map currency; it simply doesn’t have enough information to
+refine to a detailed CWE level that CWE changes would affect.
+That said, if there are recommended mapping refinements, please let me know.
 
 .PP
 Flawfinder may fail to find a vulnerability, even if flawfinder covers
@@ -766,6 +782,56 @@ If you select multiple CWEs with ``|'' on a command line
 you will typically need to quote the parameters (since an
 unquoted ``|'' is the pipe symbol).
 Flawfinder is designed to meet the CWE-Searchable requirement.
+
+.PP
+If your goal is to report a subset of CWEs that are listed in a file,
+that can be achieved on a Unix-like system using the ``\-\-regex'' aka
+``\-e'' option.
+The file must be in regular expression format.
+For example,
+``flawfinder –e $(cat file1)'' would report only hits that matched
+the pattern in ``file1''.
+If file1 contained ``CWE-119|CWE-120'' it
+would only report hits matching those CWEs.
+
+.PP
+A list of all
+CWE security elements (the signatures or patterns that flawfinder looks for)
+can be found by using the ``\-\-listrules'' option.
+Each line lists the signature token (typically a function name)
+that may lead to a hit, the default risk level, and
+the default warning (which includes the default CWE identifier).
+For most purposes this is enough if you want to see what 
+(signatures or patterns) map to which CWEs, or the reverse.
+For example, to see the most of the signatures (function names)
+that map to CWE-327,
+without seeing the default risk level or detailed warning text,
+run ``flawfinder \-\-listrules | grep CWE-327 | cut -f1''.
+However, while this procedure lists all CWE security elements,
+this procedure only lists the default mappings.
+It does not include the refinements
+that flawfinder does (e.g., by examining function parameters).
+
+.PP
+If you want a detailed and exact mapping between the CWE security elements
+and CWE identifiers, the flawfinder source code (included in the distribution)
+is the best place for that information.
+The source code documents the mapping between the security elements
+to the respective CWE identifiers, and is a single Python file.
+The ``c_rules'' dataset defines most rules, with reference to a
+function that may make further refinements.
+You can search the dataset for
+function names to see what CWE it generates by default;
+if first parameter is not ``normal'' then that is the name
+a refining Python method that may select different CWEs
+(depending on additional information).
+Conversely, you can search for ``CWE-number'' and find what security
+elements (signatures or patterns) refer to that CWE identifier.
+This detailed information is primarily of interest to those few
+people who are trying to refine the CWE mappings of flawfinder
+or refine CWE in general.
+For most people, this is much more than they need; most people just want to
+scan their source code to quickly find problems.
 
 
 .SH SECURITY
