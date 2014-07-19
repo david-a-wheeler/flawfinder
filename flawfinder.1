@@ -162,6 +162,8 @@ On the other hand, flawfinder can find vulnerabilities in programs that
 cannot be linked, and in some cases, cannot even be compiled.
 Flawfinder also doesn't get as confused by macro definitions
 and other oddities that more sophisticated tools have trouble with.
+It can also be useful as a simple
+introduction to static analysis tools in general.
 .PP
 Any filename given on the command line will be examined (even if
 it doesn't have a usual C/C++ filename extension); thus you can force
@@ -215,7 +217,6 @@ searching for security vulnerabilities (so you can fix them before
 customers encounter the vulnerabilities).
 For this tutorial, I'll assume that you're using a Unix-like system,
 such as Linux, OpenBSD, or MacOS X.
-
 .PP
 If the source code is in a subdirectory named xyzzy, you would probably
 start by opening a text window and using flawfinder's default settings, to
@@ -248,13 +249,11 @@ If you don't understand the error message, please see documents such as the
 at
 http://www.dwheeler.com/secure-programs
 which provides more information on writing secure programs.
-
 .PP
 Once you identify the problem and understand it, you can fix it.
 Occasionally you may want to re-do the analysis, both because the
 line numbers will change \fIand\fP to make sure that the new code
 doesn't introduce yet a different vulnerability.
-
 .PP
 If you've determined that some line isn't really a problem, and
 you're sure of it, you can insert just before or on the offending
@@ -263,7 +262,6 @@ line a comment like
  /* Flawfinder: ignore */
 .RE
 to keep them from showing up in the output.
-
 .PP
 Once you've done that, you should go back and search for the
 program's inputs, to make sure that the program strongly filters
@@ -273,12 +271,10 @@ option, like this:
 .RS
 flawfinder \-\-inputs xyzzy
 .RE
-
 .PP
 Flawfinder can integrate well with text editors and
 integrated development environments; see the examples for
 more information.
-
 .PP
 Flawfinder includes many other options, including ones to
 create HTML versions of the output (useful for prettier displays).
@@ -694,6 +690,9 @@ parse output of a "grep" command, similar to the
 variable "compilation-error-regexp-alist" which lists various formats
 of compilation error messages.
 
+.SS "Invoking from Integrated Development Environments (IDEs)"
+.PP
+For (other) IDEs, consult your IDE's set of plug-ins.
 
 .SH COMMON WEAKNESS ENUMERATION (CWE)
 .PP
@@ -705,7 +704,6 @@ was created to serve as a common language for
 describing software security weaknesses''
 (http://cwe.mitre.org/about/faq.html).
 For more information on CWEs, see http://cwe.mitre.org.
-
 .PP
 Flawfinder supports the CWE.
 Hit descriptions typically include a relevant
@@ -721,7 +719,6 @@ hosted at MITRE.
 In this way, flawfinder is designed to meet the CWE-Output requirement.
 Note that many of these CWEs are identified in the CWE/SANS top 25 list
 2011 (http://cwe.mitre.org/top25/).
-
 .PP
 Flawfinder can report on the following CWEs
 (these are the CWEs that flawfinder covers; ``*'' marks those in the
@@ -754,7 +751,6 @@ CWE-732: Incorrect Permission Assignment for Critical Resource*
 CWE-807: Reliance on Untrusted Inputs in a Security Decision*
 .IP \(bu
 CWE-829: Inclusion of Functionality from Untrusted Control Sphere*
-
 .PP
 CWE version 2.7 (released June 23, 2014) was used for the mapping.
 The current CWE mappings select the most specific CWE the tool can determine.
@@ -769,7 +765,6 @@ This also means that it is unlikely to need much
 updating for map currency; it simply doesn't have enough information to
 refine to a detailed CWE level that CWE changes would typically affect.
 Please report CWE mapping problems as bugs if you find any.
-
 .PP
 Flawfinder may fail to find a vulnerability, even if flawfinder covers
 one of these CWE weaknesses listed above.
@@ -781,7 +776,6 @@ and a rate of false negatives less than 100%.
 Flawfinder almost always reports whenever it finds a match to a
 CWE security element (a signature/pattern as defined in its database),
 though certain obscure constructs can cause it to fail (see BUGS below).
-
 .PP
 You can select a specific subset of CWEs to report by using
 the ``\-\-regex'' (-e) option.
@@ -791,7 +785,6 @@ If you select multiple CWEs with ``|'' on a command line
 you will typically need to quote the parameters (since an
 unquoted ``|'' is the pipe symbol).
 Flawfinder is designed to meet the CWE-Searchable requirement.
-
 .PP
 If your goal is to report a subset of CWEs that are listed in a file,
 that can be achieved on a Unix-like system using the ``\-\-regex'' aka
@@ -802,7 +795,6 @@ For example,
 the pattern in ``file1''.
 If file1 contained ``CWE-119|CWE-120'' it
 would only report hits matching those CWEs.
-
 .PP
 A list of all
 CWE security elements (the signatures/patterns that flawfinder looks for)
@@ -821,7 +813,6 @@ this procedure only lists the default mappings
 from CWE security elements to CWE identifiers.
 It does not include the refinements
 that flawfinder applies (e.g., by examining function parameters).
-
 .PP
 If you want a detailed and exact mapping between the CWE security elements
 and CWE identifiers, the flawfinder source code (included in the distribution)
@@ -852,7 +843,6 @@ However, developers and reviewers must
 know how to develop secure software to use this tool, because otherwise,
 \fIa fool with a tool is still a fool\fR.
 My book at http://www.dwheeler.com/secure-programs may help.
-
 .PP
 This tool should be, at most, a small part of a larger software
 development process designed
@@ -860,12 +850,10 @@ to eliminate or reduce the impact of vulnerabilities.
 Developers and reviewers need know how to develop secure software,
 and they need to apply this knowledge to reduce the
 risks of vulnerabilities in the first place.
-
 .PP
 Different vulnerability-finding tools tend to find different vulnerabilities.
 Thus, you are best off using human review and a variety of tools.
 This tool can help find some vulnerabilities, but by no means all.
-
 .PP
 You should always analyze a \fIcopy\fP of the source program being analyzed,
 not a directory that can be modified by a developer while flawfinder
@@ -1000,6 +988,9 @@ use the colon to identify URIs/URLs.
 Filenames including spaces and/or tabs don't cause problems for flawfinder,
 though note that other tools might have problems with them.
 .PP
+Flawfinder is not internationalized, so it currently
+does not support localization.
+.PP
 In general, flawfinder attempts to err on the side of caution; it tends
 to report hits, so that they can be examined further, instead of silently
 ignoring them.
@@ -1015,15 +1006,14 @@ This is true for all static security scanners, and is especially true
 for tools like flawfinder that use a simple lexical analysis and
 pattern analysis to identify potential vulnerabilities.
 Still, it can serve as a useful aid for humans, helping to identify
-useful places to examine further, and that's the point of this tool.
-It can also be useful as an introduction to static analysis tools in general.
+useful places to examine further, and that's the point of this simple tool.
 
 .SH "SEE ALSO"
 See the flawfinder website at http://www.dwheeler.com/flawfinder.
 You should also see the
 .I "Secure Programming for Unix and Linux HOWTO"
 at
-http://www.dwheeler.com/secure-programs.
+.IR "http://www.dwheeler.com/secure-programs" .
 
 .SH AUTHOR
 David A. Wheeler (dwheeler@dwheeler.com).
