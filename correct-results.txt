@@ -88,13 +88,11 @@ test.c:19:  [2] (buffer) sprintf:
 test.c:45:  [2] (buffer) char:
   Statically-sized arrays can be overflowed or have other issues
   (CWE-119,CWE-120). Perform bounds checking, use functions that limit
-  length, or ensure that the size is larger than the maximum possible length
-  (CWE-119).
+  length, or ensure that the size is larger than the maximum possible length.
 test.c:46:  [2] (buffer) char:
   Statically-sized arrays can be overflowed or have other issues
   (CWE-119,CWE-120). Perform bounds checking, use functions that limit
-  length, or ensure that the size is larger than the maximum possible length
-  (CWE-119).
+  length, or ensure that the size is larger than the maximum possible length.
 test.c:50:  [2] (buffer) memcpy:
   Does not check for buffer overflows when copying to destination (CWE-120).
   Make sure destination can always hold the source data.

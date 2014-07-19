@@ -765,10 +765,9 @@ c_ruleset = {
   "char|TCHAR|wchar_t":  # This isn't really a function call, but it works.
      (c_static_array, 2,
       "Statically-sized arrays can be overflowed or have other issues " +
-      "(CWE-119,CWE-120)",
-      ("Perform bounds checking, use functions that limit length, " +
-        "or ensure that the size is larger than the maximum possible length " +
-        "(CWE-119)"),
+        "(CWE-119,CWE-120)",
+      "Perform bounds checking, use functions that limit length, " +
+        "or ensure that the size is larger than the maximum possible length",
       "buffer", "", {'extract_lookahead' : 1}),
 
   "gets|_getts":
