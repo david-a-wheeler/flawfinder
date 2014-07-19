@@ -86,13 +86,15 @@ test.c:19:  [2] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf. Risk is low because the source has a constant maximum length.
 test.c:45:  [2] (buffer) char:
-  Statically-sized arrays can be overflowed (CWE-120). Perform bounds
-  checking, use functions that limit length, or ensure that the size is
-  larger than the maximum possible length (CWE-119).
+  Statically-sized arrays can be overflowed or have other issues
+  (CWE-119,CWE-120). Perform bounds checking, use functions that limit
+  length, or ensure that the size is larger than the maximum possible length
+  (CWE-119).
 test.c:46:  [2] (buffer) char:
-  Statically-sized arrays can be overflowed (CWE-120). Perform bounds
-  checking, use functions that limit length, or ensure that the size is
-  larger than the maximum possible length (CWE-119).
+  Statically-sized arrays can be overflowed or have other issues
+  (CWE-119,CWE-120). Perform bounds checking, use functions that limit
+  length, or ensure that the size is larger than the maximum possible length
+  (CWE-119).
 test.c:50:  [2] (buffer) memcpy:
   Does not check for buffer overflows when copying to destination (CWE-120).
   Make sure destination can always hold the source data.
@@ -126,8 +128,8 @@ test.c:55:  [1] (buffer) strncat:
   size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
   resizing strings.
 test.c:58:  [1] (buffer) strlen:
-  Does not handle strings that are not \0-terminated (it could cause a crash
-  if unprotected) (CWE-119).
+  Does not handle strings that are not \0-terminated; if given one it may
+  perform an over-read (it could cause a crash if unprotected) (CWE-126).
 test.c:64:  [1] (buffer) MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is very
   low, the length appears to be in characters not bytes.

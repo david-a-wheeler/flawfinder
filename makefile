@@ -106,6 +106,7 @@ test: flawfinder test.c test2.c
 	./flawfinder --omittime --html --context test.c test2.c > test-results.html
 	@echo "Differences from expected results:"
 	@diff -u correct-results.txt test-results.txt
+	@diff -u correct-results.html test-results.html
 
 check: test
 

@@ -192,7 +192,8 @@ Examining test2.c <br>
  sprintf(s, "hello");
 </pre>
 <li>test.c:45: <b>  [2] </b> (buffer) <i> char:
-  Statically-sized arrays can be overflowed (<a
+  Statically-sized arrays can be overflowed or have other issues (<a
+  href="http://cwe.mitre.org/data/definitions/119.html">CWE-119</a>,<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
   bounds checking, use functions that limit length, or ensure that the size
   is larger than the maximum possible length (CWE-119). </i>
@@ -200,7 +201,8 @@ Examining test2.c <br>
   char d[20];
 </pre>
 <li>test.c:46: <b>  [2] </b> (buffer) <i> char:
-  Statically-sized arrays can be overflowed (<a
+  Statically-sized arrays can be overflowed or have other issues (<a
+  href="http://cwe.mitre.org/data/definitions/119.html">CWE-119</a>,<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
   bounds checking, use functions that limit length, or ensure that the size
   is larger than the maximum possible length (CWE-119). </i>
@@ -276,9 +278,9 @@ Examining test2.c <br>
   strncat(d,s,10);
 </pre>
 <li>test.c:58: <b>  [1] </b> (buffer) <i> strlen:
-  Does not handle strings that are not \0-terminated (it could cause a crash
-  if unprotected) (<a
-  href="http://cwe.mitre.org/data/definitions/119.html">CWE-119</a>). </i>
+  Does not handle strings that are not \0-terminated; if given one it may
+  perform an over-read (it could cause a crash if unprotected) (<a
+  href="http://cwe.mitre.org/data/definitions/126.html">CWE-126</a>). </i>
 <pre>
   n = strlen(d);
 </pre>
