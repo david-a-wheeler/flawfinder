@@ -1447,7 +1447,7 @@ def display_ruleset(ruleset):
   sortedkeys.sort()
   # Now, print them out:
   for key in sortedkeys:
-    print key, ruleset[key][1] # function name and default level.
+    print key + "\t" + str(ruleset[key][1]) + "\t" + ruleset[key][2] # function name, default level, default warning
 
 def initialize_ruleset():
   expand_ruleset(c_ruleset)
