@@ -575,9 +575,9 @@ Examine the current directory recursively, but only report lines
 that were changed or added in recent.patch.
 
 .TP
-\fBflawfinder \-\-regex "CWE-119|CWE-120" src/\fR
+\fBflawfinder \-\-regex "CWE-120|CWE-126" src/\fR
 Examine directory \fIsrc\fR recursively, but only report hits
-where CWE-119 or CWE-120 apply.
+where CWE-120 or CWE-126 apply.
 
 .SS "Invoking from vim"
 
@@ -732,6 +732,8 @@ CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
 .IP \(bu
 CWE-120: Buffer Copy without Checking Size of Input (``Classic Buffer Overflow'')*
 .IP \(bu
+CWE-126: Buffer Over-read
+.IP \(bu
 CWE-134: Uncontrolled Format String*
 .IP \(bu
 CWE-190: Integer Overflow or Wraparound*
@@ -780,7 +782,7 @@ though certain obscure constructs can cause it to fail (see BUGS below).
 You can select a specific subset of CWEs to report by using
 the ``\-\-regex'' (-e) option.
 This option accepts a regular expression, so you can select multiple CWEs,
-e.g., ``\-\-regex "CWE-119|CWE-120"''.
+e.g., ``\-\-regex "CWE-120|CWE-126"''.
 If you select multiple CWEs with ``|'' on a command line
 you will typically need to quote the parameters (since an
 unquoted ``|'' is the pipe symbol).
@@ -793,7 +795,7 @@ The file must be in regular expression format.
 For example,
 ``flawfinder -e $(cat file1)'' would report only hits that matched
 the pattern in ``file1''.
-If file1 contained ``CWE-119|CWE-120'' it
+If file1 contained ``CWE-120|CWE-126'' it
 would only report hits matching those CWEs.
 .PP
 A list of all
