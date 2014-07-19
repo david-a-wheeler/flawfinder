@@ -294,6 +294,9 @@ def print_multi_line(text):
           position = starting_position
   print nextword, # Print remainder (can be overlong if no spaces)
 
+# This matches references to CWE identifiers, so we can HTMLize them.
+# We don't refer to CWE-1 through CWE-9, so we'll only match on 2+ digits.
+link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
 
 class Hit:
   """
@@ -368,12 +371,16 @@ class Hit:
     print "(%(category)s)" % self,
     if output_format: print "<i>",
     print h("%(name)s:" % self),
+    main_text = h("%(warning)s. " % self)
+    if output_format:  # Create HTML link to CWE definitions
+      main_text = link_cwe_pattern.sub(
+          r'<a href="http://cwe.mitre.org/data/definitions/\2.html">\1</a>\3',
+          main_text)
     if single_line:
-      print h("%(warning)s." % self),
+      print main_text,
       if self.suggestion: print h(self.suggestion)+".",
       print h(self.note),
     else:
-      main_text = h("%(warning)s. " % self)
       if self.suggestion: main_text = main_text + h(self.suggestion) + ". "
       main_text = main_text + h(self.note)
       print
@@ -1781,11 +1788,11 @@ def show_final_results():
     count_per_level[i] = 0
   for i in range(0,6):  # Initialize count_per_level
     count_per_level_and_up[i] = 0
-  if show_immediately:   # Separate the final results.
+  if show_immediately or not quiet:   # Separate the final results.
     print
     if showheading:
       if output_format:
-        print "<h1>Final Results</h1>"
+        print "<h2>Final Results</h2>"
       else:
         print "FINAL RESULTS:"
         print
@@ -1805,15 +1812,6 @@ def show_final_results():
         count = count + 1
     if output_format: print "</ul>"
     diff_file.close()
-    if showheading:
-      if output_format:
-        print "<p>"
-      if count > 0:
-        print "Hits not in original histlist =", count
-      else:
-        print "No hits found that weren't already in the hitlist."
-      if output_format:
-        print "<br>"
   else:
     if output_format: print "<ul>"
     for h in hitlist:
@@ -1821,18 +1819,23 @@ def show_final_results():
       count_per_level[h.level] = count_per_level[h.level] + 1
     if output_format: print "</ul>"
     count = len(hitlist)
-    if showheading:
-      if output_format:
-        print "<p>"
-      else:
-        print
-      if count > 0:
-        print "Hits =", count
-      else:
-        print "No hits found."
-      if output_format:
-        print "<br>"
+  # Done with list, show the post-hitlist summary.
   if showheading:
+    if output_format:
+      print "<h2>Analysis Summary</h2>"
+    else:
+      print
+      print "ANALYSIS SUMMARY:"
+    if output_format:
+      print "<p>"
+    else:
+      print
+    if count > 0:
+      print "Hits =", count
+    else:
+      print "No hits found."
+    if output_format:
+      print "<br>"
     # Compute the amount of time spent, and lines analyzed/second.
     # By computing time here, we also include the time for
     # producing the list of hits, which is reasonable.
