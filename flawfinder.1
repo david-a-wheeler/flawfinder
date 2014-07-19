@@ -19,9 +19,9 @@
 .\"
 .\" Man page created 17 May 2001 by David A. Wheeler (dwheeler@dwheeler.com)
 .\"
-.TH FLAWFINDER 1 "13 Jul 2014" "Flawfinder" "Flawfinder"
+.TH FLAWFINDER 1 "19 Jul 2014" "Flawfinder" "Flawfinder"
 .SH NAME
-flawfinder \- find potential security flaws ("hits") in source code
+flawfinder \- lexically find potential security flaws ("hits") in source code
 .SH SYNOPSIS
 .B flawfinder
 .\" Documentation:
@@ -152,11 +152,12 @@ use simple lexical tokenization.
 Flawfinder then examines the
 text of the function parameters to estimate risk.
 Unlike tools such as splint, gcc's warning flags,
-and clang, flawfinder does not use or have access to
+and clang, flawfinder does \fInot\fR use or have access to
 information about control flow, data flow, or data types when
-estimating the level of risk.
+searching for potential vulnerabilities or estimating the level of risk.
 Thus, flawfinder will necessarily
-produce many false positives and fail to report many vulnerabilities.
+produce many false positives for vulnerabilities
+and fail to report many vulnerabilities.
 On the other hand, flawfinder can find vulnerabilities in programs that
 cannot be linked, and in some cases, cannot even be compiled.
 Flawfinder also doesn't get as confused by macro definitions
@@ -714,6 +715,9 @@ For example, many of the buffer-related hits mention
 CWE-120, the CWE identifier for
 ``buffer copy without checking size of input''
 (aka ``Classic Buffer Overflow'').
+In a few cases more than one CWE identifier may be listed.
+The HTML report also includes hypertext links to the CWE definitions
+hosted at MITRE.
 In this way, flawfinder is designed to meet the CWE-Output requirement.
 Note that many of these CWEs are identified in the CWE/SANS top 25 list
 2011 (http://cwe.mitre.org/top25/).
@@ -754,15 +758,17 @@ CWE-829: Inclusion of Functionality from Untrusted Control Sphere*
 .PP
 CWE version 2.7 (released June 23, 2014) was used for the mapping.
 The current CWE mappings select the most specific CWE the tool can determine.
-In theory, most security elements could theoretically be mapped to
+In theory, most CWE security elements (signatures/patterns that the
+tool searches for) could theoretically be mapped to
 CWE-676 (Use of Potentially Dangerous Function), but such a mapping would
-not be useful.  Thus, more specific mappings were preferred where one
-could be found.  Flawfinder is a lexical analysis tool; as a result,
-it is impractical for it to be much more specific than the mappings
-currently implemented.  This also means that it is unlikely to need much
-updating for map currency; it simply doesn’t have enough information to
-refine to a detailed CWE level that CWE changes would affect.
-That said, if there are recommended mapping refinements, please let me know.
+not be useful.
+Thus, more specific mappings were preferred where one could be found.
+Flawfinder is a lexical analysis tool; as a result, it is impractical
+for it to be more specific than the mappings currently implemented.
+This also means that it is unlikely to need much
+updating for map currency; it simply doesn't have enough information to
+refine to a detailed CWE level that CWE changes would typically affect.
+Please report CWE mapping problems as bugs if you find any.
 
 .PP
 Flawfinder may fail to find a vulnerability, even if flawfinder covers
@@ -772,6 +778,9 @@ and it will not report lines without those vulnerabilities in many cases.
 Thus, as required for any tool intending to be CWE compatible,
 flawfinder has a rate of false positives less than 100%
 and a rate of false negatives less than 100%.
+Flawfinder almost always reports whenever it finds a match to a
+CWE security element (a signature/pattern as defined in its database),
+though certain obscure constructs can cause it to fail (see BUGS below).
 
 .PP
 You can select a specific subset of CWEs to report by using
@@ -789,47 +798,48 @@ that can be achieved on a Unix-like system using the ``\-\-regex'' aka
 ``\-e'' option.
 The file must be in regular expression format.
 For example,
-``flawfinder –e $(cat file1)'' would report only hits that matched
+``flawfinder -e $(cat file1)'' would report only hits that matched
 the pattern in ``file1''.
 If file1 contained ``CWE-119|CWE-120'' it
 would only report hits matching those CWEs.
 
 .PP
 A list of all
-CWE security elements (the signatures or patterns that flawfinder looks for)
+CWE security elements (the signatures/patterns that flawfinder looks for)
 can be found by using the ``\-\-listrules'' option.
 Each line lists the signature token (typically a function name)
 that may lead to a hit, the default risk level, and
 the default warning (which includes the default CWE identifier).
-For most purposes this is enough if you want to see what 
-(signatures or patterns) map to which CWEs, or the reverse.
+For most purposes this is also enough if you want to see what
+CWE security elements map to which CWEs, or the reverse.
 For example, to see the most of the signatures (function names)
 that map to CWE-327,
 without seeing the default risk level or detailed warning text,
 run ``flawfinder \-\-listrules | grep CWE-327 | cut -f1''.
 However, while this procedure lists all CWE security elements,
-this procedure only lists the default mappings.
+this procedure only lists the default mappings
+from CWE security elements to CWE identifiers.
 It does not include the refinements
-that flawfinder does (e.g., by examining function parameters).
+that flawfinder applies (e.g., by examining function parameters).
 
 .PP
 If you want a detailed and exact mapping between the CWE security elements
 and CWE identifiers, the flawfinder source code (included in the distribution)
 is the best place for that information.
+This detailed information is primarily of interest to those few
+people who are trying to refine the CWE mappings of flawfinder
+or refine CWE in general.
 The source code documents the mapping between the security elements
 to the respective CWE identifiers, and is a single Python file.
 The ``c_rules'' dataset defines most rules, with reference to a
 function that may make further refinements.
 You can search the dataset for
 function names to see what CWE it generates by default;
-if first parameter is not ``normal'' then that is the name
+if first parameter is not ``normal'' then that is the name of
 a refining Python method that may select different CWEs
 (depending on additional information).
 Conversely, you can search for ``CWE-number'' and find what security
 elements (signatures or patterns) refer to that CWE identifier.
-This detailed information is primarily of interest to those few
-people who are trying to refine the CWE mappings of flawfinder
-or refine CWE in general.
 For most people, this is much more than they need; most people just want to
 scan their source code to quickly find problems.
 
@@ -915,7 +925,9 @@ COM1-COM9, and LPT1-LPT9, optionally followed by an extension
 .SH BUGS
 
 Flawfinder is currently limited to C/C++.
-It's designed so that adding support for other languages should be easy.
+In addition, when analyzing C++ it focuses primarily on the C subset of C++.
+That said,
+it's designed so that adding support for other languages should be easy.
 .PP
 Flawfinder can be fooled by user-defined functions or method names that
 happen to be the same as those defined as ``hits'' in its database,
@@ -943,6 +955,14 @@ construct, flawfinder gets confused.
 Such constructs are bad style, and will confuse many other tools too.
 If you must analyze such files, rewrite those lines.
 Thankfully, these are quite rare.
+.PP
+Some complex or unusual constructs can mislead flawfinder.
+In particular, if a parameter begins with gettext(" and ends with ),
+flawfinder will presume that the parameter of gettext is a constant.
+This means it will get confused by patterns like
+gettext("hi") + function("bye").
+In practice, this doesn't seem to be a problem; gettext() is usually
+wrapped around the entire parameter.
 .PP
 The routine to detect statically defined character arrays uses
 simple text matching; some complicated expresions can cause it to
@@ -991,10 +1011,12 @@ simply can't get everything "right".
 .PP
 Security vulnerabilities might not be identified as such by flawfinder,
 and conversely, some hits aren't really security vulnerabilities.
-This is true for all static security scanners, especially those like
-flawfinder that use a simple pattern-based approach for identifying problems.
+This is true for all static security scanners, and is especially true
+for tools like flawfinder that use a simple lexical analysis and
+pattern analysis to identify potential vulnerabilities.
 Still, it can serve as a useful aid for humans, helping to identify
 useful places to examine further, and that's the point of this tool.
+It can also be useful as an introduction to static analysis tools in general.
 
 .SH "SEE ALSO"
 See the flawfinder website at http://www.dwheeler.com/flawfinder.
