@@ -1,4 +1,13 @@
 2014-07-13 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Release 1.29, primarily for CWE improvements.
+	* Multi-line formatting is faster and formats better.
+	* Documentation about CWEs has been improved.
+	* HTML format includes links from CWE identifiers to their definitions.
+	* Tweak CWE mappings, e.g., strlen maps to CWE-126 (buffer over-read).
+	* Option "--listrules" now gives default warning and is tab-delimited.
+	* Regression test suite now also tests the generated HTML.
+
+2014-07-13 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Release 1.28
 	* Common Weakness Enumeration (CWE) references are
 	  now included in most hits
