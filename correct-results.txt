@@ -2,138 +2,140 @@ Flawfinder version 1.29, (C) 2001-2014 David A. Wheeler.
 Number of dangerous functions in C/C++ ruleset: 160
 Examining test.c
 Examining test2.c
+
+FINAL RESULTS:
+
 test.c:32:  [5] (buffer) gets:
-  Does not check for buffer overflows (CWE-120). Use fgets() instead. 
+  Does not check for buffer overflows (CWE-120). Use fgets() instead.
 test.c:56:  [5] (buffer) strncat:
-  Easily used incorrectly (e.g., incorrectly computing the correct
-  maximum size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
+  Easily used incorrectly (e.g., incorrectly computing the correct maximum
+  size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
   resizing strings. Risk is high; the length parameter appears to be a
   constant, instead of computing the number of characters left.
 test.c:57:  [5] (buffer) _tcsncat:
-  Easily used incorrectly (e.g., incorrectly computing the correct
-  maximum size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
+  Easily used incorrectly (e.g., incorrectly computing the correct maximum
+  size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
   resizing strings. Risk is high; the length parameter appears to be a
   constant, instead of computing the number of characters left.
 test.c:60:  [5] (buffer) MultiByteToWideChar:
-  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is
-  high, it appears that the size is given as bytes, but the function
-  requires size as characters.
+  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is high,
+  it appears that the size is given as bytes, but the function requires size
+  as characters.
 test.c:62:  [5] (buffer) MultiByteToWideChar:
-  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is
-  high, it appears that the size is given as bytes, but the function
-  requires size as characters.
+  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is high,
+  it appears that the size is given as bytes, but the function requires size
+  as characters.
 test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
-  Access), which would even forbid administrator access (CWE-732). 
+  Access), which would even forbid administrator access (CWE-732).
 test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
-  Access), which would even forbid administrator access (CWE-732). 
+  Access), which would even forbid administrator access (CWE-732).
 test.c:17:  [4] (buffer) strcpy:
-  Does not check for buffer overflows when copying to destination
-  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is
-  easily misused). 
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
+  misused).
 test.c:20:  [4] (buffer) sprintf:
-  Does not check for buffer overflows (CWE-120). Use sprintf_s,
-  snprintf, or vsnprintf. 
+  Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
+  vsnprintf.
 test.c:21:  [4] (buffer) sprintf:
-  Does not check for buffer overflows (CWE-120). Use sprintf_s,
-  snprintf, or vsnprintf. 
+  Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
+  vsnprintf.
 test.c:22:  [4] (format) sprintf:
-  Potential format string problem (CWE-134). Make format string
-  constant. 
+  Potential format string problem (CWE-134). Make format string constant.
 test.c:23:  [4] (format) printf:
-  If format strings can be influenced by an attacker, they can be
-  exploited (CWE-134). Use a constant for the format specification. 
+  If format strings can be influenced by an attacker, they can be exploited
+  (CWE-134). Use a constant for the format specification.
 test.c:25:  [4] (buffer) scanf:
-  The scanf() family's %s operation, without a limit specification,
-  permits buffer overflows (CWE-120). Specify a limit to %s, or use a
-  different input function. 
+  The scanf() family's %s operation, without a limit specification, permits
+  buffer overflows (CWE-120). Specify a limit to %s, or use a different input
+  function.
 test.c:27:  [4] (buffer) scanf:
-  The scanf() family's %s operation, without a limit specification,
-  permits buffer overflows (CWE-120). Specify a limit to %s, or use a
-  different input function. 
+  The scanf() family's %s operation, without a limit specification, permits
+  buffer overflows (CWE-120). Specify a limit to %s, or use a different input
+  function.
 test.c:38:  [4] (format) syslog:
-  If syslog's format strings can be influenced by an attacker, they can
-  be exploited (CWE-134). Use a constant format string for syslog. 
+  If syslog's format strings can be influenced by an attacker, they can be
+  exploited (CWE-134). Use a constant format string for syslog.
 test.c:49:  [4] (buffer) _mbscpy:
-  Does not check for buffer overflows when copying to destination
-  (CWE-120). Consider using a function version that stops copying at the end of
-  the buffer. 
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Consider using a function version that stops copying at the end of the
+  buffer.
 test.c:52:  [4] (buffer) lstrcat:
   Does not check for buffer overflows when concatenating to destination
-  (CWE-120). 
+  (CWE-120).
 test.c:75:  [3] (shell) CreateProcess:
   This causes a new process to execute and is difficult to use safely
   (CWE-78). Specify the application path in the first argument, NOT as part
   of the second, or embedded spaces could allow an attacker to force a
-  different program to run. 
+  different program to run.
 test.c:75:  [3] (shell) CreateProcess:
   This causes a new process to execute and is difficult to use safely
   (CWE-78). Specify the application path in the first argument, NOT as part
   of the second, or embedded spaces could allow an attacker to force a
-  different program to run. 
+  different program to run.
 test.c:91:  [3] (buffer) getopt_long:
-  Some older implementations do not protect against internal buffer
-  overflows (CWE-120). Check implementation on installation, or limit the
-  size of all string inputs. 
+  Some older implementations do not protect against internal buffer overflows
+  (CWE-120). Check implementation on installation, or limit the size of all
+  string inputs.
 test.c:16:  [2] (buffer) strcpy:
-  Does not check for buffer overflows when copying to destination
-  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is
-  easily misused). Risk is low because the source is a constant string.
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
+  misused). Risk is low because the source is a constant string.
 test.c:19:  [2] (buffer) sprintf:
-  Does not check for buffer overflows (CWE-120). Use sprintf_s,
-  snprintf, or vsnprintf. Risk is low because the source has a constant maximum
-  length.
+  Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
+  vsnprintf. Risk is low because the source has a constant maximum length.
 test.c:45:  [2] (buffer) char:
   Statically-sized arrays can be overflowed (CWE-120). Perform bounds
   checking, use functions that limit length, or ensure that the size is
-  larger than the maximum possible length (CWE-119). 
+  larger than the maximum possible length (CWE-119).
 test.c:46:  [2] (buffer) char:
   Statically-sized arrays can be overflowed (CWE-120). Perform bounds
   checking, use functions that limit length, or ensure that the size is
-  larger than the maximum possible length (CWE-119). 
+  larger than the maximum possible length (CWE-119).
 test.c:50:  [2] (buffer) memcpy:
-  Does not check for buffer overflows when copying to destination
-  (CWE-120). Make sure destination can always hold the source data. 
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Make sure destination can always hold the source data.
 test.c:51:  [2] (buffer) CopyMemory:
-  Does not check for buffer overflows when copying to destination
-  (CWE-120). Make sure destination can always hold the source data. 
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Make sure destination can always hold the source data.
 test.c:97:  [2] (misc) fopen:
   Check when opening files - can an attacker redirect it (via symlinks),
-  force the opening of special file type (e.g., device files), move
-  things around to create a race condition, control its ancestors, or change
-  its contents? (CWE-362). 
+  force the opening of special file type (e.g., device files), move things
+  around to create a race condition, control its ancestors, or change its
+  contents? (CWE-362).
 test.c:15:  [1] (buffer) strcpy:
-  Does not check for buffer overflows when copying to destination
-  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is
-  easily misused). Risk is low because the source is a constant
-  character.
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
+  misused). Risk is low because the source is a constant character.
 test.c:18:  [1] (buffer) sprintf:
-  Does not check for buffer overflows (CWE-120). Use sprintf_s,
-  snprintf, or vsnprintf. Risk is low because the source is a constant character.
+  Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
+  vsnprintf. Risk is low because the source is a constant character.
 test.c:26:  [1] (buffer) scanf:
-  it's unclear if the %s limit in the format string is small enough
+  It's unclear if the %s limit in the format string is small enough
   (CWE-120). Check that the limit is sufficiently small, or use a different
-  input function. 
+  input function.
 test.c:53:  [1] (buffer) strncpy:
-  Easily used incorrectly; doesn't always \0-terminate or check for
-  invalid pointers (CWE-120). 
+  Easily used incorrectly; doesn't always \0-terminate or check for invalid
+  pointers (CWE-120).
 test.c:54:  [1] (buffer) _tcsncpy:
-  Easily used incorrectly; doesn't always \0-terminate or check for
-  invalid pointers (CWE-120). 
+  Easily used incorrectly; doesn't always \0-terminate or check for invalid
+  pointers (CWE-120).
 test.c:55:  [1] (buffer) strncat:
-  Easily used incorrectly (e.g., incorrectly computing the correct
-  maximum size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
-  resizing strings. 
+  Easily used incorrectly (e.g., incorrectly computing the correct maximum
+  size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
+  resizing strings.
 test.c:58:  [1] (buffer) strlen:
-  Does not handle strings that are not \0-terminated (it could cause a
-  crash if unprotected) (CWE-119). 
+  Does not handle strings that are not \0-terminated (it could cause a crash
+  if unprotected) (CWE-119).
 test.c:64:  [1] (buffer) MultiByteToWideChar:
-  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is
-  very low, the length appears to be in characters not bytes.
+  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is very
+  low, the length appears to be in characters not bytes.
 test.c:66:  [1] (buffer) MultiByteToWideChar:
-  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is
-  very low, the length appears to be in characters not bytes.
+  Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is very
+  low, the length appears to be in characters not bytes.
+
+ANALYSIS SUMMARY:
 
 Hits = 36
 Lines analyzed = 118

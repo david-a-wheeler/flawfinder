@@ -270,30 +270,21 @@ def h(s):
 
 def print_multi_line(text):
   # Print text as multiple indented lines.
-  width = 72
+  width = 78
   prefix = " "
   starting_position = len(prefix) + 1
-  printed_something = 0  # Have we printed on this line?
-  position = starting_position
-  nextword = ""
-
+  #
   print prefix,
-  for c in text:
-    if (c == " "):
-      print nextword,
-      position = position + 1 # account for space we just printed.
-      printed_something = 1
-      nextword = ""
-    else: # NonSpace.
-      nextword = nextword + c
-      position = position + 1
-      if position > width: # Whups, out of space
-        if (printed_something):  # We've printed something out.
-          print # Done with this line, move to next.
-          print prefix,
-          position = starting_position
-  print nextword, # Print remainder (can be overlong if no spaces)
-
+  position = starting_position
+  #
+  for w in text.split():
+    if len(w) + position >= width:
+      print
+      print prefix,
+      position = starting_position
+    print w,
+    position = position + len(w) + 1
+      
 # This matches references to CWE identifiers, so we can HTMLize them.
 # We don't refer to CWE-1 through CWE-9, so we'll only match on 2+ digits.
 link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
@@ -639,7 +630,7 @@ def c_scanf(hit):
       elif p_low_risk_scanf_format.search(source):
         # This is often okay, but sometimes extremely serious.
         hit.level = 1
-        hit.warning = "it's unclear if the %s limit in the format string is small enough (CWE-120)"
+        hit.warning = "It's unclear if the %s limit in the format string is small enough (CWE-120)"
         hit.suggestion = "Check that the limit is sufficiently small, or use a different input function"
       else:
         # No risky scanf request.
