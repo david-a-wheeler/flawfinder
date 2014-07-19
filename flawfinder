@@ -286,7 +286,7 @@ def print_multi_line(text):
     position = position + len(w) + 1
       
 # This matches references to CWE identifiers, so we can HTMLize them.
-# We don't refer to CWE-1 through CWE-9, so we'll only match on 2+ digits.
+# We don't refer to CWE's with one digit, so we'll only match on 2+ digits.
 link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
 
 class Hit:

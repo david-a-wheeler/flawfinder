@@ -20,6 +20,8 @@ INSTALL_DIR=/usr/local
 INSTALL_DIR_BIN=$(INSTALL_DIR)/bin
 INSTALL_DIR_MAN=$(INSTALL_DIR)/man/man1
 
+FLEX=flex
+
 # For Cygwin on Windows, set PYTHONEXT=.py
 # (EXE=.exe would be needed on some systems, but not for flawfinder)
 EXE=
@@ -150,8 +152,8 @@ my_install: flawfinder.pdf flawfinder.ps
 
 # This is intended to be a local capability to list CWEs
 show-cwes:
-	flex -o cwe.c cwe.l
-	gcc -o cwe cwe.c -lfl
+	$(FLEX) -o cwe.c cwe.l
+	$(CC) -o cwe cwe.c -lfl
 	./cwe < flawfinder | sort -u -V
 
 
