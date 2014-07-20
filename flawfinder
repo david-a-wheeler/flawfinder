@@ -6,7 +6,7 @@
 
  See the man page for a description of the options."""
 
-version="1.29"
+version="1.30"
 
 # The default output is as follows:
 # filename:line_number [risk_level] (type) function_name: message
