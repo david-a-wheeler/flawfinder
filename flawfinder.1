@@ -488,11 +488,13 @@ Save all resulting hits (the "hitlist") to F.
 .TP
 \fB\-\-loadhitlist=\fR\fIF\fR
 Load the hitlist from F instead of analyzing source programs.
+Do not load hitlists from untrusted sources.
 
 .TP
 \fB\-\-diffhitlist=\fR\fIF\fR
 Show only hits (loaded or analyzed) not in F.
 F was presumably created previously using \-\-savehitlist.
+Do not diff hitlists from untrusted sources.
 If the \-\-loadhitlist option is not provided, this will show the hits in
 the analyzed source code files that were not previously stored in F.
 If used along with \-\-loadhitlist, this will show the hits in the
@@ -912,6 +914,10 @@ COM1-COM9, and LPT1-LPT9, optionally followed by an extension
 (e.g., ``com1.txt''), in any directory, and in any case
 (Windows is case-insensitive).
 .\" See 'Writing Secure Code' by Howard and LeBlanc, pg. 223
+.PP
+Do not load or diff hitlists from untrusted sources.
+They are implemented using the Python pickle module, which is not
+intended to be secure against erroneous or maliciously constructed data.
 
 
 .SH BUGS
