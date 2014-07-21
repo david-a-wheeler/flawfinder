@@ -33,14 +33,15 @@ flawfinder \- lexically find potential security flaws ("hits") in source code
 .RB [ \-\-allowlink ]
 .RB [ \-\-followdotdir ]
 .RB [ \-\-nolink ]
-.RB [ \-\-patch\ \fIfilename\fR | \-P\ \fIfilename\fR ]
+.RB [ \-\-patch=\fIfilename\fR | \-P\ \fIfilename\fR ]
 .br
 .\" Selecting Hits to Display:
 .RB [ \-\-inputs | \-I ]
-[ \fB\-\-minlevel \fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
+[ \fB\-\-minlevel=\fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
 .RB [ \-\-falsepositive | \-F ]
 .RB [ \-\-neverignore | \-n ]
-.RB [ \-\-regex | \-e ]
+.br
+[\fB\-\-regex=\fR\fIPATTERN\fR | \fB\-e\fR \fIPATTERN\fR]
 .br
 .\" Selecting Output Format:
 .RB [ \-\-context | \-c ]
@@ -53,9 +54,9 @@ flawfinder \- lexically find potential security flaws ("hits") in source code
 .RB [ \-\-quiet | \-Q ]
 .br
 .\" Managing hit list.
-[ \fB\-\-loadhitlist\ \fR\fIF\fR ]
-[ \fB\-\-savehitlist\ \fR\fIF\fR ]
-[ \fB\-\-diffhitlist\ \fR\fIF\fR ]
+[\fB\-\-loadhitlist=\fR\fIF\fR]
+[\fB\-\-savehitlist=\fR\fIF\fR]
+[\fB\-\-diffhitlist=\fR\fIF\fR]
 .br
 .RB [ \-\- ]
 .I [ source code file or source root directory ]+
@@ -162,7 +163,7 @@ On the other hand, flawfinder can find vulnerabilities in programs that
 cannot be linked, and in some cases, cannot even be compiled.
 Flawfinder also doesn't get as confused by macro definitions
 and other oddities that more sophisticated tools have trouble with.
-It can also be useful as a simple
+Flawfinder can also be useful as a simple
 introduction to static analysis tools in general.
 .PP
 Any filename given on the command line will be examined (even if
@@ -288,11 +289,24 @@ select input data,
 select which hits to display,
 select the output format,
 and perform hitlist management.
+Flawfinder supports the standard syntax defined in the
+POSIX (Issue 7, 2013 Edition) section ``Utility Conventions''.
+It also supports the GNU long options
+(double-dash options of form \-\-\fIoption\fR)
+as defined in the \fIGNU C Library Reference Manual\fR
+``Program Argument Syntax Conventions''
+and \fIGNU Coding Standards\fR ``Standards for Command Line Interfaces''.
+Long option arguments can be provided as ``--name=value'' or ``-name value''.
+Some options can only be accessed using the more
+readable GNU long option conventions;
+common options are also supported
+by the older single-letter option convention.
 
 .SS "Documentation"
 
 .TP 12
 .BI \-\-help
+.TP
 .BI \-h
 .\" Leave -? undocumented... it also invokes help.
 Show usage (help) information.
@@ -341,13 +355,13 @@ include version control private data, configurations, and so on.
 .TP
 .BI \-\-nolink
 Ignored.
-Historically this disabled following symbolic links, but this
-behavior is now the default.
+Historically this disabled following symbolic links;
+this behavior is now the default.
 
 .TP 12
-.BI \-\-patch patchfile
+\fB\-\-patch=\fR\fIpatchfile\fR
 .TP
-.BI \-P patchfile
+\fB\-P\fR \fIpatchfile\fR
 Examine the selected files or directories, but only report hits in lines
 that are added or modified by the given patch file.
 The patch file must be in a recognized unified diff format
@@ -409,9 +423,9 @@ Never ignore security issues, even if they have an ``ignore'' directive
 in a comment.
 
 .TP
-.BI \-\-regexp PATTERN
+\fB\-\-regexp=\fR\fIPATTERN\fR
 .TP
-.BI -e PATTERN
+\fB-e\fR \fIPATTERN\fR
 Only report hits with text that matches the regular expression pattern PATTERN.
 For example, to only report hits containing the text "CWE-120",
 use ``\-\-regex CWE-120''.
@@ -679,10 +693,9 @@ You can visit the source for any particular error message by moving
 to that hit message in the *compilation* buffer or *grep* buffer
 and typing the return key.
 (Technical note: in the compilation buffer, this invokes
-compile-goto-error).
+compile-goto-error.)
 You can also click the Mouse-2 button on the error message
-(when using the mouse you don't need to switch to the *compilation* buffer
-first).
+(you don't need to switch to the *compilation* buffer first).
 .PP
 If you want to use grep mode to jump to specific columns of a hit,
 you'll need to specially configure emacs to do this.
@@ -701,8 +714,8 @@ For (other) IDEs, consult your IDE's set of plug-ins.
 The Common Weakness Enumeration (CWE)
 is ``a formal list or dictionary of common software weaknesses
 that can occur in software's architecture, design, code or implementation
-that can lead to exploitable security vulnerabilities [that]
-was created to serve as a common language for
+that can lead to exploitable security vulnerabilities...
+created to serve as a common language for
 describing software security weaknesses''
 (http://cwe.mitre.org/about/faq.html).
 For more information on CWEs, see http://cwe.mitre.org.
