@@ -1,12 +1,12 @@
 Flawfinder version 1.30, (C) 2001-2014 David A. Wheeler.
-Number of dangerous functions in C/C++ ruleset: 160
+Number of rules (primarily dangerous function names) in C/C++ ruleset: 169
 Examining test.c
 Examining test2.c
 
 FINAL RESULTS:
 
 test.c:32:  [5] (buffer) gets:
-  Does not check for buffer overflows (CWE-120). Use fgets() instead.
+  Does not check for buffer overflows (CWE-120, CWE-20). Use fgets() instead.
 test.c:56:  [5] (buffer) strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
@@ -48,12 +48,12 @@ test.c:23:  [4] (format) printf:
   (CWE-134). Use a constant for the format specification.
 test.c:25:  [4] (buffer) scanf:
   The scanf() family's %s operation, without a limit specification, permits
-  buffer overflows (CWE-120). Specify a limit to %s, or use a different input
-  function.
+  buffer overflows (CWE-120, CWE-20). Specify a limit to %s, or use a
+  different input function.
 test.c:27:  [4] (buffer) scanf:
   The scanf() family's %s operation, without a limit specification, permits
-  buffer overflows (CWE-120). Specify a limit to %s, or use a different input
-  function.
+  buffer overflows (CWE-120, CWE-20). Specify a limit to %s, or use a
+  different input function.
 test.c:38:  [4] (format) syslog:
   If syslog's format strings can be influenced by an attacker, they can be
   exploited (CWE-134). Use a constant format string for syslog.
@@ -76,8 +76,8 @@ test.c:75:  [3] (shell) CreateProcess:
   different program to run.
 test.c:91:  [3] (buffer) getopt_long:
   Some older implementations do not protect against internal buffer overflows
-  (CWE-120). Check implementation on installation, or limit the size of all
-  string inputs.
+  (CWE-120, CWE-20). Check implementation on installation, or limit the size
+  of all string inputs.
 test.c:16:  [2] (buffer) strcpy:
   Does not check for buffer overflows when copying to destination (CWE-120).
   Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
@@ -86,13 +86,15 @@ test.c:19:  [2] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf. Risk is low because the source has a constant maximum length.
 test.c:45:  [2] (buffer) char:
-  Statically-sized arrays can be overflowed or have other issues
-  (CWE-119,CWE-120). Perform bounds checking, use functions that limit
-  length, or ensure that the size is larger than the maximum possible length.
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:CWE-120). Perform bounds checking, use
+  functions that limit length, or ensure that the size is larger than the
+  maximum possible length.
 test.c:46:  [2] (buffer) char:
-  Statically-sized arrays can be overflowed or have other issues
-  (CWE-119,CWE-120). Perform bounds checking, use functions that limit
-  length, or ensure that the size is larger than the maximum possible length.
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:CWE-120). Perform bounds checking, use
+  functions that limit length, or ensure that the size is larger than the
+  maximum possible length.
 test.c:50:  [2] (buffer) memcpy:
   Does not check for buffer overflows when copying to destination (CWE-120).
   Make sure destination can always hold the source data.

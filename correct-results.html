@@ -11,7 +11,7 @@
 Here are the security scan results from
 <a href="http://www.dwheeler.com/flawfinder">Flawfinder version 1.30</a>,
 (C) 2001-2014 <a href="http://www.dwheeler.com">David A. Wheeler</a>.
-Number of dangerous functions in C/C++ ruleset: 160
+Number of rules (primarily dangerous function names) in C/C++ ruleset: 169
 <p>
 Examining test.c <br>
 Examining test2.c <br>
@@ -20,7 +20,8 @@ Examining test2.c <br>
 <ul>
 <li>test.c:32: <b>  [5] </b> (buffer) <i> gets:
   Does not check for buffer overflows (<a
-  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Use
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
+  href="http://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Use
   fgets() instead. </i>
 <pre>
  gets(f);
@@ -114,16 +115,18 @@ Examining test2.c <br>
 <li>test.c:25: <b>  [4] </b> (buffer) <i> scanf:
   The scanf() family's %s operation, without a limit specification, permits
   buffer overflows (<a
-  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Specify
-  a limit to %s, or use a different input function. </i>
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
+  href="http://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Specify a
+  limit to %s, or use a different input function. </i>
 <pre>
  scanf("%s", s);
 </pre>
 <li>test.c:27: <b>  [4] </b> (buffer) <i> scanf:
   The scanf() family's %s operation, without a limit specification, permits
   buffer overflows (<a
-  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Specify
-  a limit to %s, or use a different input function. </i>
+  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
+  href="http://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Specify a
+  limit to %s, or use a different input function. </i>
 <pre>
  scanf("%s", s);
 </pre>
@@ -169,9 +172,9 @@ Examining test2.c <br>
 </pre>
 <li>test.c:91: <b>  [3] </b> (buffer) <i> getopt_long:
   Some older implementations do not protect against internal buffer overflows
-  (<a href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
-  Check implementation on installation, or limit the size of all string
-  inputs. </i>
+  (<a href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
+  href="http://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Check
+  implementation on installation, or limit the size of all string inputs. </i>
 <pre>
     while ((optc = getopt_long (argc, argv, "a",longopts, NULL )) != EOF) {
 </pre>
@@ -192,8 +195,8 @@ Examining test2.c <br>
  sprintf(s, "hello");
 </pre>
 <li>test.c:45: <b>  [2] </b> (buffer) <i> char:
-  Statically-sized arrays can be overflowed or have other issues (<a
-  href="http://cwe.mitre.org/data/definitions/119.html">CWE-119</a>,<a
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
   bounds checking, use functions that limit length, or ensure that the size
   is larger than the maximum possible length. </i>
@@ -201,8 +204,8 @@ Examining test2.c <br>
   char d[20];
 </pre>
 <li>test.c:46: <b>  [2] </b> (buffer) <i> char:
-  Statically-sized arrays can be overflowed or have other issues (<a
-  href="http://cwe.mitre.org/data/definitions/119.html">CWE-119</a>,<a
+  Statically-sized arrays can be improperly restricted, leading to potential
+  overflows or other issues (CWE-119:<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
   bounds checking, use functions that limit length, or ensure that the size
   is larger than the maximum possible length. </i>

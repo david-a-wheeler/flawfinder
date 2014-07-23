@@ -732,18 +732,61 @@ In a few cases more than one CWE identifier may be listed.
 The HTML report also includes hypertext links to the CWE definitions
 hosted at MITRE.
 In this way, flawfinder is designed to meet the CWE-Output requirement.
-Note that many of these CWEs are identified in the CWE/SANS top 25 list
-2011 (http://cwe.mitre.org/top25/).
+.PP
+Many of the CWEs reported by flawfinder
+are identified in the CWE/SANS top 25 list 2011 (http://cwe.mitre.org/top25/).
+Many people will want to search for CWEs in this list,
+such as CWE-120 (classic buffer overflow),
+When flawfinder maps to a CWE that is more general than a top 25 item,
+it lists it as more-general:more-specific
+(e.g., CWE-119:CWE-120), where more-general is the actual mapping.
+If flawfinder maps to a more specific CWE item that is a specific
+case of a top 25 item,
+it is listed in the form top-25/more-specific (e.g., CWE-362/CWE-367),
+where the real mapping is the more specific CWE entry.
+If the same entry maps to multiple CWEs, the CWEs are separated by commas
+(this often occurs with CWE-20, Improper Input Validation).
+This simplifies searching for certain CWEs.
+.PP
+CWE version 2.7 (released June 23, 2014) was used for the mapping.
+The current CWE mappings select the most specific CWE the tool can determine.
+In theory, most CWE security elements (signatures/patterns that the
+tool searches for) could theoretically be mapped to
+CWE-676 (Use of Potentially Dangerous Function), but such a mapping would
+not be useful.
+Thus, more specific mappings were preferred where one could be found.
+Flawfinder is a lexical analysis tool; as a result, it is impractical
+for it to be more specific than the mappings currently implemented.
+This also means that it is unlikely to need much
+updating for map currency; it simply doesn't have enough information to
+refine to a detailed CWE level that CWE changes would typically affect.
+The list of CWE identifiers was generated automatically using "make show-cwes",
+so there is confidence that this list is correct.
+Please report CWE mapping problems as bugs if you find any.
+.PP
+Flawfinder may fail to find a vulnerability, even if flawfinder covers
+one of these CWE weaknesses.
+That said, flawfinder does find vulnerabilities listed by the CWEs it covers,
+and it will not report lines without those vulnerabilities in many cases.
+Thus, as required for any tool intending to be CWE compatible,
+flawfinder has a rate of false positives less than 100%
+and a rate of false negatives less than 100%.
+Flawfinder almost always reports whenever it finds a match to a
+CWE security element (a signature/pattern as defined in its database),
+though certain obscure constructs can cause it to fail (see BUGS below).
 .PP
 Flawfinder can report on the following CWEs
 (these are the CWEs that flawfinder covers; ``*'' marks those in the
 CWE/SANS top 25 list):
+.IP \(bu 2
+CWE-20: Improper Input Validation
 .IP \(bu 2
 CWE-22: Improper Limitation of a Pathname to a Restricted Directory (``Path Traversal'')
 .IP \(bu
 CWE-78: Improper Neutralization of Special Elements used in an OS Command (``OS Command Injection'')*
 .IP \(bu
 CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer
+(a parent of CWE-120*, so this is shown as CWE-119:CWE-120)
 .IP \(bu
 CWE-120: Buffer Copy without Checking Size of Input (``Classic Buffer Overflow'')*
 .IP \(bu
@@ -765,36 +808,12 @@ CWE-676: Use of Potentially Dangerous Function*
 .IP \(bu
 CWE-732: Incorrect Permission Assignment for Critical Resource*
 .IP \(bu
+CWE-785: Use of Path Manipulation Function without Maximum-sized Buffer
+(child of CWE-120*, so this is shown as CWE-120/CWE-785)
+.IP \(bu
 CWE-807: Reliance on Untrusted Inputs in a Security Decision*
 .IP \(bu
 CWE-829: Inclusion of Functionality from Untrusted Control Sphere*
-.PP
-CWE version 2.7 (released June 23, 2014) was used for the mapping.
-The current CWE mappings select the most specific CWE the tool can determine.
-In theory, most CWE security elements (signatures/patterns that the
-tool searches for) could theoretically be mapped to
-CWE-676 (Use of Potentially Dangerous Function), but such a mapping would
-not be useful.
-Thus, more specific mappings were preferred where one could be found.
-Flawfinder is a lexical analysis tool; as a result, it is impractical
-for it to be more specific than the mappings currently implemented.
-This also means that it is unlikely to need much
-updating for map currency; it simply doesn't have enough information to
-refine to a detailed CWE level that CWE changes would typically affect.
-The list of CWE identifiers was generated automatically using "make show-cwes",
-so there is confidence that this list is correct.
-Please report CWE mapping problems as bugs if you find any.
-.PP
-Flawfinder may fail to find a vulnerability, even if flawfinder covers
-one of these CWE weaknesses listed above.
-That said, flawfinder does find vulnerabilities listed by the CWEs it covers,
-and it will not report lines without those vulnerabilities in many cases.
-Thus, as required for any tool intending to be CWE compatible,
-flawfinder has a rate of false positives less than 100%
-and a rate of false negatives less than 100%.
-Flawfinder almost always reports whenever it finds a match to a
-CWE security element (a signature/pattern as defined in its database),
-though certain obscure constructs can cause it to fail (see BUGS below).
 .PP
 You can select a specific subset of CWEs to report by using
 the ``\-\-regex'' (-e) option.
@@ -937,6 +956,9 @@ intended to be secure against erroneous or maliciously constructed data.
 
 Flawfinder is currently limited to C/C++.
 In addition, when analyzing C++ it focuses primarily on the C subset of C++.
+In particular, flawfinder does not report on expressions like cin >> charbuf,
+where charbuf is a char array; flawfinder doesn't have type information,
+and ">>" is safe with many other types.
 That said,
 it's designed so that adding support for other languages should be easy.
 .PP

@@ -286,7 +286,7 @@ def print_multi_line(text):
     position = position + len(w) + 1
       
 # This matches references to CWE identifiers, so we can HTMLize them.
-# We don't refer to CWE's with one digit, so we'll only match on 2+ digits.
+# We don't refer to CWEs with one digit, so we'll only match on 2+ digits.
 link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
 
 class Hit:
@@ -493,7 +493,7 @@ def strip_i18n(text):
 
 p_trailingbackslashes = re.compile( r'(\s|\\(\n|\r))*$')
 
-p_c_singleton_string = re.compile( r'^\s*"([^\\]|\\[^0-6]|\\[0-6]+)?"\s*$')
+p_c_singleton_string = re.compile( r'^\s*L?"([^\\]|\\[^0-6]|\\[0-6]+)?"\s*$')
 
 def c_singleton_string(text):
   "Returns true if text is a C string with 0 or 1 character."
@@ -501,7 +501,7 @@ def c_singleton_string(text):
   else: return 0
 
 # This string defines a C constant.
-p_c_constant_string = re.compile( r'^\s*"([^\\]|\\[^0-6]|\\[0-6]+)*"$')
+p_c_constant_string = re.compile( r'^\s*L?"([^\\]|\\[^0-6]|\\[0-6]+)*"$')
 
 def c_constant_string(text):
   "Returns true if text is a constant C string."
@@ -764,14 +764,14 @@ c_ruleset = {
       "buffer", "", {}),
   "char|TCHAR|wchar_t":  # This isn't really a function call, but it works.
      (c_static_array, 2,
-      "Statically-sized arrays can be overflowed or have other issues " +
-        "(CWE-119,CWE-120)",
+      "Statically-sized arrays can be improperly restricted, " +
+      "leading to potential overflows or other issues (CWE-119:CWE-120)",
       "Perform bounds checking, use functions that limit length, " +
         "or ensure that the size is larger than the maximum possible length",
       "buffer", "", {'extract_lookahead' : 1}),
 
   "gets|_getts":
-     (normal, 5, "Does not check for buffer overflows (CWE-120)",
+     (normal, 5, "Does not check for buffer overflows (CWE-120, CWE-20)",
       "Use fgets() instead", "buffer", "", {'input' : 1}),
 
   # The "sprintf" hook will raise "format" issues instead if appropriate:
@@ -781,14 +781,13 @@ c_ruleset = {
       "Use sprintf_s, snprintf, or vsnprintf",
       "buffer", "", {}),
 
-  # TODO: Add "wide character" versions of these functions.
-  "printf|vprintf|vwprintf|vfwprintf|_vtprintf":
+  "printf|vprintf|vwprintf|vfwprintf|_vtprintf|wprintf":
      (c_printf, 4,
       "If format strings can be influenced by an attacker, they can be exploited (CWE-134)",
       "Use a constant for the format specification",
       "format", "", {}),
 
-  "fprintf|vfprintf|_ftprintf|_vftprintf":
+  "fprintf|vfprintf|_ftprintf|_vftprintf|fwprintf|fvwprintf":
      (c_printf, 4,
       "If format strings can be influenced by an attacker, they can be exploited (CWE-134)",
       "Use a constant for the format specification",
@@ -809,17 +808,17 @@ c_ruleset = {
       "Use a constant for the format specification",
       "format", "", { 'format_position' : 3}),
 
-  "scanf|vscanf|wscanf|_tscanf":
+  "scanf|vscanf|wscanf|_tscanf|vwscanf":
      (c_scanf, 4,
       "The scanf() family's %s operation, without a limit specification, " +
-        "permits buffer overflows (CWE-120)",
+        "permits buffer overflows (CWE-120, CWE-20)",
       "Specify a limit to %s, or use a different input function",
       "buffer", "", {'input' : 1}),
 
-  "fscanf|sscanf|vsscanf|vfscanf|_ftscanf":
+  "fscanf|sscanf|vsscanf|vfscanf|_ftscanf|fwscanf|vfwscanf|vswscanf":
      (c_scanf, 4,
       "The scanf() family's %s operation, without a limit specification, "
-      "permits buffer overflows",
+      "permits buffer overflows (CWE-120, CWE-20)",
       "Specify a limit to %s, or use a different input function",
       "buffer", "", {'input' : 1, 'format_position' : 2}),
 
@@ -855,7 +854,7 @@ c_ruleset = {
   "realpath":
      (normal, 3,
       "This function does not protect against buffer overflows, " +
-        "and some implementations can overflow internally (CWE-120)",
+        "and some implementations can overflow internally (CWE-120/CWE-785)",
       "Ensure that the destination buffer is at least of size MAXPATHLEN, and" +
         "to protect against implementation problems, the input argument should also " +
         "be checked to ensure it is no larger than MAXPATHLEN",
@@ -863,27 +862,27 @@ c_ruleset = {
 
   "getopt|getopt_long":
      (normal, 3,
-     "Some older implementations do not protect against internal buffer overflows (CWE-120)",
+     "Some older implementations do not protect against internal buffer overflows (CWE-120, CWE-20)",
       "Check implementation on installation, or limit the size of all string inputs",
       "buffer", "dangers-c", {'input' : 1}),
 
   "getpass":
      (normal, 3,
-     "Some implementations may overflow buffers (CWE-120)",
+     "Some implementations may overflow buffers (CWE-120, CWE-20)",
       "",
       "buffer", "dangers-c", {'input' : 1}),
 
   "getwd":
      (normal, 3,
      "This does not protect against buffer overflows "
-     "by itself, so use with caution (CWE-120)",
+     "by itself, so use with caution (CWE-120, CWE-20)",
       "Use getcwd instead",
       "buffer", "dangers-c", {'input' : 1}),
 
   # fread not included here; in practice I think it's rare to mistake it.
   "getchar|fgetc|getc|read|_gettc":
      (normal, 1,
-     "Check buffer boundaries if used in a loop including recursive loops (CWE-120)",
+     "Check buffer boundaries if used in a loop including recursive loops (CWE-120, CWE-20)",
       "",
       "buffer", "dangers-c", {'input' : 1}),
 
@@ -892,7 +891,7 @@ c_ruleset = {
       "This usually indicates a security flaw.  If an " +
       "attacker can change anything along the path between the " +
       "call to access() and the file's actual use (e.g., by moving " +
-      "files), the attacker can exploit the race condition (CWE-362)",
+      "files), the attacker can exploit the race condition (CWE-362/CWE-367)",
       "Set up the correct permissions (e.g., using setuid()) and " +
       "try to open the file directly",
       "race",
@@ -926,7 +925,7 @@ c_ruleset = {
       "This accepts filename arguments; if an attacker " +
       "can move those files or change the link content, " +
       "a race condition results.  " +
-      "Also, it does not terminate with ASCII NUL. (CWE-362)",
+      "Also, it does not terminate with ASCII NUL. (CWE-362, CWE-20)",
       # This is often just a bad idea, and it's hard to suggest a
       # simple alternative:
       "Reconsider approach",
@@ -1009,7 +1008,7 @@ c_ruleset = {
         "or embedded spaces could allow an attacker to force a different program to run",
       "shell", "", {'check_for_null' : 1}),
 
-  "atoi|atol":
+  "atoi|atol|_wtoi|_wtoi64":
      (normal, 2,
       "Unless checked, the resulting number can exceed the expected range",
       " If source untrusted, check both minimum and maximum, even if the" +
@@ -1060,7 +1059,7 @@ c_ruleset = {
   "getenv|curl_getenv":
      (normal, 3, "Environment variables are untrustable input if they can be" +
                  " set by an attacker.  They can have any content and" +
-                 " length, and the same variable can be set more than once (CWE-807)",
+                 " length, and the same variable can be set more than once (CWE-807, CWE-20)",
       "Check environment variables carefully before using them",
       "buffer", "", {'input' : 1}),
 
@@ -1068,7 +1067,7 @@ c_ruleset = {
      (normal, 3, "This function is synonymous with 'getenv(\"HOME\")';" +
                  "it returns untrustable input if the environment can be" +
                  "set by an attacker.  It can have any content and length, " +
-                 "and the same variable can be set more than once (CWE-807)",
+                 "and the same variable can be set more than once (CWE-807, CWE-20)",
       "Check environment variables carefully before using them",
       "buffer", "", {'input' : 1}),
 
@@ -1076,7 +1075,7 @@ c_ruleset = {
      (normal, 3, "This function is synonymous with 'getenv(\"TMP\")';" +
                  "it returns untrustable input if the environment can be" +
                  "set by an attacker.  It can have any content and length, " +
-                 "and the same variable can be set more than once (CWE-807)",
+                 "and the same variable can be set more than once (CWE-807, CWE-20)",
       "Check environment variables carefully before using them",
       "buffer", "", {'input' : 1}),
 
@@ -1102,7 +1101,7 @@ c_ruleset = {
       "misc", "", {}),
 
   "LoadLibrary|LoadLibraryEx":
-     (normal, 3, "Ensure that the full path to the library is specified, or current directory may be used (CWE-829)",
+     (normal, 3, "Ensure that the full path to the library is specified, or current directory may be used (CWE-829, CWE-20)",
       "Use registry entry or GetWindowsDirectory to find library path, if you aren't already",
       "misc", "", {'input' : 1}),
 
@@ -1171,7 +1170,7 @@ c_ruleset = {
    # Input functions, useful for -I
   "recv|recvfrom|recvmsg|fread|readv":
      (normal, 0, "Function accepts input from outside program",
-      "Make sure input data is filtered, especially if an attacker could manipulate it",
+      "Make sure input data is filtered, especially if an attacker could manipulate it (CWE-20)",
       "input", "", {'input' : 1}),
 
 
@@ -1451,7 +1450,7 @@ def display_ruleset(ruleset):
 def initialize_ruleset():
   expand_ruleset(c_ruleset)
   if showheading:
-    print "Number of dangerous functions in C/C++ ruleset:", len(c_ruleset)
+    print "Number of rules (primarily dangerous function names) in C/C++ ruleset:", len(c_ruleset)
     if output_format: print "<p>"
   if list_rules:
     display_ruleset(c_ruleset)
