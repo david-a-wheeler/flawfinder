@@ -97,6 +97,7 @@ to show only hits with higher risk levels if you wish.
 Hit descriptions also note the relevant
 Common Weakness Enumeration (CWE) identifier(s) in parentheses,
 as discussed below.
+Flawfinder is officially CWE-Compatible.
 .PP
 Not every hit is actually a security vulnerability, 
 and not every security vulnerability is necessarily found.
@@ -144,6 +145,7 @@ Hitlists can be saved (using \-\-savehitlist), reloaded back for redisplay
 (using \-\-loadhitlist), and you can show only the hits that are different
 from another run (using \-\-diffhitlist).
 .PP
+Flawfinder is a simple tool, leading to some fundamental pros and cons.
 Flawfinder works by doing simple lexical tokenization
 (skipping comments and correctly tokenizing strings),
 looking for token matches to the database
@@ -160,11 +162,14 @@ Thus, flawfinder will necessarily
 produce many false positives for vulnerabilities
 and fail to report many vulnerabilities.
 On the other hand, flawfinder can find vulnerabilities in programs that
-cannot be linked, and in some cases, cannot even be compiled.
+cannot be built or cannot be linked.
+It even can often work with programs that cannot even be compiled
+(at least by the reviewer's tools).
 Flawfinder also doesn't get as confused by macro definitions
 and other oddities that more sophisticated tools have trouble with.
 Flawfinder can also be useful as a simple
-introduction to static analysis tools in general.
+introduction to static analysis tools in general,
+since it is easy to start using and easy to understand.
 .PP
 Any filename given on the command line will be examined (even if
 it doesn't have a usual C/C++ filename extension); thus you can force
@@ -720,7 +725,7 @@ describing software security weaknesses''
 (http://cwe.mitre.org/about/faq.html).
 For more information on CWEs, see http://cwe.mitre.org.
 .PP
-Flawfinder supports the CWE.
+Flawfinder supports the CWE and is officially CWE-Compatible.
 Hit descriptions typically include a relevant
 Common Weakness Enumeration (CWE) identifier in parentheses
 where there is known to be a relevant CWE.
