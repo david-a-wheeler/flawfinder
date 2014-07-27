@@ -9,7 +9,7 @@
 # Eventually switch to using DistUtils to autogenerate.
 
 NAME=flawfinder
-VERSION=1.30
+VERSION=1.31
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
