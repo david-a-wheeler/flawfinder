@@ -71,6 +71,7 @@ flawfinder.pdf: flawfinder.ps
 clean:
 	rm -f *.pyc
 	rm -f flawfinder-$(VERSION).tar.gz
+	rm -f cwe.c cwe
 	rm -f *.tar *.exe ./cwe
 
 distribute: clean flawfinder.pdf flawfinder.ps
@@ -151,9 +152,13 @@ my_install: flawfinder.pdf flawfinder.ps
 	           /home/dwheeler/dwheeler.com/flawfinder
 
 # This is intended to be a local capability to list CWEs
-show-cwes:
+cwe.c: cwe.l
 	$(FLEX) -o cwe.c cwe.l
+
+cwe: cwe.c
 	$(CC) -o cwe cwe.c -lfl
+
+show-cwes: cwe
 	./cwe < flawfinder | sort -u -V
 
 
