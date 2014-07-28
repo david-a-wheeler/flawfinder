@@ -16,9 +16,22 @@ ARCH=noarch
 
 SAMPLE_DIR=/usr/src/linux-2.2.16
 
-INSTALL_DIR=/usr/local
-INSTALL_DIR_BIN=$(INSTALL_DIR)/bin
-INSTALL_DIR_MAN=$(INSTALL_DIR)/man/man1
+# Flawfinder has traditionally used INSTALL_DIR, INSTALL_DIR_BIN, and
+# INSTALL_DIR_MAN.  Here we add support for GNU variables like prefix, etc.;
+# users who override the older flawfinder-specific variable names will
+# not notice any changes.  We define exec_prefix oddly so we can
+# quietly merge these 2 systems:
+
+prefix=/usr/local
+INSTALL_DIR=$(prefix)
+exec_prefix=$(INSTALL_DIR)
+bindir=$(exec_prefix)/bin
+INSTALL_DIR_BIN=$(bindir)
+
+datarootdir=$(INSTALL_DIR)/share
+mandir=$(datarootdir)/man
+man1dir=$(mandir)/man1
+INSTALL_DIR_MAN=$(man1dir)
 
 FLEX=flex
 
@@ -34,6 +47,8 @@ PYTHONEXT=
 
 RPMBUILD=rpmbuild
 
+DESTDIR=
+
 all: flawfinder.pdf flawfinder.1.gz
 	chmod -R a+rX *
 
@@ -42,6 +57,9 @@ all: flawfinder.pdf flawfinder.1.gz
 # and required by SUSv3 (and probably earlier, I haven't checked).
 MKDIR_P=mkdir -p
 
+INSTALL_PROGRAM=cp -p
+INSTALL_DATA=cp -p
+
 # This installer doesn't install the compiled Python bytecode.
 # It doesn't take long to compile the short Python code, so
 # it doesn't save much time, and having the source code available
@@ -49,14 +67,14 @@ MKDIR_P=mkdir -p
 # (admittedly rare) problem of bad date/timestamps causing the
 # compiled code to override later uncompiled Python code.
 install:
-	-$(MKDIR_P) $(INSTALL_DIR_BIN)
-	cp flawfinder$(PYTHONEXT) $(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
-	-$(MKDIR_P) $(INSTALL_DIR_MAN)
-	cp flawfinder.1 $(INSTALL_DIR_MAN)/flawfinder.1
+	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_BIN)
+	$(INSTALL_PROGRAM) flawfinder$(PYTHONEXT) $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
+	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_MAN)
+	$(INSTALL_DATA) flawfinder.1 $(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1
 
 uninstall:
-	rm $(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
-	rm $(INSTALL_DIR_MAN)/flawfinder.1
+	rm -f $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
+	rm -f $(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1
 
 flawfinder.1.gz: flawfinder.1
 	gzip -c9 < flawfinder.1 > flawfinder.1.gz

@@ -16,13 +16,23 @@ So, here's how to do that.
     tar xvf flawfinder*.tar
     cd flawfinder-*
 
-* Decide where you want to put it.  Flawfinder normally installs
+* Decide where you want to put it.  Flawfinder normally installs everything
   in /usr/local, with the program in /usr/local/bin and the manual in
-  /usr/local/man, per GNU conventions.  You can override this
-  using the normal GNU conventions when installing (with "make install")
-  by setting INSTALL_DIR (defaults to /usr/local),
+  /usr/local/share/man/man1, per GNU conventions.  You can override this
+  when installing (with "make install") by setting some environment
+  variables.  You can do this by setting traditional GNU variables, e.g.,
+  make prefix=/usr install
+  will install the flawfinder program to /usr/bin/flawfinder
+  and the man page to /usr/share/man/man1/flawfinder.1.
+  You can override the specific manual page locations by setting
+  "bindir" and "man1dir" on the command line with make.
+
+  You can also use the older flawfinder makefile variables to control
+  installation; you can set INSTALL_DIR (defaults to /usr/local),
   INSTALL_DIR_BIN for the program location (defaults to INSTALL_DIR/bin), and
-  INSTALL_DIR_MAN for the manual location (defaults to INSTALL_DIR/man).
+  INSTALL_DIR_MAN for the manual location
+  (currently defaults to $(INSTALL_DIR)/share/man/man1 per GNU convention;
+  its former default location was $(INSTALL_DIR)/man/man1).
 
 * If you're using Cygwin on Windows, you can install it using "make install"
   but you need to tell the makefile to use the .py extension
