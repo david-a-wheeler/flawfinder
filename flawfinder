@@ -528,9 +528,10 @@ def c_buffer(hit):
 
 p_dangerous_strncat = re.compile(r'^\s*sizeof\s*(\(\s*)?[A-Za-z_$0-9]+'  +
                                     r'\s*(\)\s*)?(-\s*1\s*)?$')
-# This is a heuristic: constants in C are usually given in all upper case letters.
-# Yes, this need not be true, but it's true often enough that it's worth
-# using as a heuristic.  strncat better not be passed a constant as the length!
+# This is a heuristic: constants in C are usually given in all
+# upper case letters.  Yes, this need not be true, but it's true often
+# enough that it's worth using as a heuristic.
+# We check because strncat better not be passed a constant as the length!
 p_looks_like_constant = re.compile(r'^\s*[A-Z][A-Z_$0-9]+\s*(-\s*1\s*)?$')
 
 def c_strncat(hit):
