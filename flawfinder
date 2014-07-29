@@ -220,7 +220,7 @@ def load_patch_info(patch_file):
     filename_match = fn_get_filename(sLine)
     if (filename_match):
       patched_filename = string.strip(filename_match.group('filename'))
-      if (patch.has_key(patched_filename) == True):
+      if (patched_file in patch):
         error("filename occurs more than once in the patch: %s" %
                patched_filename)
         sys.exit(1)
@@ -1282,7 +1282,7 @@ def process_c_file(f, patch_infos):
   linebegin = 1
   codeinline = 0 # 1 when we see some code (so increment sloc at newline)
 
-  if ((patch_infos != None) and (not patch_infos.has_key(f))):
+  if ((patch_infos != None) and (not (f in patch_infos))):
     # This file isn't in the patch list, so don't bother analyzing it.
     if not quiet:
       if output_format:
@@ -1396,8 +1396,9 @@ def process_c_file(f, patch_infos):
             i = endpos
             word = text[startpos:endpos]
             # print "Word is:", text[startpos:endpos]
-            if c_ruleset.has_key(word) and c_valid_match(text, endpos):
-              if ( (patch_infos == None) or ((patch_infos != None) and patch_infos[f].has_key(linenumber))):
+            if (word in c_ruleset) and c_valid_match(text, endpos):
+              if ((patch_infos == None) or ((patch_infos != None) and
+                                            (linenumber in patch_infos[f]))):
         	# FOUND A MATCH, setup & call hook.
         	# print "HIT: #%s#\n" % word
         	# Don't use the tuple assignment form, e.g., a,b=c,d
@@ -1432,7 +1433,7 @@ def expand_ruleset(ruleset):
   for rule in ruleset.keys():
     if string.find(rule, "|") != -1:  # We found a rule to expand.
       for newrule in string.split(rule, "|"):
-        if ruleset.has_key(newrule):
+        if newrule in ruleset:
           print "Error: Rule %s, when expanded, overlaps %s" % ( rule, newrule )
           sys.exit(1)
         ruleset[newrule] = ruleset[rule]
@@ -1519,7 +1520,7 @@ def maybe_process_file(f, patch_infos):
   dotposition = string.rfind(f, ".")
   if dotposition > 1:
     extension = f[dotposition:]
-    if c_extensions.has_key(extension):
+    if extension in c_extensions:
       # Its name appears to be a C/C++ source code file.
       if (not allowlink) and os.path.islink(f):
         if not quiet: print "Warning: skipping symbolic link file", h(f)
@@ -1530,7 +1531,8 @@ def maybe_process_file(f, patch_infos):
         if not quiet: print "Warning: skipping non-regular file", h(f)
       else:
         # We want to know the difference only with files found in the patch.
-        if ( (patch_infos == None) or (patch_infos != None and patch_infos.has_key(f) == True) ):
+        if ((patch_infos == None) or (patch_infos != None and
+                                      (f in patch_infos))):
           process_c_file(f, patch_infos)
 
 
@@ -1554,7 +1556,7 @@ def process_file_args(files, patch_infos):
        # If on the command line, FORCE processing of it.
        # Currently, we only process C/C++.
        # check if we only want to review a patch
-       if ( (patch_infos != None and patch_infos.has_key(f) == True) or (patch_infos == None) ):
+       if ( (patch_infos != None and k in patch_infos) or (patch_infos == None) ):
         process_c_file(f, patch_infos)
     elif os.path.isdir(f):
        # At one time flawfinder used os.path.walk, but that Python
