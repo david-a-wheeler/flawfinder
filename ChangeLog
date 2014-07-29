@@ -1,3 +1,13 @@
+2014-07-28 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Release version 1.31, a set of small improvements mostly CWE-related.
+	* Note that flawfinder is officially CWE-compatible.
+	* Support GNU make install conventions (prefix, bindir, DESTDIR, etc.).
+	* Simplified installation text.
+	* Add reference to info at "http://www.dwheeler.com/secure-programs".
+	* Document that hitlists should be trusted to be loaded or diffed.
+	* Tweak/improve mappings to CWE.  E.G., strlen()
+	  better maps to CWE-126 (buffer over-read).
+
 2014-07-13 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Release 1.29, primarily for CWE improvements.
 	* Multi-line formatting is faster and formats better.
