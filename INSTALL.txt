@@ -8,7 +8,7 @@ For a ports-based system where you have a current port, just use that.
 Otherwise, you'll need to install from the tarball.
 So, here's how to do that.
 
-* Install the "tarball" and uncompress it.
+* Download the "tarball" and uncompress it.
   GNU-based systems can run "tar xvzf flawfinder*.tar.gz" to do so,
   then "cd" into the directory created.  If that doesn't work
   (e.g., you have an old tar program), use:
@@ -21,18 +21,20 @@ So, here's how to do that.
   /usr/local/share/man/man1, per GNU conventions.  You can override this
   when installing (with "make install") by setting some environment
   variables.  You can do this by setting traditional GNU variables, e.g.,
-  make prefix=/usr install
-  will install the flawfinder program to /usr/bin/flawfinder
-  and the man page to /usr/share/man/man1/flawfinder.1.
-  You can override the specific manual page locations by setting
-  "bindir" and "man1dir" on the command line with make.
+  "prefix" = prefix of all files, default /usr/local
+  "bindir" = directory for binaries, default $(prefix)/bin
+             (the program "flawfinder" is put here)
+  "man1dir" = directory for man1 man pages, default $(prefix)/share/man/man1
+             (the man page "flawfinder.1" is put here)
+  It is common to override "prefix" with "/usr" instead.
 
   You can also use the older flawfinder makefile variables to control
-  installation; you can set INSTALL_DIR (defaults to /usr/local),
-  INSTALL_DIR_BIN for the program location (defaults to INSTALL_DIR/bin), and
-  INSTALL_DIR_MAN for the manual location
-  (currently defaults to $(INSTALL_DIR)/share/man/man1 per GNU convention;
-  its former default location was $(INSTALL_DIR)/man/man1).
+  installation; you can set:
+  INSTALL_DIR = prefix, default $(prefix)
+  INSTALL_DIR_BIN = program location, default $(bindir)
+  INSTALL_DIR_MAN = manual location, default $(man1dir)
+  Note that the default of INSTALL_DIR_MAN has changed; at one time
+  it was $(prefix)/man/man1, but now it is $(prefix)/share/man/man1
 
 * If you're using Cygwin on Windows, you can install it using "make install"
   but you need to tell the makefile to use the .py extension
@@ -57,11 +59,13 @@ So, here's how to do that.
   (you need to be root; "make uninstall" reverses it).
 
   To install in /usr (the program in /usr/bin, the manual in /usr/man):
-  make INSTALL_DIR=/usr install
+    make prefix=/usr install
+  or alternatively, using the older flawfinder conventions:
+    make INSTALL_DIR=/usr install
 
   To put the binaries in /usr/bin, and the manuals in /usr/share/man
   (common for Red Hat Linux), do:
-  make INSTALL_DIR=/usr INSTALL_DIR_MAN=/usr/share/man install
+    make INSTALL_DIR=/usr INSTALL_DIR_MAN=/usr/share/man install
 
 
 * Windows systems should be able to run this on the command line (cmd.exe)
