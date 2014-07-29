@@ -33,12 +33,14 @@ flawfinder \- lexically find potential security flaws ("hits") in source code
 .RB [ \-\-allowlink ]
 .RB [ \-\-followdotdir ]
 .RB [ \-\-nolink ]
+.br
 .RB [ \-\-patch=\fIfilename\fR | \-P\ \fIfilename\fR ]
 .br
 .\" Selecting Hits to Display:
 .RB [ \-\-inputs | \-I ]
 [ \fB\-\-minlevel=\fR\fIX\fR | \fB\-m\fR\ \fIX\fR ]
 .RB [ \-\-falsepositive | \-F ]
+.br
 .RB [ \-\-neverignore | \-n ]
 .br
 [\fB\-\-regex=\fR\fIPATTERN\fR | \fB\-e\fR \fIPATTERN\fR]
@@ -318,13 +320,15 @@ Show usage (help) information.
 
 .TP 12
 .BI \-\-listrules
-List the terms that trigger further examination, their default risk level,
+List the terms (tokens)
+that trigger further examination, their default risk level,
 and the default warning (including the CWE identifier(s), if applicable),
 all tab-separated.
+The terms are primarily names of potentially-dangerous functions.
 Note that the reported risk level and warning
 for some specific code may be different than the default,
 depending on how the term is used.
-Note that version 1.29 changed the separator from spaces to tabs, and
+Flawfinder version 1.29 changed the separator from spaces to tabs, and
 added the default warning field.
 
 .TP
