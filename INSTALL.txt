@@ -1,12 +1,19 @@
-To install flawfinder:
+To install flawfinder on a Unix-like system (including Cygwin):
 
 If you use an RPM-based system (e.g., Red Hat) or deb-based system
 (e.g., Debian), use their respective RPM or debian installation program
 and just install it; then ignore the rest of these instructions.
 For a ports-based system where you have a current port, just use that.
 
-Otherwise, you'll need to install from the tarball.
-So, here's how to do that.
+QUICK START:
+The quick way to install flawfinder from the tarball is to
+unpack the tarball and type in something like this on the commmand line:
+  sudo make prefix=/usr install
+Omit prefix=/usr to install in /usr/local instead.
+Omit "sudo" if you are already root.
+
+
+Not enough?  Here are more detailed step-by-step instructions and options.
 
 * Download the "tarball" and uncompress it.
   GNU-based systems can run "tar xvzf flawfinder*.tar.gz" to do so,
@@ -17,15 +24,18 @@ So, here's how to do that.
     cd flawfinder-*
 
 * Decide where you want to put it.  Flawfinder normally installs everything
-  in /usr/local, with the program in /usr/local/bin and the manual in
+  in /usr/local, with the program in /usr/local/bin and the man page in
   /usr/local/share/man/man1, per GNU conventions.  You can override this
   when installing (with "make install") by setting some environment
   variables.  You can do this by setting traditional GNU variables, e.g.,
   "prefix" = prefix of all files, default /usr/local
   "bindir" = directory for binaries, default $(prefix)/bin
              (the program "flawfinder" is put here)
-  "man1dir" = directory for man1 man pages, default $(prefix)/share/man/man1
-             (the man page "flawfinder.1" is put here)
+  "datarootdir" = data for shared data, by default $(prefix)/share
+  "mandir" = directory for all man pages, default $(datarootdir)/man
+  "man1dir" = directory for all man1 pages, default $(mandir)/man1
+             (the man page "flawfinder.1" is put here).  Given the
+             previous definitions, its default is $(prefix)/share/man/man1
   It is common to override "prefix" with "/usr" instead.
 
   You can also use the older flawfinder makefile variables to control
@@ -48,7 +58,8 @@ So, here's how to do that.
   the line beginning with "PYTHONEXT=" so that it reads as follows:
   PYTHONEXT=.py
 
-* Now install it, giving whatever overrides you need.
+* Now install it, giving whatever overrides you need.  Currently it really
+  only installs two files, an executable and a man page (documentation).
   In most cases, you'll need to be root, so run this first:
   su
 
@@ -63,10 +74,14 @@ So, here's how to do that.
   or alternatively, using the older flawfinder conventions:
     make INSTALL_DIR=/usr install
 
-  To put the binaries in /usr/bin, and the manuals in /usr/share/man
-  (common for Red Hat Linux), do:
-    make INSTALL_DIR=/usr INSTALL_DIR_MAN=/usr/share/man install
+  To install in /usr on Cygwin:
+    make prefix=/usr PYTHONEXT=.py install
 
+  To put the binaries in /usr/bin, and the manuals under /usr/local/share/man
+  (common for Red Hat Linux), do:
+    make prefix=/usr mandir=/usr/local/share/man install
+
+  The installer and uninstaller honor DESTDIR.
 
 * Windows systems should be able to run this on the command line (cmd.exe)
   directly, but I haven't tried that.
