@@ -160,14 +160,13 @@ rpm: distribute
 	echo "Use rpm -e $(NAME) to remove the package"
 	chown --reference=. *.rpm
 
-my_install: flawfinder.pdf flawfinder.ps
-	cp -p $(VERSIONEDNAME)-$(RPM_VERSION).$(ARCH).rpm \
-	      $(VERSIONEDNAME)-$(RPM_VERSION).src.rpm \
-	      $(VERSIONEDNAME).tar.gz \
-	      flawfinder makefile \
+# This is a developer convenience target, not intended for general use.
+my-install: flawfinder.pdf flawfinder.ps test
+	cp -p $(VERSIONEDNAME).tar.gz \
+	      flawfinder flawfinder.1 makefile \
 	      flawfinder.pdf flawfinder.ps ChangeLog \
 	      test.c test2.c test-results.txt test-results.html \
-	           /home/dwheeler/dwheeler.com/flawfinder
+	           /home/dwheeler/dwheeler.com/flawfinder/
 
 # This is intended to be a local capability to list CWEs
 cwe.c: cwe.l
@@ -180,7 +179,7 @@ show-cwes: cwe
 	./cwe < flawfinder | sort -u -V
 
 
-.PHONY: install clean test check profile test-is-correct rpm uninstall distribute
+.PHONY: install clean test check profile test-is-correct rpm uninstall distribute my-install show-cwes
 
 
 # When I switch to using "DistUtils", I may need to move the MANIFEST.in
