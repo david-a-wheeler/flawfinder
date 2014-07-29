@@ -16,8 +16,9 @@ version="1.31"
 #
 # Currently this program can only analyze C/C++ code.
 #
-# Copyright (C) 2001-2014 David A. Wheeler
-# This is released under the General Public License (GPL):
+# Copyright (C) 2001-2014 David A. Wheeler.
+# This is released under the
+# GNU General Public License (GPL) version 2 or later (GPLv2+):
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
