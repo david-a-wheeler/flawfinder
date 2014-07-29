@@ -1399,23 +1399,23 @@ def process_c_file(f, patch_infos):
             if (word in c_ruleset) and c_valid_match(text, endpos):
               if ((patch_infos == None) or ((patch_infos != None) and
                                             (linenumber in patch_infos[f]))):
-        	# FOUND A MATCH, setup & call hook.
-        	# print "HIT: #%s#\n" % word
-        	# Don't use the tuple assignment form, e.g., a,b=c,d
-        	# because Python (least 2.2.2) does that slower
-        	# (presumably because it creates & destroys temporary tuples)
-        	hit = Hit(c_ruleset[word])
-        	hit.name = word
-        	hit.start = startpos
-        	hit.end = endpos
-        	hit.line = linenumber
-        	hit.column = find_column(text, startpos)
-        	hit.filename=filename
-        	hit.context_text = get_context(text, startpos)
-        	hit.parameters = extract_c_parameters(text, endpos)
-        	if hit.extract_lookahead:
-        	  hit.lookahead = text[startpos:startpos+max_lookahead]
-        	apply(hit.hook, (hit, ))
+                # FOUND A MATCH, setup & call hook.
+                # print "HIT: #%s#\n" % word
+                # Don't use the tuple assignment form, e.g., a,b=c,d
+                # because Python (least 2.2.2) does that slower
+                # (presumably because it creates & destroys temporary tuples)
+                hit = Hit(c_ruleset[word])
+                hit.name = word
+                hit.start = startpos
+                hit.end = endpos
+                hit.line = linenumber
+                hit.column = find_column(text, startpos)
+                hit.filename=filename
+                hit.context_text = get_context(text, startpos)
+                hit.parameters = extract_c_parameters(text, endpos)
+                if hit.extract_lookahead:
+                  hit.lookahead = text[startpos:startpos+max_lookahead]
+                apply(hit.hook, (hit, ))
           elif p_digits.match(c):
             while i<len(text) and p_digits.match(text[i]): # Process a number.
               i = i + 1
