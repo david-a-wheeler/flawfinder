@@ -535,21 +535,23 @@ p_looks_like_constant = re.compile(r'^\s*[A-Z][A-Z_$0-9]+\s*(-\s*1\s*)?$')
 
 def c_strncat(hit):
   if len(hit.parameters) > 3:
-    # A common mistake is to think that when calling strncat(dest,src,len), that
-    # "len" means the ENTIRE length of the destination.  This isn't true, it must
-    # be the length of the characters TO BE ADDED at most.  Which is one reason that
-    # strlcat is better than strncat.  We'll detect a common case of this error;
-    # if the length parameter is of the form "sizeof(dest)", we have this error.
+    # A common mistake is to think that when calling strncat(dest,src,len),
+    # that "len" means the ENTIRE length of the destination.  This isn't true,
+    # it must be the length of the characters TO BE ADDED at most.
+    # Which is one reason that strlcat is better than strncat.
+    # We'll detect a common case of this error; if the length parameter
+    # is of the form "sizeof(dest)", we have this error.
     # Actually, sizeof(dest) is okay if the dest's first character is always \0,
     # but in that case the programmer should use strncpy, NOT strncat.
     # The following heuristic will certainly miss some dangerous cases, but
     # it at least catches the most obvious situation.
-    # This particular heuristic is overzealous; it detects ANY sizeof, instead of
-    # only the sizeof(dest)  (where dest is given in hit.parameters[1]).
-    # However, there aren't many other likely candidates for sizeof; some people
-    # use it to capture just the length of the source, but this is just as dangerous,
-    # since then it absolutely does NOT take care of the destination maximum length
-    # in general.  It also detects if a constant is given as a length, if the
+    # This particular heuristic is overzealous; it detects ANY sizeof, instead
+    # of only the sizeof(dest)  (where dest is given in hit.parameters[1]).
+    # However, there aren't many other likely candidates for sizeof; some
+    # people use it to capture just the length of the source, but this is
+    # just as dangerous, since then it absolutely does NOT take care of
+    # the destination maximum length in general.
+    # It also detects if a constant is given as a length, if the
     # constant follows common C naming rules.
     length_text=hit.parameters[3]
     if p_dangerous_strncat.search(length_text) or p_looks_like_constant.search(length_text):
@@ -651,8 +653,9 @@ p_safe_multi_byte =      re.compile(r'^\s*sizeof\s*(\(\s*)?[A-Za-z_$0-9]+\s*(\)\
                                      r'\[\s*0\s*\]\)\s*(-\s*1\s*)?$')
 
 def c_multi_byte_to_wide_char(hit):
-  # Unfortunately, this doesn't detect bad calls when it's a #define or constant
-  # set by a sizeof(), but trying to do so would create FAR too many false positives.
+  # Unfortunately, this doesn't detect bad calls when it's a #define or
+  # constant set by a sizeof(), but trying to do so would create
+  # FAR too many false positives.
   if len(hit.parameters)-1 >= 6:
     num_chars_to_copy=hit.parameters[6]
     if p_dangerous_multi_byte.search(num_chars_to_copy):
@@ -660,9 +663,10 @@ def c_multi_byte_to_wide_char(hit):
       hit.note = ("Risk is high, it appears that the size is given as bytes, but the " +
                  "function requires size as characters.")
     elif p_safe_multi_byte.search(num_chars_to_copy):
-      # This isn't really risk-free, since it might not be the destination, or the
-      # destination might be a character array (if it's a char pointer, the pattern
-      # is actually quite dangerous, but programmers are unlikely to make that error).
+      # This isn't really risk-free, since it might not be the destination,
+      # or the destination might be a character array (if it's a char pointer,
+      # the pattern is actually quite dangerous, but programmers
+      # are unlikely to make that error).
       hit.level = 1
       hit.note = "Risk is very low, the length appears to be in characters not bytes."
   add_warning(hit)
