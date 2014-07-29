@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import division
+
 """flawfinder: Find potential security flaws ("hits") in source code.
  Usage:
    flawfinder [options] [source_code_file]+
@@ -33,7 +35,6 @@ version="1.31"
 #    You should have received a copy of the GNU General Public License
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 
 
 import sys, re, string, getopt
@@ -1845,7 +1846,7 @@ def show_final_results():
     if time_analyzing > 0 and not omit_time:  # Avoid divide-by-zero.
       print "in approximately %.2f seconds (%.0f lines/second)" % (
              time_analyzing,
-             (sumlines * 1.0 / time_analyzing) )
+             (sumlines / time_analyzing) )
     else:
       print
     if output_format: print "<br>"
