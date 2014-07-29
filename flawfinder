@@ -1415,7 +1415,7 @@ def process_c_file(f, patch_infos):
                 hit.parameters = extract_c_parameters(text, endpos)
                 if hit.extract_lookahead:
                   hit.lookahead = text[startpos:startpos+max_lookahead]
-                apply(hit.hook, (hit, ))
+                hit.hook(hit)
           elif p_digits.match(c):
             while i<len(text) and p_digits.match(text[i]): # Process a number.
               i = i + 1
