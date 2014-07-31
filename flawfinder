@@ -36,6 +36,25 @@ version="1.31"
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+# The Python developers did a *terrible* job when they transitioned
+# to Python version 3, as I have documented elsewhere.  What's more,
+# many mechanisms that do exist do not come natively with Python 2, or
+# require version 2.6 or later (yet older versions are still in use).
+# For example, this requires Python version 2.6:
+# from __future__ import print_function
+# As a result, many Python programs (including this one) do not use Python 3.
+# The solution used here is to gradually transition the Python code
+# to Python 2 code that works across 2.2 through 2.7.  A preference is
+# given to code constructs that would ALSO work in version 3.X, but
+# only if they would *already* work in Python 2, and only if they don't
+# make the code too complicated.
+
+# The plan is to eventually switch this code so that it runs unchanged
+# on both 2.X and 3.X, but that is hard to support if the version number
+# is less than 2.6, so we won't do that at this time.  Instead, we'll
+# wait until versions lower than 2.6 are a distant memory, and then
+# start in that direction.  Hopefully by then the developers of Python
+# will begin to make it easy to transition to newer versions of Python.
 
 import sys, re, string, getopt
 import pickle               # To support load/save/diff of hitlist
