@@ -1,5 +1,8 @@
 This is "flawfinder" by David A. Wheeler, <dwheeler@dwheeler.com>.
-It's a simple Python program for scanning source code for security problems.
+It's a simple Python program for scanning C/C++ source code
+for security problems. It uses lexical scanning to find tokens
+(such as function names) that suggest likely problems, estimates their
+level of risk (e.g., by the text of function calls), and reports the resutlts.
 
 For more information, see:
  http://www.dwheeler.com/flawfinder
