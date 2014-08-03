@@ -1596,6 +1596,12 @@ def process_file_args(files, patch_infos):
        # built-in doesn't give us enough control over symbolic links.
        # So, we'll walk the filesystem hierarchy ourselves:
        maybe_process_file(f, patch_infos)
+    elif not os.path.exists(f):
+      if not quiet:
+        if h(f).startswith("\342\210\222"):
+          print_warning("Skipping non-existent filename starting with UTF-8 long dash " + h(f))
+        else:
+          print_warning("Skipping non-existent file " + h(f))
     else:
        if not quiet: print_warning("Skipping non-regular file " + h(f))
 
