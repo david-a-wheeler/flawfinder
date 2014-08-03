@@ -1593,7 +1593,7 @@ def process_file_args(files, patch_infos):
 
 def usage():
   print """
-flawfinder [--help | -h] [--listrules] [--version]
+flawfinder [--help | -h] [--version] [--listrules]
   [--allowlink] [--followdotdir] [--nolink] 
            [--patch filename | -P filename]
   [--inputs | -I] [--minlevel X | -m X]
@@ -1607,9 +1607,9 @@ flawfinder [--help | -h] [--listrules] [--version]
   The options cover various aspects of flawfinder as follows.
 
   Documentation:
-  --help      Show this usage help.
-  --listrules List the rules in the ruleset (rule database).
+  --help | -h Show this usage help.
   --version   Show version number.
+  --listrules List the rules in the ruleset (rule database).
 
   Selecting Input Data:
   --allowlink Allow symbolic links.
@@ -1646,7 +1646,8 @@ flawfinder [--help | -h] [--listrules] [--version]
               Only report hits that match the regular expression PATTERN.
 
   Selecting Output Format:
-  --columns   Show  the  column  number  (as well as the file name and
+  --columns | -C
+              Show  the  column  number  (as well as the file name and
               line number) of each hit; this is shown after the line number
               by adding a colon and the column number in the line (the first
               character in a line is column number 1).
@@ -1760,6 +1761,8 @@ def process_options():
         print version
         sys.exit(0)
       elif opt in [ '-h', '-?', '--help' ]:
+        # We accept "-?" but do not document it.  On Unix-like systems the
+        # question mark in "-?" should be escaped, and many forget that.
         usage()
         sys.exit(0)
     # For DOS/Windows, expand filenames; for Unix, DON'T expand them
