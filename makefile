@@ -94,17 +94,19 @@ clean:
 
 distribute: clean flawfinder.pdf flawfinder.ps
 	chmod -R a+rX *
-	mkdir ,1
-	cp -p [a-zA-Z]* ,1
-	rm -f ,1/*.tar.gz
-	rm -f ,1/*.rpm
+	mkdir ,tempdir
+	cp -p [a-zA-Z]* ,tempdir
+	rm -f ,tempdir/*.tar.gz
+	rm -f ,tempdir/*.rpm
 	# We don't need both "flawfinder" and "flawfinder.py":
-	rm -f ,1/flawfinder.py
-	mv ,1 flawfinder-$(VERSION)
+	rm -f ,tempdir/flawfinder.py
+	mv ,tempdir flawfinder-$(VERSION)
 	# Nobody else needs "update" either.
-	rm -f ,1/update
+	rm -f ,tempdir/update
+	# Don't need compressed version of document.
+	rm -f ,tempdir/flawfinder.1.gz
 	# Don't include (out of date) index.html
-	rm -f ,1/index.html
+	rm -f ,tempdir/index.html
 	tar cvfz flawfinder-$(VERSION).tar.gz flawfinder-$(VERSION)
 	chown --reference=. flawfinder-$(VERSION).tar.gz
 	rm -fr flawfinder-$(VERSION)
