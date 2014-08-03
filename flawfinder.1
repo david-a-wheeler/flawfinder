@@ -330,6 +330,7 @@ The terms are primarily names of potentially-dangerous functions.
 Note that the reported risk level and warning
 for some specific code may be different than the default,
 depending on how the term is used.
+Combine with \-D if you do not want the usual header.
 Flawfinder version 1.29 changed the separator from spaces to tabs, and
 added the default warning field.
 
@@ -513,13 +514,15 @@ Save all resulting hits (the "hitlist") to F.
 .TP
 \fB\-\-loadhitlist=\fR\fIF\fR
 Load the hitlist from F instead of analyzing source programs.
-Do not load hitlists from untrusted sources.
+Warning: Do \fInot\fR load hitlists from untrusted sources
+(for security reasons).
 
 .TP
 \fB\-\-diffhitlist=\fR\fIF\fR
 Show only hits (loaded or analyzed) not in F.
 F was presumably created previously using \-\-savehitlist.
-Do not diff hitlists from untrusted sources.
+Warning: Do \fInot\fR diff hitlists from untrusted sources
+(for security reasons).
 If the \-\-loadhitlist option is not provided, this will show the hits in
 the analyzed source code files that were not previously stored in F.
 If used along with \-\-loadhitlist, this will show the hits in the
@@ -965,37 +968,53 @@ COM1-COM9, and LPT1-LPT9, optionally followed by an extension
 (Windows is case-insensitive).
 .\" See 'Writing Secure Code' by Howard and LeBlanc, pg. 223
 .PP
-Do not load or diff hitlists from untrusted sources.
-They are implemented using the Python pickle module, which is not
-intended to be secure against erroneous or maliciously constructed data.
-
+Do \fInot\fR load or diff hitlists from untrusted sources.
+They are implemented using the Python pickle module, and the pickle
+module is not intended to be secure against
+erroneous or maliciously constructed data.
+Stored hitlists are intended for later use by the same user who created
+the hitlist; in that context this restriction is not a problem.
 
 .SH BUGS
-
+.PP
+Flawfinder is based on simple text pattern matching, which is
+part of its fundamental design and not easily changed.
+This design apporach leads to a number of fundamental limitations, e.g.,
+a higher false positive rate, and is the underlying cause of
+most of the bugs listed here.
+On the positive side, flawfinder doesn't get confused by many
+complicated preprocessor sequences that other tools sometimes choke on;
+flawfinder can often handle code that cannot link, and sometimes
+cannot even build.
+.PP
 Flawfinder is currently limited to C/C++.
 In addition, when analyzing C++ it focuses primarily on the C subset of C++.
-In particular, flawfinder does not report on expressions like cin >> charbuf,
-where charbuf is a char array; flawfinder doesn't have type information,
-and ">>" is safe with many other types.
+For example, flawfinder does not report on expressions like cin >> charbuf,
+where charbuf is a char array.
+That is because flawfinder doesn't have type information,
+and ">>" is safe with many other types; reporting on all ">>"
+would lead to too many false positives.
 That said,
-it's designed so that adding support for other languages should be easy.
+it's designed so that adding support for other languages should be easy
+where its text-based approach can usefully apply.
 .PP
 Flawfinder can be fooled by user-defined functions or method names that
 happen to be the same as those defined as ``hits'' in its database,
 and will often trigger on definitions (as well as uses) of functions
 with the same name.
-This is because flawfinder is based on text pattern matching, which is
-part of its fundamental design and not easily changed.
-This isn't as much of a problem for C code, but it can be more of a problem
-for some C++ code which heavily uses classes and namespaces.
-On the positive side, flawfinder doesn't get confused by many
-complicated preprocessor sequences that other tools sometimes choke on.
-Also, having the same name as a common library routine name can
-indicate that the developer is simply rewriting a common library routine,
-say for portability's sake.
-Thus, there are reasonable odds that
-these rewritten routines will be vulnerable to the same kinds of misuse.
-The \-\-falsepositive option can help somewhat.
+This is typically not a problem for C code.
+In C code, a function with the same name as a common library routine name
+often indicates that the developer is simply rewriting a
+common library routine with the same interface, say for portability's sake.
+C programs tend to avoid reusing the same name for a different purpose
+(since in C function names are global by default).
+There are reasonable odds that
+these rewritten routines will be vulnerable to the same kinds of misuse,
+and thus, reusing these rules is a reasonable approach.
+However, this can be a much more serious problem in C++
+code which heavily uses classes and namespaces, since the
+same method name may have many different meanings.
+The \-\-falsepositive option can help somewhat in this case.
 If this is a serious problem, feel free to modify the program, or process
 the flawfinder output through other tools to remove the false positives.
 .PP
@@ -1016,7 +1035,7 @@ In practice, this doesn't seem to be a problem; gettext() is usually
 wrapped around the entire parameter.
 .PP
 The routine to detect statically defined character arrays uses
-simple text matching; some complicated expresions can cause it to
+simple text matching; some complicated expressions can cause it to
 trigger or not trigger unexpectedly.
 .PP
 Flawfinder looks for specific patterns known to be common mistakes.
