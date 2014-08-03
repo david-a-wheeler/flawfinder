@@ -1036,10 +1036,11 @@ c_ruleset = {
 
   "atoi|atol|_wtoi|_wtoi64":
      (normal, 2,
-      "Unless checked, the resulting number can exceed the expected range",
-      " If source untrusted, check both minimum and maximum, even if the" +
+      "Unless checked, the resulting number can exceed the expected range " +
+      "(CWE-190)",
+      "If source untrusted, check both minimum and maximum, even if the" +
       " input had no minus sign (large numbers can roll over into negative" +
-      " number; consider saving to an unsigned value if that is intended) (CWE-190)",
+      " number; consider saving to an unsigned value if that is intended)",
       "integer", "dangers-c", {}),
 
   # Random values.  Don't trigger on "initstate", it's too common a term.
@@ -1195,8 +1196,8 @@ c_ruleset = {
 
    # Input functions, useful for -I
   "recv|recvfrom|recvmsg|fread|readv":
-     (normal, 0, "Function accepts input from outside program",
-      "Make sure input data is filtered, especially if an attacker could manipulate it (CWE-20)",
+     (normal, 0, "Function accepts input from outside program (CWE-20)",
+      "Make sure input data is filtered, especially if an attacker could manipulate it",
       "input", "", {'input' : 1}),
 
 
