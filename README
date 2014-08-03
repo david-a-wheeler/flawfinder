@@ -7,7 +7,7 @@ analysis tools more generally.  It is designed to be easy to install and use.
 
 More technically, flawfinder uses lexical scanning to find tokens
 (such as function names) that suggest likely problems, estimates their
-level of risk (e.g., by the text of function calls), and reports the resutlts.
+level of risk (e.g., by the text of function calls), and reports the results.
 
 For more information, see:
  http://www.dwheeler.com/flawfinder
