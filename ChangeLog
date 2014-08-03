@@ -16,6 +16,13 @@
 	  CWE mappings weren't reported as such; that is now fixed.
 	  CWEs are actually a hierarchy; expose a little of this so
 	  people can more easily search on them.
+	* Improved error detection and reporting.  In particular, error
+	  messages are sent to standard errors, filenames listed but
+	  non-existent trigger a separate warning, and there's a warning
+	  about non-existent filenames listed on the command line that
+	  begin with the UTF-8 long dash sequence (users might not notice
+	  the difference between long dash and dash, and this can happen
+	  in some cases when copying and pasting).
 	* Add "-H" option as synonym for "--html".
 
 2014-07-19 David A. Wheeler <dwheeler, at, dwheeler.com>
