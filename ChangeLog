@@ -1,4 +1,4 @@
-2014-08-02 David A. Wheeler <dwheeler, at, dwheeler.com>
+2014-08-03 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Release version 1.31, a set of small improvements mostly CWE-related.
 	* Note that flawfinder is officially CWE-compatible.
 	* Support GNU make install conventions (prefix, bindir, DESTDIR, etc.).
