@@ -566,7 +566,7 @@ Examine all the C/C++ files in the directory mydir and its subdirectories,
 including even the hits marked for ignoring in the code comments.
 
 .TP
-.B "flawfinder -QD mydir"
+.B "flawfinder \-QD mydir"
 Examine mydir and report only the actual results
 (removing the header and footer of the output).
 This form is useful
@@ -574,6 +574,13 @@ if the output will be piped into other tools for further analysis.
 The \-C (\-\-columns) and \-S (\-\-singleline)
 options can also be useful if you're piping the data
 into other tools.
+
+.TP
+.B "flawfinder \-QDSC mydir"
+Examine mydir, reporting only the actual results (no header or footer).
+Each hit is reported on one line, and column numbers are reported.
+This can be a useful command if you are feeding
+flawfinder output to other tools.
 
 .TP
 .B "flawfinder \-\-quiet \-\-html \-\-context mydir > results.html"
