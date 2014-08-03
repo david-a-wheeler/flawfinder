@@ -857,8 +857,8 @@ the pattern in ``file1''.
 If file1 contained ``CWE-120|CWE-126'' it
 would only report hits matching those CWEs.
 .PP
-A list of all
-CWE security elements (the signatures/patterns that flawfinder looks for)
+A list of all CWE security elements
+(the signatures/patterns that flawfinder looks for)
 can be found by using the ``\-\-listrules'' option.
 Each line lists the signature token (typically a function name)
 that may lead to a hit, the default risk level, and
@@ -869,8 +869,10 @@ For example, to see the most of the signatures (function names)
 that map to CWE-327,
 without seeing the default risk level or detailed warning text,
 run ``flawfinder \-\-listrules | grep CWE-327 | cut -f1''.
-However, while this procedure lists all CWE security elements,
-this procedure only lists the default mappings
+You can also see the tokens without a CWE mapping this way by running
+``flawfinder -D --listrules | grep -v CWE-''.
+However, while \-\-listrules lists all CWE security elements,
+it only lists the default mappings
 from CWE security elements to CWE identifiers.
 It does not include the refinements
 that flawfinder applies (e.g., by examining function parameters).
