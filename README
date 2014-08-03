@@ -1,11 +1,11 @@
 This is "flawfinder" by David A. Wheeler, <dwheeler@dwheeler.com>.
 
 Flawfinder is a simple program that scans C/C++ source code and reports
-potential security problems.  It can be a useful tool for examining
-software, and it can also serve as a simple introduction to static source code
-analysis tools more generally.  It is designed to be easy to install and use.
-Flawfinder supports the Common Weakness Enumeration (CWE) and is
-officially CWE-Compatible.
+potential security flaws.  It can be a useful tool for examining software
+for vulnerabilities, and it can also serve as a simple introduction to
+static source code analysis tools more generally.  It is designed to
+be easy to install and use.  Flawfinder supports the Common Weakness
+Enumeration (CWE) and is officially CWE-Compatible.
 
 For more information, see:
  http://www.dwheeler.com/flawfinder
