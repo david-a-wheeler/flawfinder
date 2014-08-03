@@ -85,6 +85,10 @@ flawfinder.ps: flawfinder.1
 flawfinder.pdf: flawfinder.ps
 	ps2pdf flawfinder.ps flawfinder.pdf
 
+# Not built by default, since man2html is not widely available
+# and the PDF is prettier.
+flawfinder.html: flawfinder.1
+	man2html flawfinder.1 | tail -n +3 > flawfinder.html
 
 clean:
 	rm -f *.pyc
