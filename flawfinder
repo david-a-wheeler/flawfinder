@@ -113,6 +113,13 @@ starttime = time.time()  # Used to determine analyzed lines/second.
 line_beginning = re.compile( r'(?m)^' )
 blank_line     = re.compile( r'(?m)^\s+$' )
 
+# Send warning message.  This is written this way to work on
+# Python version 2.5 through Python 3.
+def print_warning(message):
+  sys.stderr.write("Warning: ")
+  sys.stderr.write(message)
+  sys.stderr.write("\n")
+  sys.stderr.flush()
 
 # The following code accepts unified diff format from both subversion (svn)
 # and GNU diff, which aren't well-documented.  It gets filenames from
@@ -1529,12 +1536,12 @@ def maybe_process_file(f, patch_infos):
   global num_links_skipped, num_dotdirs_skipped
   if os.path.isdir(f):
     if (not allowlink) and os.path.islink(f):
-      if not quiet: print "Warning: skipping symbolic link directory", h(f)
+      if not quiet: print_warning("Skipping symbolic link directory " + h(f))
       num_links_skipped = num_links_skipped + 1
       return
     base_filename = os.path.basename(f)
     if (skipdotdir and len(base_filename) > 1 and ("." == base_filename[0])):
-      if not quiet: print "Warning: skipping directory with initial dot", h(f)
+      if not quiet: print_warning("Skipping directory with initial dot " + h(f))
       num_dotdirs_skipped = num_dotdirs_skipped + 1
       return
     for file in os.listdir(f):
@@ -1549,12 +1556,12 @@ def maybe_process_file(f, patch_infos):
     if extension in c_extensions:
       # Its name appears to be a C/C++ source code file.
       if (not allowlink) and os.path.islink(f):
-        if not quiet: print "Warning: skipping symbolic link file", h(f)
+        if not quiet: print_warning("Skipping symbolic link file " + h(f))
         num_links_skipped = num_links_skipped + 1
       elif not os.path.isfile(f):
         # Skip anything not a normal file.  This is so that
         # device files, etc. won't cause trouble.
-        if not quiet: print "Warning: skipping non-regular file", h(f)
+        if not quiet: print_warning("Skipping non-regular file " + h(f))
       else:
         # We want to know the difference only with files found in the patch.
         if ((patch_infos == None) or (patch_infos != None and
@@ -1576,7 +1583,7 @@ def process_file_args(files, patch_infos):
   global num_links_skipped
   for f in files:
     if (not allowlink) and os.path.islink(f):
-       if not quiet: print "Warning: skipping symbolic link", h(f)
+       if not quiet: print_warning("Skipping symbolic link " + h(f))
        num_links_skipped = num_links_skipped + 1
     elif os.path.isfile(f) or f == "-":
        # If on the command line, FORCE processing of it.
@@ -1590,7 +1597,7 @@ def process_file_args(files, patch_infos):
        # So, we'll walk the filesystem hierarchy ourselves:
        maybe_process_file(f, patch_infos)
     else:
-       if not quiet: print "Warning: skipping non-regular file", h(f)
+       if not quiet: print_warning("Skipping non-regular file " + h(f))
 
 def usage():
   print """
