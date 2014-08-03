@@ -11,6 +11,9 @@ unpack the tarball and type in something like this on the commmand line:
   sudo make prefix=/usr install
 Omit prefix=/usr to install in /usr/local instead.
 Omit "sudo" if you are already root.
+You don't even have to install it; running it as "./flawfinder ..."
+will work just fine if you have Python 2 installed (though it's
+probably more convenient to install it).
 
 
 Not enough?  Here are more detailed step-by-step instructions and options.
