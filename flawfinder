@@ -1599,7 +1599,7 @@ flawfinder [--help | -h] [--version] [--listrules]
   [--inputs | -I] [--minlevel X | -m X]
            [--falsepositive | -F] [--neverignore | -n]
   [--context | -c] [--columns | -C] [--dataonly | -D]
-           [--html] [--immediate | -i] [--singleline | -S]
+           [--html | -H] [--immediate | -i] [--singleline | -S]
            [--omittime] [--quiet | -Q]
   [--loadhitlist F] [--savehitlist F] [--diffhitlist F]
   [--] [source code file or source root directory]+
@@ -1656,7 +1656,8 @@ flawfinder [--help | -h] [--version] [--listrules]
   --dataonly | -D
               Don't display the headers and footers of the analysis;
               use this along with --quiet to get just the results.
-  --html      Display as HTML output.
+  --html | -H
+              Display as HTML output.
   --immediate | -i
               Immediately display hits (don't just wait until the end).
   --singleline | -S
@@ -1689,7 +1690,7 @@ def process_options():
   global patch_file
   try:
     # Note - as a side-effect, this sets sys.argv[].
-    optlist, args = getopt.getopt(sys.argv[1:], "ce:m:nih?CSDQIFP:",
+    optlist, args = getopt.getopt(sys.argv[1:], "ce:m:nih?CSDQHIFP:",
                     ["context", "minlevel=", "immediate", "inputs", "input",
                      "nolink", "falsepositive", "falsepositives",
                      "columns", "listrules", "omittime", "allowlink", "patch=",
@@ -1722,7 +1723,7 @@ def process_options():
         skipdotdir = 0
       elif opt == "--listrules":
         list_rules = 1
-      elif opt == "--html":
+      elif opt == "--html" or opt == "-H":
         output_format = 1
         single_line = 0
       elif opt == "--minlevel" or opt == "-m":
