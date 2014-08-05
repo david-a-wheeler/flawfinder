@@ -25,7 +25,7 @@ import commands
 
 setup (# Distribution meta-data
        name = "flawfinder",
-       version = "1.31",
+       version = "1.32",
        description = "a program that examines source code looking for security weaknesses",
        author = "David A. Wheeler",
        author_email = "dwheeler@dwheeler.com",
