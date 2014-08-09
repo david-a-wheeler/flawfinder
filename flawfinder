@@ -762,12 +762,18 @@ c_ruleset = {
       "buffer", "", {}),
   "strcat" :
      (c_buffer, 4,
-      "Does not check for buffer overflows when concatenating to destination (CWE-120)",
+      "Does not check for buffer overflows when concatenating to destination [MS-banned] (CWE-120)",
       "Consider using strcat_s, strncat, or strlcat (warning, strncat is easily misused)",
       "buffer", "", {}),
   "lstrcat|wcscat|_tcscat|_mbscat" :
      (c_buffer, 4,
-      "Does not check for buffer overflows when concatenating to destination (CWE-120)",
+      "Does not check for buffer overflows when concatenating to destination [MS-banned] (CWE-120)",
+      "",
+      "buffer", "", {}),
+  # TODO: Do more analysis.  Added because they're in MS banned list.
+  "StrCat|StrCatA|StrcatW|lstrcatA|lstrcatW|strCatBuff|StrCatBuffA|StrCatBuffW|StrCatChainW|_tccat|_mbccat|_ftcsat|StrCatN|StrCatNA|StrCatNW|StrNCat|StrNCatA|StrNCatW|lstrncat|lstrcatnA|lstrcatnW" :
+     (normal, 4,
+      "Does not check for buffer overflows when concatenating to destination [MS-banned] (CWE-120)",
       "",
       "buffer", "", {}),
   "strncpy" :
@@ -791,14 +797,14 @@ c_ruleset = {
       1, # Low risk level, because this is often used correctly when
          # FIXING security problems, and raising it to a
          # higher risk level would cause many false positives.
-      "Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) (CWE-120)",
+      "Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) [MS-banned] (CWE-120)",
       "Consider strcat_s, strlcat, or automatically resizing strings",
       "buffer", "", {}),
   "lstrcatn|wcsncat|_tcsncat|_mbsnbcat" :
      (c_strncat,
       1, # Low risk level, because this is often used correctly when FIXING security
       # problems, and raising it to a higher risk level would cause many false positives.
-      "Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) (CWE-120)",
+      "Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) [MS-banned] (CWE-120)",
       "Consider strcat_s, strlcat, or automatically resizing strings",
       "buffer", "", {}),
   "strccpy|strcadd":
