@@ -798,7 +798,7 @@ c_ruleset = {
   "char|TCHAR|wchar_t":  # This isn't really a function call, but it works.
      (c_static_array, 2,
       "Statically-sized arrays can be improperly restricted, " +
-      "leading to potential overflows or other issues (CWE-119:CWE-120)",
+      "leading to potential overflows or other issues (CWE-119!/CWE-120)",
       "Perform bounds checking, use functions that limit length, " +
         "or ensure that the size is larger than the maximum possible length",
       "buffer", "", {'extract_lookahead' : 1}),
@@ -887,7 +887,7 @@ c_ruleset = {
   "realpath":
      (normal, 3,
       "This function does not protect against buffer overflows, " +
-        "and some implementations can overflow internally (CWE-120/CWE-785)",
+        "and some implementations can overflow internally (CWE-120/CWE-785!)",
       "Ensure that the destination buffer is at least of size MAXPATHLEN, and" +
         "to protect against implementation problems, the input argument should also " +
         "be checked to ensure it is no larger than MAXPATHLEN",
@@ -924,7 +924,7 @@ c_ruleset = {
       "This usually indicates a security flaw.  If an " +
       "attacker can change anything along the path between the " +
       "call to access() and the file's actual use (e.g., by moving " +
-      "files), the attacker can exploit the race condition (CWE-362/CWE-367)",
+      "files), the attacker can exploit the race condition (CWE-362/CWE-367!)",
       "Set up the correct permissions (e.g., using setuid()) and " +
       "try to open the file directly",
       "race",
