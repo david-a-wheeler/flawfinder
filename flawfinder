@@ -733,15 +733,26 @@ def normal(hit):
 # See the definition for class "Hit".
 # The key can have multiple values separated with "|".
 
+# For more information on Microsoft banned functions, see:
+# http://msdn.microsoft.com/en-us/library/bb288454.aspx
+
 c_ruleset = {
   "strcpy" :
      (c_buffer, 4,
-      "Does not check for buffer overflows when copying to destination (CWE-120)",
+      "Does not check for buffer overflows when copying to destination [MS-banned] (CWE-120)",
+      "Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily misused)",
+      "buffer", "", {}),
+  "strcpyA|strcpyW|StrCpy|StrCpyA|lstrcpyA|lstrcpyW|_tccpy|_mbccpy|_ftcscpy|_mbsncpy|StrCpyN|StrCpyNA|StrCpyNW|StrNCpy|strcpynA|StrNCpyA|StrNCpyW|lstrcpynA|lstrcpynW" :
+      # We need more info on these functions; I got their names from the
+      # Microsoft "banned" list.  For now, just use "normal" to process them
+      # instead of "c_buffer".
+     (normal, 4,
+      "Does not check for buffer overflows when copying to destination [MS-banned] (CWE-120)",
       "Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily misused)",
       "buffer", "", {}),
   "lstrcpy|wcscpy|_tcscpy|_mbscpy" :
      (c_buffer, 4,
-      "Does not check for buffer overflows when copying to destination (CWE-120)",
+      "Does not check for buffer overflows when copying to destination [MS-banned] (CWE-120)",
       "Consider using a function version that stops copying at the end of the buffer",
       "buffer", "", {}),
   "memcpy|CopyMemory|bcopy" :
@@ -764,7 +775,7 @@ c_ruleset = {
       1, # Low risk level, because this is often used correctly when FIXING security
       # problems, and raising it to a higher risk level would cause many false positives.
       "Easily used incorrectly; doesn't always \\0-terminate or " +
-         "check for invalid pointers (CWE-120)",
+         "check for invalid pointers [MS-banned] (CWE-120)",
       "",
       "buffer", "", {}),
   "lstrcpyn|wcsncpy|_tcsncpy|_mbsnbcpy" :
@@ -772,7 +783,7 @@ c_ruleset = {
       1, # Low risk level, because this is often used correctly when FIXING security
       # problems, and raising it to a higher risk levle would cause many false positives.
       "Easily used incorrectly; doesn't always \\0-terminate or " +
-         "check for invalid pointers (CWE-120)",
+         "check for invalid pointers [MS-banned] (CWE-120)",
       "",
       "buffer", "", {}),
   "strncat" :

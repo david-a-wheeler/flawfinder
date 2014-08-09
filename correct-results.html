@@ -9,9 +9,9 @@
 <body>
 <h1>Flawfinder Results</h1>
 Here are the security scan results from
-<a href="http://www.dwheeler.com/flawfinder">Flawfinder version 1.31</a>,
+<a href="http://www.dwheeler.com/flawfinder">Flawfinder version 1.32</a>,
 (C) 2001-2014 <a href="http://www.dwheeler.com">David A. Wheeler</a>.
-Number of rules (primarily dangerous function names) in C/C++ ruleset: 169
+Number of rules (primarily dangerous function names) in C/C++ ruleset: 188
 <p>
 Examining test.c <br>
 Examining test2.c <br>
@@ -77,8 +77,8 @@ Examining test2.c <br>
   SetSecurityDescriptorDacl(&amp;sd,TRUE,NULL,FALSE);
 </pre>
 <li>test.c:17: <b>  [4] </b> (buffer) <i> strcpy:
-  Does not check for buffer overflows when copying to destination (<a
-  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (<a href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
   Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
   misused). </i>
 <pre>
@@ -139,8 +139,8 @@ Examining test2.c <br>
  syslog(LOG_ERR, attacker_string);
 </pre>
 <li>test.c:49: <b>  [4] </b> (buffer) <i> _mbscpy:
-  Does not check for buffer overflows when copying to destination (<a
-  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (<a href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
   Consider using a function version that stops copying at the end of the
   buffer. </i>
 <pre>
@@ -179,8 +179,8 @@ Examining test2.c <br>
     while ((optc = getopt_long (argc, argv, "a",longopts, NULL )) != EOF) {
 </pre>
 <li>test.c:16: <b>  [2] </b> (buffer) <i> strcpy:
-  Does not check for buffer overflows when copying to destination (<a
-  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (<a href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
   Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
   misused). Risk is low because the source is a constant string. </i>
 <pre>
@@ -196,7 +196,7 @@ Examining test2.c <br>
 </pre>
 <li>test.c:45: <b>  [2] </b> (buffer) <i> char:
   Statically-sized arrays can be improperly restricted, leading to potential
-  overflows or other issues (CWE-119:<a
+  overflows or other issues (CWE-119!/<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
   bounds checking, use functions that limit length, or ensure that the size
   is larger than the maximum possible length. </i>
@@ -205,7 +205,7 @@ Examining test2.c <br>
 </pre>
 <li>test.c:46: <b>  [2] </b> (buffer) <i> char:
   Statically-sized arrays can be improperly restricted, leading to potential
-  overflows or other issues (CWE-119:<a
+  overflows or other issues (CWE-119!/<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Perform
   bounds checking, use functions that limit length, or ensure that the size
   is larger than the maximum possible length. </i>
@@ -236,8 +236,8 @@ Examining test2.c <br>
   f = fopen("/etc/passwd", "r"); 
 </pre>
 <li>test.c:15: <b>  [1] </b> (buffer) <i> strcpy:
-  Does not check for buffer overflows when copying to destination (<a
-  href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (<a href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
   Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
   misused). Risk is low because the source is a constant character. </i>
 <pre>
@@ -260,14 +260,14 @@ Examining test2.c <br>
 </pre>
 <li>test.c:53: <b>  [1] </b> (buffer) <i> strncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
-  pointers (<a
+  pointers [MS-banned] (<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). </i>
 <pre>
   strncpy(d,s);
 </pre>
 <li>test.c:54: <b>  [1] </b> (buffer) <i> _tcsncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
-  pointers (<a
+  pointers [MS-banned] (<a
   href="http://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). </i>
 <pre>
   _tcsncpy(d,s);

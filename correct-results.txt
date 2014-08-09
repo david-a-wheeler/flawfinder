@@ -1,5 +1,5 @@
-Flawfinder version 1.31, (C) 2001-2014 David A. Wheeler.
-Number of rules (primarily dangerous function names) in C/C++ ruleset: 169
+Flawfinder version 1.32, (C) 2001-2014 David A. Wheeler.
+Number of rules (primarily dangerous function names) in C/C++ ruleset: 188
 Examining test.c
 Examining test2.c
 
@@ -32,9 +32,9 @@ test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
   Access), which would even forbid administrator access (CWE-732).
 test.c:17:  [4] (buffer) strcpy:
-  Does not check for buffer overflows when copying to destination (CWE-120).
-  Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
-  misused).
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy
+  is easily misused).
 test.c:20:  [4] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf.
@@ -58,9 +58,9 @@ test.c:38:  [4] (format) syslog:
   If syslog's format strings can be influenced by an attacker, they can be
   exploited (CWE-134). Use a constant format string for syslog.
 test.c:49:  [4] (buffer) _mbscpy:
-  Does not check for buffer overflows when copying to destination (CWE-120).
-  Consider using a function version that stops copying at the end of the
-  buffer.
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (CWE-120). Consider using a function version that stops copying at the end
+  of the buffer.
 test.c:52:  [4] (buffer) lstrcat:
   Does not check for buffer overflows when concatenating to destination
   (CWE-120).
@@ -79,20 +79,20 @@ test.c:91:  [3] (buffer) getopt_long:
   (CWE-120, CWE-20). Check implementation on installation, or limit the size
   of all string inputs.
 test.c:16:  [2] (buffer) strcpy:
-  Does not check for buffer overflows when copying to destination (CWE-120).
-  Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
-  misused). Risk is low because the source is a constant string.
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy
+  is easily misused). Risk is low because the source is a constant string.
 test.c:19:  [2] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf. Risk is low because the source has a constant maximum length.
 test.c:45:  [2] (buffer) char:
   Statically-sized arrays can be improperly restricted, leading to potential
-  overflows or other issues (CWE-119:CWE-120). Perform bounds checking, use
+  overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use
   functions that limit length, or ensure that the size is larger than the
   maximum possible length.
 test.c:46:  [2] (buffer) char:
   Statically-sized arrays can be improperly restricted, leading to potential
-  overflows or other issues (CWE-119:CWE-120). Perform bounds checking, use
+  overflows or other issues (CWE-119!/CWE-120). Perform bounds checking, use
   functions that limit length, or ensure that the size is larger than the
   maximum possible length.
 test.c:50:  [2] (buffer) memcpy:
@@ -107,9 +107,9 @@ test.c:97:  [2] (misc) fopen:
   around to create a race condition, control its ancestors, or change its
   contents? (CWE-362).
 test.c:15:  [1] (buffer) strcpy:
-  Does not check for buffer overflows when copying to destination (CWE-120).
-  Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily
-  misused). Risk is low because the source is a constant character.
+  Does not check for buffer overflows when copying to destination [MS-banned]
+  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy
+  is easily misused). Risk is low because the source is a constant character.
 test.c:18:  [1] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf. Risk is low because the source is a constant character.
@@ -119,10 +119,10 @@ test.c:26:  [1] (buffer) scanf:
   input function.
 test.c:53:  [1] (buffer) strncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
-  pointers (CWE-120).
+  pointers [MS-banned] (CWE-120).
 test.c:54:  [1] (buffer) _tcsncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
-  pointers (CWE-120).
+  pointers [MS-banned] (CWE-120).
 test.c:55:  [1] (buffer) strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
