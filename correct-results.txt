@@ -1,5 +1,5 @@
 Flawfinder version 1.32, (C) 2001-2014 David A. Wheeler.
-Number of rules (primarily dangerous function names) in C/C++ ruleset: 188
+Number of rules (primarily dangerous function names) in C/C++ ruleset: 209
 Examining test.c
 Examining test2.c
 
@@ -9,14 +9,15 @@ test.c:32:  [5] (buffer) gets:
   Does not check for buffer overflows (CWE-120, CWE-20). Use fgets() instead.
 test.c:56:  [5] (buffer) strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
-  size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
-  resizing strings. Risk is high; the length parameter appears to be a
-  constant, instead of computing the number of characters left.
+  size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, snprintf,
+  or automatically resizing strings. Risk is high; the length parameter
+  appears to be a constant, instead of computing the number of characters
+  left.
 test.c:57:  [5] (buffer) _tcsncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
-  size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
-  resizing strings. Risk is high; the length parameter appears to be a
-  constant, instead of computing the number of characters left.
+  size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, or
+  automatically resizing strings. Risk is high; the length parameter appears
+  to be a constant, instead of computing the number of characters left.
 test.c:60:  [5] (buffer) MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is high,
   it appears that the size is given as bytes, but the function requires size
@@ -33,8 +34,8 @@ test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
   Access), which would even forbid administrator access (CWE-732).
 test.c:17:  [4] (buffer) strcpy:
   Does not check for buffer overflows when copying to destination [MS-banned]
-  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy
-  is easily misused).
+  (CWE-120). Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy
+  easily misused).
 test.c:20:  [4] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf.
@@ -63,7 +64,7 @@ test.c:49:  [4] (buffer) _mbscpy:
   of the buffer.
 test.c:52:  [4] (buffer) lstrcat:
   Does not check for buffer overflows when concatenating to destination
-  (CWE-120).
+  [MS-banned] (CWE-120).
 test.c:75:  [3] (shell) CreateProcess:
   This causes a new process to execute and is difficult to use safely
   (CWE-78). Specify the application path in the first argument, NOT as part
@@ -80,8 +81,8 @@ test.c:91:  [3] (buffer) getopt_long:
   of all string inputs.
 test.c:16:  [2] (buffer) strcpy:
   Does not check for buffer overflows when copying to destination [MS-banned]
-  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy
-  is easily misused). Risk is low because the source is a constant string.
+  (CWE-120). Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy
+  easily misused). Risk is low because the source is a constant string.
 test.c:19:  [2] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf. Risk is low because the source has a constant maximum length.
@@ -108,8 +109,8 @@ test.c:97:  [2] (misc) fopen:
   contents? (CWE-362).
 test.c:15:  [1] (buffer) strcpy:
   Does not check for buffer overflows when copying to destination [MS-banned]
-  (CWE-120). Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy
-  is easily misused). Risk is low because the source is a constant character.
+  (CWE-120). Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy
+  easily misused). Risk is low because the source is a constant character.
 test.c:18:  [1] (buffer) sprintf:
   Does not check for buffer overflows (CWE-120). Use sprintf_s, snprintf, or
   vsnprintf. Risk is low because the source is a constant character.
@@ -125,8 +126,8 @@ test.c:54:  [1] (buffer) _tcsncpy:
   pointers [MS-banned] (CWE-120).
 test.c:55:  [1] (buffer) strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
-  size to add) (CWE-120). Consider strcat_s, strlcat, or automatically
-  resizing strings.
+  size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, snprintf,
+  or automatically resizing strings.
 test.c:58:  [1] (buffer) strlen:
   Does not handle strings that are not \0-terminated; if given one it may
   perform an over-read (it could cause a crash if unprotected) (CWE-126).

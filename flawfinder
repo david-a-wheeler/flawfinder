@@ -597,18 +597,13 @@ def c_printf(hit):
     source = strip_i18n(hit.parameters[format_position])
     if c_constant_string(source):
       # Parameter is constant, so there's no risk of format string problems.
-      if hit.name == "snprintf" or hit.name == "vsnprintf":
-        hit.level = 1
-        hit.warning = \
-          "On some very old systems, snprintf is incorrectly implemented " \
-          "and permits buffer overflows; there are also incompatible " \
-          "standard definitions of it"
-        hit.suggestion = "Check it during installation, or use something else"
-        hit.category = "port"
-      else:
-        # We'll pass it on, just in case it's needed, but at level 0 risk.
-        hit.level = 0
-        hit.note = "Constant format string, so not considered very risky (there's some residual risk, especially in a loop)."
+      # At one time we warned that very old systems sometimes incorrectly
+      # allow buffer overflows on snprintf/vsnprintf, but those systems
+      # are now very old, and snprintf is an important potential tool for
+      # countering buffer overflows.
+      # We'll pass it on, just in case it's needed, but at level 0 risk.
+      hit.level = 0
+      hit.note = "Constant format string, so not considered risky."
   add_warning(hit)
 
 
@@ -740,7 +735,7 @@ c_ruleset = {
   "strcpy" :
      (c_buffer, 4,
       "Does not check for buffer overflows when copying to destination [MS-banned] (CWE-120)",
-      "Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily misused)",
+      "Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy easily misused)",
       "buffer", "", {}),
   "strcpyA|strcpyW|StrCpy|StrCpyA|lstrcpyA|lstrcpyW|_tccpy|_mbccpy|_ftcscpy|_mbsncpy|StrCpyN|StrCpyNA|StrCpyNW|StrNCpy|strcpynA|StrNCpyA|StrNCpyW|lstrcpynA|lstrcpynW" :
       # We need more info on these functions; I got their names from the
@@ -748,7 +743,7 @@ c_ruleset = {
       # instead of "c_buffer".
      (normal, 4,
       "Does not check for buffer overflows when copying to destination [MS-banned] (CWE-120)",
-      "Consider using strcpy_s, strncpy, or strlcpy (warning, strncpy is easily misused)",
+      "Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy easily misused)",
       "buffer", "", {}),
   "lstrcpy|wcscpy|_tcscpy|_mbscpy" :
      (c_buffer, 4,
@@ -763,7 +758,7 @@ c_ruleset = {
   "strcat" :
      (c_buffer, 4,
       "Does not check for buffer overflows when concatenating to destination [MS-banned] (CWE-120)",
-      "Consider using strcat_s, strncat, or strlcat (warning, strncat is easily misused)",
+      "Consider using strcat_s, strncat, strlcat, or snprintf (warning: strncat is easily misused)",
       "buffer", "", {}),
   "lstrcat|wcscat|_tcscat|_mbscat" :
      (c_buffer, 4,
@@ -798,7 +793,7 @@ c_ruleset = {
          # FIXING security problems, and raising it to a
          # higher risk level would cause many false positives.
       "Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) [MS-banned] (CWE-120)",
-      "Consider strcat_s, strlcat, or automatically resizing strings",
+      "Consider strcat_s, strlcat, snprintf, or automatically resizing strings",
       "buffer", "", {}),
   "lstrcatn|wcsncat|_tcsncat|_mbsnbcat" :
      (c_strncat,
@@ -874,8 +869,8 @@ c_ruleset = {
 
   "strlen|wcslen|_tcslen|_mbslen" :
      (normal,
-      1, # Often this isn't really a risk, and even when, it usually at worst causes
-      # program crash (and nothing worse).
+      1, # Often this isn't really a risk, and even when it is, at worst it
+         # often causes a program crash (and nothing worse).
       "Does not handle strings that are not \\0-terminated; " +
       "if given one it may perform an over-read (it could cause a crash " +
          "if unprotected) (CWE-126)",
