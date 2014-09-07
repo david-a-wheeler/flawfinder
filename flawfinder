@@ -163,7 +163,7 @@ def print_warning(message):
 # We're only supporting unified format directly; if you have an older diff
 # format, use "patch" to apply it, and then use "diff -u" to create a
 # unified format.
-# 
+#
 
 diff_index_filename = re.compile( r'^Index:\s+(?P<filename>.*)' )
 diff_git_filename = re.compile( r'^diff --git a/.* b/(?P<filename>.*)$' )
@@ -312,7 +312,7 @@ def print_multi_line(text):
       position = starting_position
     print w,
     position = position + len(w) + 1
-      
+
 # This matches references to CWE identifiers, so we can HTMLize them.
 # We don't refer to CWEs with one digit, so we'll only match on 2+ digits.
 link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
@@ -1347,7 +1347,7 @@ def process_c_file(f, patch_infos):
       return
     try:
       input = open(f, "r")
-    except: 
+    except:
       print "Error: failed to open", h(f)
       sys.exit(1)
 
@@ -1620,7 +1620,7 @@ def process_file_args(files, patch_infos):
 def usage():
   print """
 flawfinder [--help | -h] [--version] [--listrules]
-  [--allowlink] [--followdotdir] [--nolink] 
+  [--allowlink] [--followdotdir] [--nolink]
            [--patch filename | -P filename]
   [--inputs | -I] [--minlevel X | -m X]
            [--falsepositive | -F] [--neverignore | -n]
