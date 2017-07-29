@@ -791,10 +791,11 @@ CWE-367, a subset of CWE-362.
 Note that this is a subtle syntax change from flawfinder version 1.31;
 in flawfinder version 1.31,
 the form "more-general:more-specific" meant what is now listed as
-"more-general!:more-specific", while
+"more-general!/more-specific", while
 "more-general/more-specific" meant "more-general/more-specific!".
 Tools can handle both the version 1.31 and the current format,
-if they wish, by noting that the older format did not use "!" at all.
+if they wish, by noting that the older format did not use "!" at all
+(and thus this is easy to distinguish).
 These mapping mechanisms simplify searching for certain CWEs.
 .PP
 CWE version 2.7 (released June 23, 2014) was used for the mapping.

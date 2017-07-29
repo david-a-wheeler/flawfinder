@@ -25,11 +25,11 @@ import commands
 
 setup (# Distribution meta-data
        name = "flawfinder",
-       version = "1.32",
+       version = "2.0.0",
        description = "a program that examines source code looking for security weaknesses",
        author = "David A. Wheeler",
        author_email = "dwheeler@dwheeler.com",
-       license = 'GPL',
+       license = 'GPL-2.0+',
        long_description = """Flawfinder is a program that can scan
 C/C++ source code and identify out potential security flaws,
 ranking them by likely severity.

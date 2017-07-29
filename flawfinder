@@ -8,7 +8,7 @@ from __future__ import division
 
  See the man page for a description of the options."""
 
-version="1.32"
+version="2.0.0"
 
 # The default output is as follows:
 # filename:line_number [risk_level] (type) function_name: message
@@ -18,9 +18,9 @@ version="1.32"
 #
 # Currently this program can only analyze C/C++ code.
 #
-# Copyright (C) 2001-2014 David A. Wheeler.
+# Copyright (C) 2001-2017 David A. Wheeler.
 # This is released under the
-# GNU General Public License (GPL) version 2 or later (GPLv2+):
+# GNU General Public License (GPL) version 2 or later (GPL-2.0+):
 #
 #    This program is free software; you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -1523,9 +1523,9 @@ def display_header():
       print "<h1>Flawfinder Results</h1>"
       print "Here are the security scan results from"
       print '<a href="http://www.dwheeler.com/flawfinder">Flawfinder version %s</a>,' % version
-      print '(C) 2001-2014 <a href="http://www.dwheeler.com">David A. Wheeler</a>.'
+      print '(C) 2001-2017 <a href="http://www.dwheeler.com">David A. Wheeler</a>.'
     else:
-      print "Flawfinder version %s, (C) 2001-2014 David A. Wheeler." % version
+      print "Flawfinder version %s, (C) 2001-2017 David A. Wheeler." % version
     displayed_header = 1
 
 

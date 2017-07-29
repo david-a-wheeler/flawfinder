@@ -1,3 +1,28 @@
+2017-07-29 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Change version numbers to use Semantic Versioning (x.y.z)
+	* Change version number to 2.0.0, because we have a subtle
+	  interface change that won't affect most people but it
+	  *may* affect those who use postprocess
+	  flawfinder data on CWEs. The fundamental issue is that
+	  in some cases a hit corresponds to multiple CWEs. As a result,
+	  in some cases flawfinder will list a sequence of CWEs
+	  in the format "more-general/more-specific", where the CWE actually
+	  being mapped is followed by a "!".
+	  This is always done whenever a flaw is not mapped directly to
+	  a top 25 CWE, but the mapping is related to such a CWE.
+	  So "CWE-119!/CWE-120" means that the vulnerability is mapped
+	  to CWE-119 and that CWE-120 is a subset of CWE-119.
+	  In contrast, "CWE-362/CWE-367!" means that the hit is mapped to
+	  CWE-367, a subset of CWE-362.
+	  Note that this is a subtle syntax change from flawfinder
+	  version 1.31; in flawfinder version 1.31,
+	  the form "more-general:more-specific" meant what is now listed as
+	  "more-general!/more-specific", while
+	  "more-general/more-specific" meant "more-general/more-specific!".
+	  Tools can handle both the version 1.31 and the current format,
+	  if they wish, by noting that the older format did not use "!" at all.
+	  These mapping mechanisms simplify searching for certain CWEs.
+
 2014-08-03 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Release version 1.31, a set of small improvements mostly CWE-related.
 	* Note that flawfinder is officially CWE-compatible.
