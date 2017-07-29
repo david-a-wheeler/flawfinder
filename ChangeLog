@@ -1,5 +1,7 @@
 2017-07-29 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Change version numbers to use Semantic Versioning (x.y.z)
+	* Add support for generating CSV (comma-separated value) format,
+	  to make this tool easier to integrate into larger toolsuites.
 	* Change version number to 2.0.0, because we have a subtle
 	  interface change that won't affect most people but it
 	  *may* affect those who use postprocess

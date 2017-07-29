@@ -127,6 +127,7 @@ time:
 test: flawfinder test.c test2.c
 	# Omit time report so that results are always the same textually.
 	./flawfinder --omittime test.c test2.c > test-results.txt
+	./flawfinder --csv test.c test2.c > test-results.csv
 	echo >> test-results.txt
 	echo "Testing for no ending newline:" >> test-results.txt
 	./flawfinder --omittime no-ending-newline.c | \
@@ -135,6 +136,7 @@ test: flawfinder test.c test2.c
 	@echo "Differences from expected results:"
 	@diff -u correct-results.txt test-results.txt
 	@diff -u correct-results.html test-results.html
+	@diff -u correct-results.csv test-results.csv
 
 check: test
 

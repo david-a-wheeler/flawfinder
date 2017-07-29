@@ -61,6 +61,7 @@ import pickle               # To support load/save/diff of hitlist
 import os, glob, operator   # To support filename expansion on Windows
 import os.path
 import time
+import csv                  # To support generating CSV format
 # import formatter
 
 # Program Options - these are the default values:
@@ -85,6 +86,8 @@ quiet = 0
 showheading = 1          # --dataonly turns this off
 output_format = 0        # 0 = normal, 1 = html.
 single_line = 0          # 1 = singleline (can 't be 0 if html)
+csv_output = 0           # 1 = Generate CSV
+csv_writer = None
 omit_time = 0            # 1 = omit time-to-run (needed for testing)
 required_regex = None    # If non-None, regex that must be met to report
 required_regex_compiled = None
@@ -317,6 +320,9 @@ def print_multi_line(text):
 # We don't refer to CWEs with one digit, so we'll only match on 2+ digits.
 link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
 
+# This matches the CWE data, including multiple entries.
+find_cwe_pattern = re.compile(r'\(CWE-[^)]*\)')
+
 class Hit:
   """
   Each instance of Hit is a warning of some kind in a source code file.
@@ -376,7 +382,24 @@ class Hit:
   def __getitem__(self, X):   # Define this so this works: "%(line)" % hit
     return getattr(self, X)
 
+  # return CWEs
+  def cwes(self):
+    result = find_cwe_pattern.search(self.warning)
+    if result:
+      return result.group()[1:-1]
+    else:
+      return ''
+
+  # Show as CSV format
+  def show_csv(self):
+    csv_writer.writerow([self.filename, self.line, self.column, self.level,
+      self.category, self.name, self.warning,
+      self.suggestion, self.note, self.cwes(), self.context_text ])
+
   def show(self):
+    if csv_output:
+        self.show_csv()
+        return
     if output_format: print "<li>",
     sys.stdout.write(h(self.filename))
 
@@ -410,8 +433,6 @@ class Hit:
       if output_format: print "<pre>"
       print h(self.context_text)
       if output_format: print "</pre>"
-
-
 
 # The "hitlist" is the list of all hits (warnings) found so far.
 # Use add_warning to add to it.
@@ -1507,6 +1528,11 @@ def initialize_ruleset():
 # Show the header, but only if it hasn't been shown yet.
 def display_header():
   global displayed_header
+  if csv_output:
+    csv_writer.writerow(['File', 'Line', 'Column', 'Level',
+      'Category', 'Name', 'Warning',
+      'Suggestion', 'Note', 'CWEs', 'Context'])
+    return
   if not showheading: return
   if not displayed_header:
     if output_format:
@@ -1709,6 +1735,7 @@ flawfinder [--help | -h] [--version] [--listrules]
 def process_options():
   global show_context, show_inputs, allowlink, skipdotdir, omit_time
   global output_format, minimum_level, show_immediately, single_line
+  global csv_output, csv_writer
   global required_regex, required_regex_compiled
   global falsepositive
   global show_columns, never_ignore, quiet, showheading, list_rules
@@ -1722,7 +1749,7 @@ def process_options():
                      "columns", "listrules", "omittime", "allowlink", "patch=",
                      "followdotdir",
                      "neverignore", "regex=",
-                     "quiet", "dataonly", "html", "singleline",
+                     "quiet", "dataonly", "html", "singleline", "csv",
                      "loadhitlist=", "savehitlist=", "diffhitlist=",
                      "version", "help" ])
     for (opt,value) in optlist:
@@ -1756,6 +1783,11 @@ def process_options():
         minimum_level = string.atoi(value)
       elif opt == "--singleline" or opt == "-S":
         single_line = 1
+      elif opt == "--csv":
+        csv_output = 1
+        quiet = 1
+        showheading = 0
+        csv_writer = csv.writer(sys.stdout)
       elif opt == "--immediate" or opt == "-i":
         show_immediately = 1
       elif opt == "-n" or opt == "--neverignore":
