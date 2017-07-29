@@ -1084,10 +1084,10 @@ c_ruleset = {
       "integer", "dangers-c", {}),
 
   # Random values.  Don't trigger on "initstate", it's too common a term.
-  "drand48|erand48|jrand48|lcong48|lrand48|mrand48|nrand48|random|seed48|setstate|srand|strfry|srandom":
+  "drand48|erand48|jrand48|lcong48|lrand48|mrand48|nrand48|random|seed48|setstate|srand|strfry|srandom|g_rand_boolean|g_rand_int|g_rand_int_range|g_rand_double|g_rand_double_range|g_random_boolean|g_random_int|g_random_int_range|g_random_double|g_random_double_range":
      (normal, 3,
       "This function is not sufficiently random for security-related functions such as key and nonce creation (CWE-327)",
-      "use a more secure technique for acquiring random values",
+      "Use a more secure technique for acquiring random values",
       "random", "", {}),
 
   "crypt":
