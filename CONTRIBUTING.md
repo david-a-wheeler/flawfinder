@@ -43,18 +43,33 @@ please try to not forget.
 
 ## Code Conventions
 
-The Python code uses 2-space indents. Do not use tabs.
-It is currently Python 2.7; please don't make it hard to convert
-to Python 3 when that eventually happens.
+The Python code uses 2-space indents (instead of the usual 4-space
+indents). Do not use tabs.  It is currently Python 2.7; please don't
+make it hard to convert to Python 3 when that eventually happens.
+
+To make the program easy to install everywhere, the main executable
+is exactly one self-contained file.  That involves some compromises,
+but for now, please keep it that way.
 
 We aspire to eventually comply with
 [PEP 8](https://www.python.org/dev/peps/pep-0008/) other than the
 indentation size.  In practice the code doesn't actually conform to that,
 but patches to improve that are generally welcome.
 
-To make the program easy to install everywhere, the main executable
-is exactly one self-contained file.  That involves some compromises,
-but for now, please keep it that way.
+We're starting to use "pylint" to check for style and other problems.
+An easy way to install pylint is to use pip.
+Most python installs have pip, but if yours does not
+(e.g., Cygwin), install pip with:
+
+> python -m ensurepip
+
+You may want to upgrade pip with:
+
+> pip install --upgrade pip
+
+Finally, you can actually install pylint using:
+
+> pip install pylint
 
 ## Tests
 
