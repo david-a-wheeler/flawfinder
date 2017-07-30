@@ -8,7 +8,7 @@ from __future__ import division
 
  See the man page for a description of the options."""
 
-version="2.0.0"
+version = "2.0.0"
 
 # The default output is as follows:
 # filename:line_number [risk_level] (type) function_name: message
@@ -113,8 +113,8 @@ sloc = 0           # Physical SLOC
 starttime = time.time()  # Used to determine analyzed lines/second.
 
 
-line_beginning = re.compile( r'(?m)^' )
-blank_line     = re.compile( r'(?m)^\s+$' )
+line_beginning = re.compile(r'(?m)^')
+blank_line = re.compile(r'(?m)^\s+$')
 
 # Send warning message.  This is written this way to work on
 # Python version 2.5 through Python 3.
@@ -168,12 +168,12 @@ def print_warning(message):
 # unified format.
 #
 
-diff_index_filename = re.compile( r'^Index:\s+(?P<filename>.*)' )
-diff_git_filename = re.compile( r'^diff --git a/.* b/(?P<filename>.*)$' )
-diff_newfile = re.compile( r'^\+\+\+\s(?P<filename>.*)$' )
-diff_hunk = re.compile( r'^@@ -\d+(,\d+)?\s+\+(?P<linenumber>\d+)[, ].*@@$' )
-diff_line_added = re.compile( r'^\+[^+].*' )
-diff_line_del = re.compile( r'^-[^-].*' )
+diff_index_filename = re.compile(r'^Index:\s+(?P<filename>.*)')
+diff_git_filename = re.compile(r'^diff --git a/.* b/(?P<filename>.*)$')
+diff_newfile = re.compile(r'^\+\+\+\s(?P<filename>.*)$')
+diff_hunk = re.compile(r'^@@ -\d+(,\d+)?\s+\+(?P<linenumber>\d+)[, ].*@@$')
+diff_line_added = re.compile(r'^\+[^+].*')
+diff_line_del = re.compile(r'^-[^-].*')
 # The "+++" newfile entries have the filename, followed by a timestamp
 # or " (comment)" postpended.
 # Timestamps can be of these forms:
@@ -181,10 +181,10 @@ diff_line_del = re.compile( r'^-[^-].*' )
 #   Mon Mar 10 15:13:12 1997
 # Also, "newfile" can have " (comment)" postpended.  Find and eliminate this.
 # Note that the expression below is Y10K (and Y100K) ready. :-).
-diff_findjunk = re.compile( r'^(?P<filename>.*)((\s\d\d\d\d+-\d\d-\d\d\s+\d\d:\d[0-9:.]+Z?(\s+[\-\+0-9A-Z]+)?)|(\s[A-Za-z][a-z]+\s[A-za-z][a-z]+\s\d+\s\d+:\d[0-9:.]+Z?(\s[\-\+0-9]*)?\s\d\d\d\d+)|(\s\(.*\)))\s*$')
+diff_findjunk = re.compile(r'^(?P<filename>.*)((\s\d\d\d\d+-\d\d-\d\d\s+\d\d:\d[0-9:.]+Z?(\s+[\-\+0-9A-Z]+)?)|(\s[A-Za-z][a-z]+\s[A-za-z][a-z]+\s\d+\s\d+:\d[0-9:.]+Z?(\s[\-\+0-9]*)?\s\d\d\d\d+)|(\s\(.*\)))\s*$')
 
 def is_svn_diff(sLine):
-  if (sLine.find('Index:') != -1):
+  if sLine.find('Index:') != -1:
     return True
   return False
 
@@ -203,14 +203,14 @@ def svn_diff_get_filename(sLine):
 
 def gnu_diff_get_filename(sLine):
   newfile_match = diff_newfile.match(sLine)
-  if (newfile_match):
+  if newfile_match:
     patched_filename = string.strip(newfile_match.group('filename'))
     # Clean up filename - remove trailing timestamp and/or (comment).
     return diff_findjunk.match(patched_filename)
   return None
 
-git_splitter=' b/'
-len_git_splitter=len(git_splitter)
+git_splitter = ' b/'
+len_git_splitter = len(git_splitter)
 
 def git_diff_get_filename(sLine):
   return diff_git_filename.match(sLine)
@@ -220,9 +220,9 @@ def git_diff_get_filename(sLine):
 # We keep this information in a hash table for a quick access later.
 #
 def load_patch_info(patch_file):
-  patch={}
-  line_counter= 0
-  initial_number= 0
+  patch = {}
+  line_counter = 0
+  initial_number = 0
   index_statement = False # Set true if we see "Index:".
   try: hPatch = open(patch_file, 'r')
   except:
@@ -233,12 +233,12 @@ def load_patch_info(patch_file):
 
   sLine = hPatch.readline()
   #Heuristic to determine if it's a svn diff, git diff, or a GNU diff.
-  if (is_svn_diff(sLine)):
-    fn_get_filename=svn_diff_get_filename
-  elif (is_git_diff(sLine)):
-    fn_get_filename=git_diff_get_filename
-  elif (is_gnu_diff(sLine)):
-    fn_get_filename=gnu_diff_get_filename
+  if is_svn_diff(sLine):
+    fn_get_filename = svn_diff_get_filename
+  elif is_git_diff(sLine):
+    fn_get_filename = git_diff_get_filename
+  elif is_gnu_diff(sLine):
+    fn_get_filename = gnu_diff_get_filename
   else:
     print "Error: Unrecognized patch format"
     sys.exit(1)
@@ -248,25 +248,25 @@ def load_patch_info(patch_file):
     # This is really a sequence of if ... elsif ... elsif..., but
     # because Python forbids '=' in conditions, we do it this way.
     filename_match = fn_get_filename(sLine)
-    if (filename_match):
+    if filename_match:
       patched_filename = string.strip(filename_match.group('filename'))
-      if (patched_file in patch):
+      if patched_file in patch:
         error("filename occurs more than once in the patch: %s" %
-               patched_filename)
+              patched_filename)
         sys.exit(1)
       else:
         patch[patched_filename] = {}
     else:
       hunk_match = diff_hunk.match(sLine)
-      if (hunk_match):
-        if (patched_filename == ""):
-            error("wrong type of patch file : we have a line number without having seen a filename")
-            sys.exit(1)
-        initial_number= hunk_match.group('linenumber')
-        line_counter= 0
+      if hunk_match:
+        if patched_filename == "":
+          error("wrong type of patch file : we have a line number without having seen a filename")
+          sys.exit(1)
+        initial_number = hunk_match.group('linenumber')
+        line_counter = 0
       else:
         line_added_match = diff_line_added.match(sLine)
-        if (line_added_match):
+        if line_added_match:
           line_added = line_counter + int(initial_number)
           patch[patched_filename][line_added] = True
           # Let's also warn about the lines above and below this one,
@@ -278,26 +278,25 @@ def load_patch_info(patch_file):
           line_counter += 1
         else:
           line_del_match = diff_line_del.match(sLine)
-          if (line_del_match == None):
+          if line_del_match == None:
             line_counter += 1
 
     sLine = hPatch.readline()
-    if (sLine == ''): break  # Done reading.
+    if sLine == '': break  # Done reading.
 
   return patch
 
-
 def htmlize(s):
   # Take s, and return legal (UTF-8) HTML.
-  s1 = string.replace(s,"&","&amp;")
-  s2 = string.replace(s1,"<","&lt;")
-  s3 = string.replace(s2,">","&gt;")
+  s1 = string.replace(s, "&", "&amp;")
+  s2 = string.replace(s1, "<", "&lt;")
+  s3 = string.replace(s2, ">", "&gt;")
   return s3
 
 def h(s):
   # htmlize s if we're generating html, otherwise just return s.
   if output_format: return htmlize(s)
-  else:             return s
+  else: return s
 
 def print_multi_line(text):
   # Print text as multiple indented lines.
@@ -393,8 +392,9 @@ class Hit:
   # Show as CSV format
   def show_csv(self):
     csv_writer.writerow([self.filename, self.line, self.column, self.level,
-      self.category, self.name, self.warning,
-      self.suggestion, self.note, self.cwes(), self.context_text ])
+                         self.category, self.name, self.warning,
+                         self.suggestion, self.note, self.cwes(),
+                         self.context_text ])
 
   def show(self):
     if csv_output:

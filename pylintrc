@@ -191,7 +191,8 @@ indent-after-paren=4
 
 # String used as indentation unit. This is usually "    " (4 spaces) or "\t" (1
 # tab).
-indent-string='    '
+# Flawfinder specific: We use 2-space indents, not 4-space
+indent-string='  '
 
 # Maximum number of characters on a single line.
 max-line-length=100
@@ -224,7 +225,9 @@ logging-modules=logging
 [MISCELLANEOUS]
 
 # List of note tags to take in consideration, separated by a comma.
-notes=FIXME,XXX,TODO
+# notes=FIXME,XXX,TODO
+# Flawfinder specifics: We already note them, no need to report
+notes=
 
 
 [SIMILARITIES]
