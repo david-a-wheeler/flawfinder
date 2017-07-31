@@ -477,11 +477,25 @@ By default the line is shown immediately after the warning.
 .TP
 .BI \-\-csv
 Generate output in comma-separated-value (CSV) format.
+This is the recommended format for sending to other tools for processing.
 It will always generate a header row, followed by 0 or more data rows
 (one data row for each hit).
 Selecting this option automatically enables \-\-quiet and
 \-\-dataonly.
-This is the recommended format for sending to other tools for processing.
+The headers are mostly self-explanatory.
+"File" is the filename, "Line" is the line number,
+"Column" is the column (starting from 1),
+"Level" is the risk level (0-5, 5 is riskiest),
+"Category" is the general flawfinder category,
+"Name" is the name of the triggering rule,
+"Warning" is text explaining why it is a hit (finding),
+"Suggestion" is text suggesting how it might be fixed,
+"Note" is other explanatory notes,
+"CWEs" is the list of one or more CWEs,
+"Context" is the source code line triggering the hit,
+and "Fingerprint" is the SHA-256 hash of the context once its leading and trailing whitespace
+have been removed
+(the fingerprint may help detect and eliminate later duplications).
 
 .TP
 .BI "\-\-dataonly"
