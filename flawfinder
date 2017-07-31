@@ -63,7 +63,7 @@ import time
 import csv  # To support generating CSV format
 # import formatter
 
-version = "2.0.0"
+version = "2.0.1"
 
 # Program Options - these are the default values:
 show_context = 0
