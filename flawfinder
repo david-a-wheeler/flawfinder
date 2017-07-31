@@ -1774,7 +1774,7 @@ def process_file_args(files, patch_infos):
             # If on the command line, FORCE processing of it.
             # Currently, we only process C/C++.
             # check if we only want to review a patch
-            if ((patch_infos is not None and k in patch_infos)
+            if ((patch_infos is not None and f in patch_infos)
                     or (patch_infos is None)):
                 process_c_file(f, patch_infos)
         elif os.path.isdir(f):
