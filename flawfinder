@@ -351,7 +351,7 @@ link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
 find_cwe_pattern = re.compile(r'\(CWE-[^)]*\)')
 
 
-class Hit:
+class Hit(object):
     """
     Each instance of Hit is a warning of some kind in a source code file.
     See the rulesets, which define the conditions for triggering a hit.
@@ -365,9 +365,9 @@ class Hit:
                 Use "" if you don't have a better category.
       url: URL fragment reference.
       other:  A dictionary with other settings.
-  
+
     Other settings usually set:
-  
+
       name: function name
       parameter: the function parameters (0th parameter null)
       input: set to 1 if the function inputs from external sources.
