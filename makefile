@@ -144,6 +144,7 @@ check: test
 test-is-correct: test-results.txt
 	mv test-results.txt correct-results.txt
 	mv test-results.html correct-results.html
+	mv test-results.csv correct-results.csv
 
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
