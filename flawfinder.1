@@ -589,11 +589,20 @@ Examine all the C/C++ files in the directory mydir and its subdirectories,
 including even the hits marked for ignoring in the code comments.
 
 .TP
+.B "flawfinder \-\-csv ."
+Examine the current directory down (recursively), and report all
+hits in CSV format.
+This is the recommended form if you want to further process
+flawfinder output using other tools
+(such as data correlation tools).
+
+.TP
 .B "flawfinder \-QD mydir"
 Examine mydir and report only the actual results
 (removing the header and footer of the output).
-This form is useful
-if the output will be piped into other tools for further analysis.
+This form may be useful
+if the output will be piped into other tools for further analysis,
+though CSV format is probably the better choice in that case.
 The \-C (\-\-columns) and \-S (\-\-singleline)
 options can also be useful if you're piping the data
 into other tools.
