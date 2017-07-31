@@ -48,6 +48,7 @@ flawfinder \- lexically find potential security flaws ("hits") in source code
 .\" Selecting Output Format:
 .RB [ \-\-context | \-c ]
 .RB [ \-\-columns | \-C ]
+.RB [ \-\-csv ]
 .RB [ \-\-dataonly | \-D ]
 .RB [ \-\-html | \-H ]
 .RB [ \-\-immediate | -i ]
@@ -471,6 +472,15 @@ false positives).
 .BI \-c
 Show context, i.e., the line having the "hit"/potential flaw.
 By default the line is shown immediately after the warning.
+
+.TP
+.BI \-\-csv
+Generate output in comma-separated-value (CSV) format.
+It will always generate a header row, followed by 0 or more data rows
+(one data row for each hit).
+Selecting this option automatically enables \-\-quiet and
+\-\-dataonly.
+This is the recommended format for sending to other tools for processing.
 
 .TP
 .BI "\-\-dataonly"
