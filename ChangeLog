@@ -2,6 +2,9 @@
 	* Change version numbers to use Semantic Versioning (x.y.z)
 	* Add support for generating CSV (comma-separated value) format,
 	  to make this tool easier to integrate into larger toolsuites.
+	* Fixed a number of issues - and even a few bugs - found by the
+	  Python static analysis tool pylint.
+	* Document in CONTRIBUTING.md how to contribute to the project.
 	* Change version number to 2.0.0, because we have a subtle
 	  interface change that won't affect most people but it
 	  *may* affect those who use postprocess

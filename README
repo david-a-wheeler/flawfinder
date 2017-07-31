@@ -43,5 +43,8 @@ vulnerabilities in programs that cannot be built or cannot be linked.
 Flawfinder also doesn't get as confused by macro definitions
 and other oddities that more sophisticated tools have trouble with.
 
+We love contributions!  For more information on contributing, see
+the file CONTRIBUTING.md.
+
 Flawfinder is released under the GNU GPL license version 2 or later (GPL-2.0+).
 See the COPYING file for license information.
