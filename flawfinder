@@ -1030,12 +1030,6 @@ c_ruleset = {
      "Check implementation on installation, or limit the size of all string inputs",
      "buffer", "dangers-c", {'input': 1}),
 
-    "getpass":
-    (normal, 3,
-     "Some implementations may overflow buffers (CWE-120, CWE-20)",
-     "",
-     "buffer", "dangers-c", {'input': 1}),
-
     "getwd":
     (normal, 3,
      "This does not protect against buffer overflows "
@@ -1138,14 +1132,6 @@ c_ruleset = {
      "(e.g., if run as SYSTEM in many versions of Windows) (CWE-377)",
      "",
      "tmpfile", "avoid-race", {}),
-
-    # TODO: Need to detect varying levels of danger.
-    "execl|execlp|execle|execv|execvp|system|popen|WinExec|ShellExecute":
-    (normal, 4,
-     "This causes a new program to execute and is difficult to use safely (CWE-78)",
-     "try using a library call that implements the same functionality " +
-     "if available",
-     "shell", "", {}),
 
     # TODO: Need to detect varying levels of danger.
     "execl|execlp|execle|execv|execvp|system|popen|WinExec|ShellExecute":
@@ -1305,9 +1291,9 @@ c_ruleset = {
 
     "getpass":
     (normal, 4,
-     "This function is obsolete and not portable. It was in SUSv2 but removed by POSIX.2.  What it does exactly varies considerably between systems, particularly in where its prompt is displayed and where it gets its data (e.g., /dev/tty, stdin, stderr, etc.) (CWE-676)",
+     "This function is obsolete and not portable. It was in SUSv2 but removed by POSIX.2.  What it does exactly varies considerably between systems, particularly in where its prompt is displayed and where it gets its data (e.g., /dev/tty, stdin, stderr, etc.). In addition, some implementations overflow buffers. (CWE-676, CWE-120, CWE-20)",
      "Make the specific calls to do exactly what you want.  If you continue to use it, or write your own, be sure to zero the password as soon as possible to avoid leaving the cleartext password visible in the process' address space",
-     "misc", "", {}),
+     "misc", "", {'input': 1}),
 
     "gsignal|ssignal":
     (normal, 2,
@@ -1332,7 +1318,6 @@ c_ruleset = {
      "This C routine is considered obsolete (as opposed to the shell command by the same name).   The interaction of this function with SIGALRM and other timer functions such as sleep(), alarm(), setitimer(), and nanosleep() is unspecified (CWE-676)",
      "Use nanosleep(2) or setitimer(2) instead",
      "obsolete", "", {}),
-
 
     # Input functions, useful for -I
     "recv|recvfrom|recvmsg|fread|readv":
