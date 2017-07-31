@@ -61,6 +61,7 @@ import operator  # To support filename expansion on Windows
 import os.path
 import time
 import csv  # To support generating CSV format
+import hashlib
 # import formatter
 
 version = "2.0.1"
@@ -411,12 +412,18 @@ class Hit(object):
         result = find_cwe_pattern.search(self.warning)
         return result.group()[1:-1] if result else ''
 
+    def fingerprint(self):
+        """Return fingerprint of stripped context."""
+        m = hashlib.sha256()
+        m.update(self.context_text.strip())
+        return m.hexdigest()
+
     # Show as CSV format
     def show_csv(self):
         csv_writer.writerow([
             self.filename, self.line, self.column, self.level, self.category,
             self.name, self.warning, self.suggestion, self.note,
-            self.cwes(), self.context_text
+            self.cwes(), self.context_text, self.fingerprint()
         ])
 
     def show(self):
@@ -1636,7 +1643,7 @@ def display_header():
     if csv_output:
         csv_writer.writerow([
             'File', 'Line', 'Column', 'Level', 'Category', 'Name', 'Warning',
-            'Suggestion', 'Note', 'CWEs', 'Context'
+            'Suggestion', 'Note', 'CWEs', 'Context', 'Fingerprint'
         ])
         return
     if not showheading:
