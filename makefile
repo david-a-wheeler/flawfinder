@@ -187,9 +187,11 @@ cwe: cwe.c
 show-cwes: cwe
 	./cwe < flawfinder | sort -u -V
 
+pylint:
+	pylint flawfinder
 
-.PHONY: install clean test check profile test-is-correct rpm uninstall distribute my-install show-cwes
-
+.PHONY: install clean test check profile test-is-correct rpm \
+  uninstall distribute my-install show-cwes pylint
 
 # When I switch to using "DistUtils", I may need to move the MANIFEST.in
 # file into a subdirectory (named flawfinder-versionnumber).

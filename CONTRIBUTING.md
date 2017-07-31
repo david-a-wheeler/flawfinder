@@ -43,20 +43,32 @@ please try to not forget.
 
 ## Code Conventions
 
-The Python code uses 2-space indents (instead of the usual 4-space
-indents). Do not use tabs.  It is currently Python 2.7; please don't
-make it hard to convert to Python 3 when that eventually happens.
-
 To make the program easy to install everywhere, the main executable
 is exactly one self-contained file.  That involves some compromises,
 but for now, please keep it that way.
 
-We aspire to eventually comply with
-[PEP 8](https://www.python.org/dev/peps/pep-0008/) other than the
-indentation size.  In practice the code doesn't actually conform to that,
-but patches to improve that are generally welcome.
+We generally use the code conventions of
+[PEP 8](https://www.python.org/dev/peps/pep-0008/).
+The Python code uses 4-space indents (we used to use 2-space indents).
+Do not use tabs.  In some cases the code doesn't yet comply;
+patches to improve that are often welcome.
 
-We're starting to use "pylint" to check for style and other problems.
+The code is currently Python 2, and is only tested on
+the Python 2.7 series.  Please don't make it hard to convert
+to Python 3 when that eventually happens.
+
+WE use "pylint" to check for style and other problems.
+This is configured by the included "pylintrc" file.
+We intentionally disable some checks as being "less important",
+for example, the current code has many lines longer than 80 characters.
+That said, patches to make lines fit in 80 characters are welcome.
+
+We require that the pylint results for contributions be at least 9.5/10 as
+configured with the provided "pylintrc" file, without any errors ("E").
+Better is better.  You can run "make pylint" to run this check.
+The current version *does* cause some pylint reports
+(patches to fix those are welcome!).
+
 An easy way to install pylint is to use pip.
 Most python installs have pip, but if yours does not
 (e.g., Cygwin), install pip with:
