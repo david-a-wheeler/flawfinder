@@ -622,11 +622,7 @@ p_c_constant_string = re.compile(r'^\s*L?"([^\\]|\\[^0-6]|\\[0-6]+)*"$')
 
 def c_constant_string(text):
     "Returns true if text is a constant C string."
-    if p_c_constant_string.search(text):
-        return 1
-    else:
-        return 0
-
+    return 1 if p_c_constant_string.search(text) else 0
 
 # Precompile patterns for speed.
 
@@ -1710,8 +1706,8 @@ def maybe_process_file(f, patch_infos):
                 print_warning("Skipping directory with initial dot " + h(f))
             num_dotdirs_skipped = num_dotdirs_skipped + 1
             return
-        for file in os.listdir(f):
-            maybe_process_file(os.path.join(f, file), patch_infos)
+        for dir_entry in os.listdir(f):
+            maybe_process_file(os.path.join(f, dir_entry), patch_infos)
     # Now we will FIRST check if the file appears to be a C/C++ file, and
     # THEN check if it's a regular file or symlink.  This is more complicated,
     # but I do it this way so that there won't be a lot of pointless
@@ -2027,10 +2023,10 @@ def show_final_results():
         diff_hitlist = pickle.load(diff_file)
         if output_format:
             print "<ul>"
-        for h in hitlist:
-            if h not in diff_hitlist:
-                h.show()
-                count_per_level[h.level] = count_per_level[h.level] + 1
+        for hit in hitlist:
+            if hit not in diff_hitlist:
+                hit.show()
+                count_per_level[hit.level] = count_per_level[hit.level] + 1
                 count = count + 1
         if output_format:
             print "</ul>"
@@ -2038,9 +2034,9 @@ def show_final_results():
     else:
         if output_format:
             print "<ul>"
-        for h in hitlist:
-            h.show()
-            count_per_level[h.level] = count_per_level[h.level] + 1
+        for hit in hitlist:
+            hit.show()
+            count_per_level[hit.level] = count_per_level[hit.level] + 1
         if output_format:
             print "</ul>"
         count = len(hitlist)
