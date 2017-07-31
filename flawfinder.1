@@ -78,7 +78,8 @@ of those changes (created by GNU "diff -u" or "svn diff" or "git diff")
 in a patch file and use the \-\-patch (\-P) option.
 .PP
 Flawfinder will produce a list of ``hits'' (potential
-security flaws), sorted by risk; the riskiest hits are shown first.
+security flaws, also called findings),
+sorted by risk; the riskiest hits are shown first.
 The risk level is shown inside square brackets and
 varies from 0, very little risk, to 5, great risk.
 This risk level depends not only on the function, but on the values of the
@@ -106,7 +107,7 @@ banned list of functions released by Microsoft; see
 http://msdn.microsoft.com/en-us/library/bb288454.aspx
 for more information about banned functions.
 .PP
-Not every hit is actually a security vulnerability, 
+Not every hit (aka finding) is actually a security vulnerability, 
 and not every security vulnerability is necessarily found.
 Nevertheless, flawfinder can be an aid in finding and removing
 security vulnerabilities.
@@ -971,7 +972,7 @@ Also, do not use the \-\-allowlink option in such cases;
 attackers could create malicious symbolic links to files outside of their
 source code area (such as /etc/passwd).
 .PP
-Source code management systems (like SourceForge and Savannah)
+Source code management systems (like GitHub, SourceForge, and Savannah)
 definitely fall into this category; if you're maintaining one of those
 systems, first copy or extract the files into a separate directory
 (that can't be controlled by attackers)
@@ -1026,7 +1027,7 @@ most of the bugs listed here.
 On the positive side, flawfinder doesn't get confused by many
 complicated preprocessor sequences that other tools sometimes choke on;
 flawfinder can often handle code that cannot link, and sometimes
-cannot even build.
+cannot even compile or build.
 .PP
 Flawfinder is currently limited to C/C++.
 In addition, when analyzing C++ it focuses primarily on the C subset of C++.
@@ -1092,13 +1093,15 @@ analyzing programs that aren't application-layer code
 The techniques may still be useful; feel free to replace the database
 if your situation is significantly different from normal.
 .PP
-Flawfinder's output format (filename:linenumber, followed optionally
+Flawfinder's default output format (filename:linenumber, followed optionally
 by a :columnnumber) can be misunderstood if any source files have
 very weird filenames.
 Filenames embedding a newline/linefeed character will cause odd breaks,
 and filenames including colon (:) are likely to be misunderstood.
 This is especially important if flawfinder's output is being used
 by other tools, such as filters or text editors.
+If you are using flawfinder's output in other tools, consider using its
+CSV format instead (which can handle this).
 If you're looking at new code, examine the files for such characters.
 It's incredibly unwise to have such filenames anyway;
 many tools can't handle such filenames at all.
@@ -1119,7 +1122,7 @@ to report hits, so that they can be examined further, instead of silently
 ignoring them.
 Thus, flawfinder prefers to have false positives (reports that
 turn out to not be problems) rather than false negatives
-(failure to report on a security vulnerability).
+(failures to report security vulnerabilities).
 But this is a generality; flawfinder uses simplistic heuristics and
 simply can't get everything "right".
 .PP
