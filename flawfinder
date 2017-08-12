@@ -49,6 +49,7 @@
 # than Python 2.7.
 
 from __future__ import division
+from __future__ import print_function
 import functools
 import sys
 import re
@@ -244,7 +245,7 @@ def load_patch_info(input_patch_file):
     try:
         hPatch = open(input_patch_file, 'r')
     except BaseException:
-        print "Error: failed to open", h(input_patch_file)
+        print("Error: failed to open", h(input_patch_file))
         sys.exit(1)
 
     patched_filename = ""  # Name of new file patched by current hunk.
@@ -258,7 +259,7 @@ def load_patch_info(input_patch_file):
     elif is_gnu_diff(sLine):
         fn_get_filename = gnu_diff_get_filename
     else:
-        print "Error: Unrecognized patch format"
+        print("Error: Unrecognized patch format")
         sys.exit(1)
 
     while True:  # Loop-and-half construct.  Read a line, end loop when no more
@@ -328,17 +329,17 @@ def print_multi_line(text):
     prefix = " "
     starting_position = len(prefix) + 1
     #
-    print prefix,
+    print(prefix, end='')
     position = starting_position
     #
     for w in text.split():
         if len(w) + position >= width:
-            print
-            print prefix,
+            print()
+            print(prefix, end='')
             position = starting_position
-        print w,
+        print(' ', end='')
+        print(w, end='')
         position = position + len(w) + 1
-
 
 # This matches references to CWE identifiers, so we can HTMLize them.
 # We don't refer to CWEs with one digit, so we'll only match on 2+ digits.
@@ -431,49 +432,49 @@ class Hit(object):
             self.show_csv()
             return
         if output_format:
-            print "<li>",
+            print("<li>", end='')
         sys.stdout.write(h(self.filename))
 
         if show_columns:
-            print ":%(line)s:%(column)s:" % self,
+            print(":%(line)s:%(column)s:" % self, end='')
         else:
-            print ":%(line)s:" % self,
+            print(":%(line)s:" % self, end='')
 
         if output_format:
-            print "<b>",
+            print(" <b>", end='')
         # Extra space before risk level in text, makes it easier to find:
-        print " [%(level)s]" % self,
+        print("  [%(level)s]" % self, end=' ')
         if output_format:
-            print "</b>",
-        print "(%(category)s)" % self,
+            print("</b> ", end='')
+        print("(%(category)s)" % self, end=' ')
         if output_format:
-            print "<i>",
-        print h("%(name)s:" % self),
+            print("<i> ", end='')
+        print(h("%(name)s:" % self), end='')
         main_text = h("%(warning)s. " % self)
         if output_format:  # Create HTML link to CWE definitions
             main_text = link_cwe_pattern.sub(
                 r'<a href="http://cwe.mitre.org/data/definitions/\2.html">\1</a>\3',
                 main_text)
         if single_line:
-            print main_text,
+            print(main_text, end='')
             if self.suggestion:
-                print h(self.suggestion) + ".",
-            print h(self.note),
+                print(" " + h(self.suggestion) + ".", end='')
+            print(' ' + h(self.note), end='')
         else:
             if self.suggestion:
                 main_text = main_text + h(self.suggestion) + ". "
             main_text = main_text + h(self.note)
-            print
+            print()
             print_multi_line(main_text)
         if output_format:
-            print "</i>",
-        print
+            print(" </i>", end='')
+        print()
         if show_context:
             if output_format:
-                print "<pre>"
-            print h(self.context_text)
+                print("<pre>")
+            print(h(self.context_text))
             if output_format:
-                print "</pre>"
+                print("</pre>")
 
 
 # The "hitlist" is the list of all hits (warnings) found so far.
@@ -499,7 +500,7 @@ def add_warning(hit):
 
 
 def internal_warn(message):
-    print h(message)
+    print(h(message))
 
 
 # C Language Specific
@@ -1442,9 +1443,9 @@ def process_c_file(f, patch_infos):
         # This file isn't in the patch list, so don't bother analyzing it.
         if not quiet:
             if output_format:
-                print "Skipping unpatched file ", h(f), "<br>"
+                print("Skipping unpatched file ", h(f), "<br>")
             else:
-                print "Skipping unpatched file", f
+                print("Skipping unpatched file", f)
             sys.stdout.flush()
         return
 
@@ -1453,13 +1454,13 @@ def process_c_file(f, patch_infos):
     else:
         # Symlinks should never get here, but just in case...
         if (not allowlink) and os.path.islink(f):
-            print "BUG! Somehow got a symlink in process_c_file!"
+            print("BUG! Somehow got a symlink in process_c_file!")
             num_links_skipped = num_links_skipped + 1
             return
         try:
             input = open(f, "r")
         except BaseException:
-            print "Error: failed to open", h(f)
+            print("Error: failed to open", h(f))
             sys.exit(1)
 
     # Read ENTIRE file into memory.  Use readlines() to convert \n if necessary.
@@ -1472,9 +1473,9 @@ def process_c_file(f, patch_infos):
 
     if not quiet:
         if output_format:
-            print "Examining", h(f), "<br>"
+            print("Examining", h(f), "<br>")
         else:
-            print "Examining", f
+            print("Examining", f)
         sys.stdout.flush()
 
     text = string.join(input.readlines(), "")
@@ -1606,8 +1607,8 @@ def expand_ruleset(ruleset):
         if string.find(rule, "|") != -1:  # We found a rule to expand.
             for newrule in string.split(rule, "|"):
                 if newrule in ruleset:
-                    print "Error: Rule %s, when expanded, overlaps %s" % (
-                        rule, newrule)
+                    print("Error: Rule %s, when expanded, overlaps %s" % (
+                        rule, newrule))
                     sys.exit(1)
                 ruleset[newrule] = ruleset[rule]
             del ruleset[rule]
@@ -1620,18 +1621,18 @@ def display_ruleset(ruleset):
     sortedkeys = sorted(ruleset.keys())
     # Now, print them out:
     for key in sortedkeys:
-        print key + "\t" + str(
+        print(key + "\t" + str(
             ruleset[key][1]
-        ) + "\t" + ruleset[key][2]  # function name, default level, default warning
+        ) + "\t" + ruleset[key][2])  # function name, default level, default warning
 
 
 def initialize_ruleset():
     expand_ruleset(c_ruleset)
     if showheading:
-        print "Number of rules (primarily dangerous function names) in C/C++ ruleset:", len(
-            c_ruleset)
+        print("Number of rules (primarily dangerous function names) in C/C++ ruleset:", len(
+            c_ruleset))
         if output_format:
-            print "<p>"
+            print("<p>")
     if list_rules:
         display_ruleset(c_ruleset)
         sys.exit(0)
@@ -1653,20 +1654,20 @@ def display_header():
             print(
                 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" '
                 + '"http://www.w3.org/TR/html4/loose.dtd">')
-            print "<html>"
-            print "<head>"
-            print '<meta http-equiv="Content-type" content="text/html; charset=utf8">'
-            print "<title>Flawfinder Results</title>"
-            print '<meta name="author" content="David A. Wheeler">'
-            print '<meta name="keywords" lang="en" content="flawfinder results, security scan">'
-            print "</head>"
-            print "<body>"
-            print "<h1>Flawfinder Results</h1>"
-            print "Here are the security scan results from"
-            print '<a href="http://www.dwheeler.com/flawfinder">Flawfinder version %s</a>,' % version
-            print '(C) 2001-2017 <a href="http://www.dwheeler.com">David A. Wheeler</a>.'
+            print("<html>")
+            print("<head>")
+            print('<meta http-equiv="Content-type" content="text/html; charset=utf8">')
+            print("<title>Flawfinder Results</title>")
+            print('<meta name="author" content="David A. Wheeler">')
+            print('<meta name="keywords" lang="en" content="flawfinder results, security scan">')
+            print("</head>")
+            print("<body>")
+            print("<h1>Flawfinder Results</h1>")
+            print("Here are the security scan results from")
+            print('<a href="http://www.dwheeler.com/flawfinder">Flawfinder version %s</a>,' % version)
+            print('(C) 2001-2017 <a href="http://www.dwheeler.com">David A. Wheeler</a>.')
         else:
-            print "Flawfinder version %s, (C) 2001-2017 David A. Wheeler." % version
+            print("Flawfinder version %s, (C) 2001-2017 David A. Wheeler." % version)
         displayed_header = 1
 
 
@@ -1780,7 +1781,7 @@ def process_file_args(files, patch_infos):
 
 
 def usage():
-    print """
+    print("""
 flawfinder [--help | -h] [--version] [--listrules]
   [--allowlink] [--followdotdir] [--nolink]
            [--patch filename | -P filename]
@@ -1866,7 +1867,7 @@ flawfinder [--help | -h] [--version] [--listrules]
 
   For more information, please consult the manpage or available
   documentation.
-"""
+""")
 
 
 def process_options():
@@ -1944,19 +1945,19 @@ def process_options():
                 loadhitlist = value
                 display_header()
                 if showheading:
-                    print "Loading hits from", value
+                    print("Loading hits from", value)
             elif opt == "--savehitlist":
                 savehitlist = value
                 display_header()
                 if showheading:
-                    print "Saving hitlist to", value
+                    print("Saving hitlist to", value)
             elif opt == "--diffhitlist":
                 diffhitlist = value
                 display_header()
                 if showheading:
-                    print "Showing hits not in", value
+                    print("Showing hits not in", value)
             elif opt == "--version":
-                print version
+                print(version)
                 sys.exit(0)
             elif opt in ['-h', '-?', '--help']:
                 # We accept "-?" but do not document it.  On Unix-like systems the
@@ -1977,7 +1978,7 @@ def process_options():
     # use "getopt.error" here so it's compatible with both
     # Python 1.5 and Python 2.
     except getopt.error as text:
-        print "*** getopt error:", text
+        print("*** getopt error:", text)
         usage()
         sys.exit(1)
 
@@ -1993,7 +1994,7 @@ def process_files():
             patch_infos = load_patch_info(patch_file)
         files = sys.argv[1:]
         if not files:
-            print "*** No input files"
+            print("*** No input files")
             return None
         process_file_args(files, patch_infos)
         return 1
@@ -2009,13 +2010,13 @@ def show_final_results():
     for i in range(0, 6):  # Initialize count_per_level
         count_per_level_and_up[i] = 0
     if show_immediately or not quiet:  # Separate the final results.
-        print
+        print()
         if showheading:
             if output_format:
-                print "<h2>Final Results</h2>"
+                print("<h2>Final Results</h2>")
             else:
-                print "FINAL RESULTS:"
-                print
+                print("FINAL RESULTS:")
+                print()
     hitlist.sort()
     # Display results.  The HTML format now uses
     # <ul> so that the format differentiates each entry.
@@ -2025,125 +2026,125 @@ def show_final_results():
         diff_file = open(diffhitlist)
         diff_hitlist = pickle.load(diff_file)
         if output_format:
-            print "<ul>"
+            print("<ul>")
         for hit in hitlist:
             if hit not in diff_hitlist:
                 hit.show()
                 count_per_level[hit.level] = count_per_level[hit.level] + 1
                 count = count + 1
         if output_format:
-            print "</ul>"
+            print("</ul>")
         diff_file.close()
     else:
         if output_format:
-            print "<ul>"
+            print("<ul>")
         for hit in hitlist:
             hit.show()
             count_per_level[hit.level] = count_per_level[hit.level] + 1
         if output_format:
-            print "</ul>"
+            print("</ul>")
         count = len(hitlist)
     # Done with list, show the post-hitlist summary.
     if showheading:
         if output_format:
-            print "<h2>Analysis Summary</h2>"
+            print("<h2>Analysis Summary</h2>")
         else:
-            print
-            print "ANALYSIS SUMMARY:"
+            print()
+            print("ANALYSIS SUMMARY:")
         if output_format:
-            print "<p>"
+            print("<p>")
         else:
-            print
+            print()
         if count > 0:
-            print "Hits =", count
+            print("Hits =", count)
         else:
-            print "No hits found."
+            print("No hits found.")
         if output_format:
-            print "<br>"
+            print("<br>")
         # Compute the amount of time spent, and lines analyzed/second.
         # By computing time here, we also include the time for
         # producing the list of hits, which is reasonable.
         time_analyzing = time.time() - starttime
         if required_regex:
-            print "Hits limited to regular expression " + required_regex
-        print "Lines analyzed = %d" % sumlines,
+            print("Hits limited to regular expression " + required_regex)
+        print("Lines analyzed = %d" % sumlines, end='')
         if time_analyzing > 0 and not omit_time:  # Avoid divide-by-zero.
-            print "in approximately %.2f seconds (%.0f lines/second)" % (
-                time_analyzing, (sumlines / time_analyzing))
+            print(" in approximately %.2f seconds (%.0f lines/second)" % (
+                time_analyzing, (sumlines / time_analyzing)))
         else:
-            print
+            print()
         if output_format:
-            print "<br>"
-        print "Physical Source Lines of Code (SLOC) = %d" % sloc
+            print("<br>")
+        print("Physical Source Lines of Code (SLOC) = %d" % sloc)
         if output_format:
-            print "<br>"
+            print("<br>")
         # Output hits@each level.
-        print "Hits@level =",
+        print("Hits@level =", end='')
         for i in range(0, 6):
-            print "[%d] %3d" % (i, count_per_level[i]),
+            print(" [%d] %3d" % (i, count_per_level[i]), end='')
         if output_format:
-            print "<br>"
+            print(" <br>")
         else:
-            print
+            print()
         # Compute hits at "level x or higher"
-        print "Hits@level+ =",
+        print("Hits@level+ =", end='')
         for i in range(0, 6):
             for j in range(i, 6):
                 count_per_level_and_up[
                     i] = count_per_level_and_up[i] + count_per_level[j]
         # Display hits at "level x or higher"
         for i in range(0, 6):
-            print "[%d+] %3d" % (i, count_per_level_and_up[i]),
+            print(" [%d+] %3d" % (i, count_per_level_and_up[i]), end='')
         if output_format:
-            print "<br>"
+            print(" <br>")
         else:
-            print
+            print()
         if sloc > 0:
-            print "Hits/KSLOC@level+ =",
+            print("Hits/KSLOC@level+ =", end='')
             for i in range(0, 6):
-                print "[%d+] %3g" % (
-                    i, count_per_level_and_up[i] * 1000.0 / sloc),
+                print(" [%d+] %3g" % (
+                    i, count_per_level_and_up[i] * 1000.0 / sloc), end='')
         if output_format:
-            print "<br>"
+            print(" <br>")
         else:
-            print
+            print()
         #
         if num_links_skipped:
-            print "Symlinks skipped =", num_links_skipped, "(--allowlink overrides but see doc for security issue)"
+            print("Symlinks skipped =", num_links_skipped, "(--allowlink overrides but see doc for security issue)")
             if output_format:
-                print "<br>"
+                print("<br>")
         if num_dotdirs_skipped:
-            print "Dot directories skipped =", num_dotdirs_skipped, "(--followdotdir overrides)"
+            print("Dot directories skipped =", num_dotdirs_skipped, "(--followdotdir overrides)")
             if output_format:
-                print "<br>"
+                print("<br>")
         if num_ignored_hits > 0:
-            print "Suppressed hits =", num_ignored_hits, "(use --neverignore to show them)"
+            print("Suppressed hits =", num_ignored_hits, "(use --neverignore to show them)")
             if output_format:
-                print "<br>"
-        print "Minimum risk level = %d" % minimum_level
+                print("<br>")
+        print("Minimum risk level = %d" % minimum_level)
         if output_format:
-            print "<br>"
+            print("<br>")
         if count > 0:
-            print "Not every hit is necessarily a security vulnerability."
+            print("Not every hit is necessarily a security vulnerability.")
             if output_format:
-                print "<br>"
-        print "There may be other security vulnerabilities; review your code!"
+                print("<br>")
+        print("There may be other security vulnerabilities; review your code!")
         if output_format:
-            print "<br>"
-            print "See '<a href=\"http://www.dwheeler.com/secure-programs\">Secure Programming for Linux and Unix HOWTO</a>'"
-            print "(<a href=\"http://www.dwheeler.com/secure-programs\">http://www.dwheeler.com/secure-programs</a>) for more information."
+            print("<br>")
+            print("See '<a href=\"http://www.dwheeler.com/secure-programs\">Secure Programming for Linux and Unix HOWTO</a>'")
+            print("(<a href=\"http://www.dwheeler.com/secure-programs\">http://www.dwheeler.com/secure-programs</a>) for more information.")
         else:
-            print "See 'Secure Programming for Linux and Unix HOWTO'"
-            print "(http://www.dwheeler.com/secure-programs) for more information."
+            print("See 'Secure Programming for Linux and Unix HOWTO'")
+            print("(http://www.dwheeler.com/secure-programs) for more information.")
         if output_format:
-            print "</body>"
-            print "</html>"
+            print("</body>")
+            print("</html>")
 
 
 def save_if_desired():
     # We'll save entire hitlist, even if only differences displayed.
     if savehitlist:
-        print "Saving hitlist to", savehitlist
+        print("Saving hitlist to", savehitlist)
         f = open(savehitlist, "w")
         pickle.dump(hitlist, f)
         f.close()
@@ -2162,4 +2163,4 @@ if __name__ == '__main__':
     try:
         flawfind()
     except KeyboardInterrupt:
-        print "*** Flawfinder interrupted"
+        print("*** Flawfinder interrupted")
