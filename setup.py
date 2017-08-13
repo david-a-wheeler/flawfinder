@@ -25,6 +25,7 @@ import commands
 
 setup (# Distribution meta-data
        name = "flawfinder",
+       packages = ["flawfinder"], # Must be same as name
        version = "2.0.0",
        description = "a program that examines source code looking for security weaknesses",
        author = "David A. Wheeler",
@@ -35,6 +36,22 @@ C/C++ source code and identify out potential security flaws,
 ranking them by likely severity.
 It is released under the GNU GPL license.""",
        url = "http://www.dwheeler.com/flawfinder/",
+       download_url = "https://sourceforge.net/projects/flawfinder/files/flawfinder-2.0.0.tar.gz/download",
+       keywords = ['analysis', 'security', 'analyzer'],
+       classifiers = [
+           'Development Status :: 5 - Production/Stable',
+           'Environment :: Console',
+           'Intended Audience :: Developers',
+           'License :: OSI Approved :: GNU General Public License v2 or later (GPLv2+)',
+           'Natural Language :: English',
+           'Programming Language :: Python :: 2.7',
+           'Operating System :: OS Independent',
+           'Topic :: Security',
+           'Topic :: Software Development :: Build Tools',
+           'Topic :: Software Development :: Quality Assurance',
+           'Topic :: Software Development :: Testing'
+           ],
+       python_requires = '~=2.7',
        scripts = [ 'flawfinder' ],
        data_files = [ ('share/man/man1', [ 'flawfinder.1.gz' ]) ],
        py_modules = [ ],
