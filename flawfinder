@@ -396,7 +396,7 @@ class Hit(object):
         self.line = 0
         self.name = ""
         self.context_text = ""
-        for key in other.keys():
+        for key in other:
             setattr(self, key, other[key])
 
     def __getitem__(self, X):  # Define this so this works: "%(line)" % hit
@@ -1595,8 +1595,9 @@ def expand_ruleset(ruleset):
     # Rulesets can have compressed sets of rules
     # (multiple function names separated by "|".
     # Expand the given ruleset.
-    # Note that this for loop modifies the ruleset while it's iterating!
-    for rule in ruleset.keys():
+    # Note that this "for" loop modifies the ruleset while it's iterating,
+    # so we *must* convert the keys into a list before iterating.
+    for rule in list(ruleset.keys()):
         if string.find(rule, "|") != -1:  # We found a rule to expand.
             for newrule in string.split(rule, "|"):
                 if newrule in ruleset:
@@ -1964,7 +1965,8 @@ def process_options():
         # will expand twice.  Python doesn't have a clean way to detect
         # "has globbing occurred", so this is the best I've found:
         if os.name == "windows" or os.name == "nt" or os.name == "dos":
-            sys.argv[1:] = functools.reduce(operator.add, map(glob.glob, args))
+            sys.argv[1:] = functools.reduce(operator.add,
+                                            list(map(glob.glob, args)))
         else:
             sys.argv[1:] = args
     # In Python 2 the convention is "getopt.GetoptError", but we
