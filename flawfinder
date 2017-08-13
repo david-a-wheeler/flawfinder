@@ -1336,7 +1336,7 @@ template_ruleset = {
 
 def find_column(text, position):
     "Find column number inside line."
-    newline = string.rfind(text, "\n", 0, position)
+    newline = text.rfind("\n", 0, position)
     if newline == -1:
         return position + 1
     return position - newline
@@ -1344,8 +1344,8 @@ def find_column(text, position):
 
 def get_context(text, position):
     "Get surrounding text line starting from text[position]"
-    linestart = string.rfind(text, "\n", 0, position + 1) + 1
-    lineend = string.find(text, "\n", position, len(text))
+    linestart = text.rfind("\n", 0, position + 1) + 1
+    lineend = text.find("\n", position, len(text))
     if lineend == -1:
         lineend = len(text)
     return text[linestart:lineend]
