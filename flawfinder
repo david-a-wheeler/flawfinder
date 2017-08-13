@@ -399,12 +399,6 @@ class Hit(object):
         for key in other.keys():
             setattr(self, key, other[key])
 
-    def __cmp__(self, other):
-        return (cmp(other.level, self.level) or  # Highest risk first.
-                cmp(self.filename, other.filename) or
-                cmp(self.line, other.line) or
-                cmp(self.column, other.column) or cmp(self.name, other.name))
-
     def __getitem__(self, X):  # Define this so this works: "%(line)" % hit
         return getattr(self, X)
 
@@ -1999,6 +1993,9 @@ def process_files():
         process_file_args(files, patch_infos)
         return 1
 
+def hitlist_sort_key(hit):
+    """Sort key for hitlist."""
+    return (-hit.level, hit.filename, hit.line, hit.column, hit.name)
 
 def show_final_results():
     global hitlist
@@ -2017,7 +2014,7 @@ def show_final_results():
             else:
                 print("FINAL RESULTS:")
                 print()
-    hitlist.sort()
+    hitlist.sort(key=hitlist_sort_key)
     # Display results.  The HTML format now uses
     # <ul> so that the format differentiates each entry.
     # I'm not using <ol>, because its numbers might be confused with
