@@ -2092,9 +2092,10 @@ def show_final_results():
         # Compute hits at "level x or higher"
         print("Hits@level+ =", end='')
         for i in possible_levels:
-            for j in range(i, 6):
-                count_per_level_and_up[
-                    i] = count_per_level_and_up[i] + count_per_level[j]
+            for j in possible_levels:
+                if j >= i:
+                    count_per_level_and_up[
+                        i] = count_per_level_and_up[i] + count_per_level[j]
         # Display hits at "level x or higher"
         for i in possible_levels:
             print(" [%d+] %3d" % (i, count_per_level_and_up[i]), end='')
