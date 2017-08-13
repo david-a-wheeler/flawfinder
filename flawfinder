@@ -1339,8 +1339,7 @@ def find_column(text, position):
     newline = string.rfind(text, "\n", 0, position)
     if newline == -1:
         return position + 1
-    else:
-        return position - newline
+    return position - newline
 
 
 def get_context(text, position):
