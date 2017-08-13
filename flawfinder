@@ -1602,8 +1602,8 @@ def expand_ruleset(ruleset):
     # Note that this "for" loop modifies the ruleset while it's iterating,
     # so we *must* convert the keys into a list before iterating.
     for rule in list(ruleset.keys()):
-        if string.find(rule, "|") != -1:  # We found a rule to expand.
-            for newrule in string.split(rule, "|"):
+        if "|" in rule: # We found a rule to expand.
+            for newrule in rule.split("|"):
                 if newrule in ruleset:
                     print("Error: Rule %s, when expanded, overlaps %s" % (
                         rule, newrule))
