@@ -1475,7 +1475,7 @@ def process_c_file(f, patch_infos):
             print("Examining", f)
         sys.stdout.flush()
 
-    text = string.join(input.readlines(), "")
+    text = "".join(input.readlines())
 
     i = 0
     while i < len(text):
