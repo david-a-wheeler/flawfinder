@@ -217,7 +217,7 @@ def svn_diff_get_filename(sLine):
 def gnu_diff_get_filename(sLine):
     newfile_match = diff_newfile.match(sLine)
     if newfile_match:
-        patched_filename = string.strip(newfile_match.group('filename'))
+        patched_filename = newfile_match.group('filename').strip()
         # Clean up filename - remove trailing timestamp and/or (comment).
         return diff_findjunk.match(patched_filename)
     return None
@@ -265,7 +265,7 @@ def load_patch_info(input_patch_file):
         # because Python forbids '=' in conditions, we do it this way.
         filename_match = fn_get_filename(sLine)
         if filename_match:
-            patched_filename = string.strip(filename_match.group('filename'))
+            patched_filename = filename_match.group('filename').strip()
             if patched_filename in patch:
                 error("filename occurs more than once in the patch: %s" %
                       patched_filename)
@@ -1705,7 +1705,7 @@ def maybe_process_file(f, patch_infos):
     # THEN check if it's a regular file or symlink.  This is more complicated,
     # but I do it this way so that there won't be a lot of pointless
     # warnings about skipping files we wouldn't have used anyway.
-    dotposition = string.rfind(f, ".")
+    dotposition = f.rfind(".")
     if dotposition > 1:
         extension = f[dotposition:]
         if extension in c_extensions:
@@ -1905,7 +1905,7 @@ def process_options():
                 output_format = 1
                 single_line = 0
             elif opt == "--minlevel" or opt == "-m":
-                minimum_level = string.atoi(value)
+                minimum_level = int(value)
             elif opt == "--singleline" or opt == "-S":
                 single_line = 1
             elif opt == "--csv":
