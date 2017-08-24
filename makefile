@@ -125,20 +125,30 @@ time:
 	echo "Lines examined:"
 	wc -l $(SAMPLE_DIR)/*/*.[ch] | tail -2
 
-test: flawfinder test.c test2.c
-	# Omit time report so that results are always the same textually.
-	# Set PYTHON as needed, including to ""
-	$(PYTHON) ./flawfinder --omittime test.c test2.c > test-results.txt
-	$(PYTHON) ./flawfinder --csv test.c test2.c > test-results.csv
-	echo >> test-results.txt
-	echo "Testing for no ending newline:" >> test-results.txt
-	$(PYTHON) ./flawfinder --omittime no-ending-newline.c | \
+test_1: flawfinder test.c test2.c
+	@echo 'test_1'
+	@# Omit time report so that results are always the same textually.
+	@$(PYTHON) ./flawfinder --omittime test.c test2.c > test-results.txt
+	@echo >> test-results.txt
+	@echo "Testing for no ending newline:" >> test-results.txt
+	@$(PYTHON) ./flawfinder --omittime no-ending-newline.c | \
 	  grep 'Lines analyzed' >> test-results.txt
-	$(PYTHON) ./flawfinder --omittime --html --context test.c test2.c > test-results.html
-	@echo "Differences from expected results:"
 	@diff -u correct-results.txt test-results.txt
+
+test_2: flawfinder test.c test2.c
+	@echo 'test_2'
+	@$(PYTHON) ./flawfinder --omittime --html --context test.c test2.c > test-results.html
 	@diff -u correct-results.html test-results.html
+
+test_3: flawfinder test.c test2.c
+	@echo 'test_3'
+	@$(PYTHON) ./flawfinder --csv test.c test2.c > test-results.csv
 	@diff -u correct-results.csv test-results.csv
+
+# Run all tests; output shows differences from expected results.
+# If everything works as expected, it just prints test numbers.
+# Set PYTHON as needed, including to ""
+test: test_1 test_2 test_3
 
 check: test
 
