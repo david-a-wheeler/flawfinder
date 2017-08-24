@@ -313,11 +313,7 @@ def load_patch_info(input_patch_file):
 
 def htmlize(s):
     # Take s, and return legal (UTF-8) HTML.
-    s1 = string.replace(s, "&", "&amp;")
-    s2 = string.replace(s1, "<", "&lt;")
-    s3 = string.replace(s2, ">", "&gt;")
-    return s3
-
+    return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 def h(s):
     # htmlize s if we're generating html, otherwise just return s.
@@ -410,7 +406,7 @@ class Hit(object):
     def fingerprint(self):
         """Return fingerprint of stripped context."""
         m = hashlib.sha256()
-        m.update(self.context_text.strip())
+        m.update(self.context_text.strip().encode('utf-8'))
         return m.hexdigest()
 
     # Show as CSV format
@@ -556,16 +552,14 @@ def extract_c_parameters(text, pos=0):
                 parenlevel = parenlevel + 1
             elif c == ',' and (parenlevel == 1):
                 parameters.append(
-                    string.strip(
-                        p_trailingbackslashes.sub('', text[currentstart:i])))
+                    p_trailingbackslashes.sub('', text[currentstart:i]).strip())
                 currentstart = i + 1
             elif c == ')':
                 parenlevel = parenlevel - 1
                 if parenlevel <= 0:
                     parameters.append(
-                        string.strip(
-                            p_trailingbackslashes.sub('', text[currentstart:
-                                                               i])))
+                        p_trailingbackslashes.sub(
+                            '', text[currentstart:i]).strip())
                     # Re-enable these for debugging:
                     # print " EXTRACT_C_PARAMETERS: ", text[pos:pos+80]
                     # print " RESULTS: ", parameters
@@ -598,10 +592,10 @@ def strip_i18n(text):
     """
     match = gettext_pattern.search(text)
     if match:
-        return string.strip(match.group(1))
+        return match.group(1).strip()
     match = undersc_pattern.search(text)
     if match:
-        return string.strip(match.group(3))
+        return match.group(3).strip()
     return text
 
 
