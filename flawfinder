@@ -32,21 +32,12 @@
 #    along with this program; if not, write to the Free Software
 #    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+# This code is written to run on both Python 2.7 and Python 3.
 # The Python developers did a *terrible* job when they transitioned
-# to Python version 3, as I have documented elsewhere.  What's more,
-# many mechanisms that do exist do not come natively with Python 2, or
-# required version 2.6 or later even though older versions were still in use.
-# As a result, many Python programs (including this one) do not use Python 3.
-# The solution used here is to gradually transition the Python code but
-# stay at Python 2.  A preference is
-# given to code constructs that would ALSO work in version 3.X, but
-# only if they would *already* work in Python 2, and only if they don't
-# make the code too complicated.
-
-# The plan is to eventually switch this code so that it runs unchanged
-# on both 2.X and 3.X.  At this point, Python 2.7 has been around for
-# many years, so we don't worry about supporting versions of Python older
-# than Python 2.7.
+# to Python version 3, as I have documented elsewhere.
+# Thankfully, more recent versions of Python 3, and the most recent version of
+# Python 2, make it possible (though ugly) to write code that runs on both.
+# That *finally* makes it possible to semi-gracefully transition.
 
 from __future__ import division
 from __future__ import print_function
@@ -67,7 +58,13 @@ import hashlib
 
 version = "2.0.1"
 
-# Program Options - these are the default values:
+# Program Options - these are the default values.
+# TODO: Switch to boolean types where appropriate.
+# We didn't use boolean types originally because this program
+# predates Python's PEP 285, which added boolean types to Python 2.3.
+# Even after Python 2.3 was released, we wanted to run on older versions.
+# That's irrelevant today, but since "it works" there hasn't been a big
+# rush to change it.
 show_context = 0
 minimum_level = 1
 show_immediately = 0
