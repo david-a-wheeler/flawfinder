@@ -16,6 +16,7 @@ VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
 
 SAMPLE_DIR=/usr/src/linux-2.2.16
+PYTHON=python
 
 # Flawfinder has traditionally used INSTALL_DIR, INSTALL_DIR_BIN, and
 # INSTALL_DIR_MAN.  Here we add support for GNU variables like prefix, etc.;
@@ -126,13 +127,14 @@ time:
 
 test: flawfinder test.c test2.c
 	# Omit time report so that results are always the same textually.
-	./flawfinder --omittime test.c test2.c > test-results.txt
-	./flawfinder --csv test.c test2.c > test-results.csv
+	# Set PYTHON as needed, including to ""
+	$(PYTHON) ./flawfinder --omittime test.c test2.c > test-results.txt
+	$(PYTHON) ./flawfinder --csv test.c test2.c > test-results.csv
 	echo >> test-results.txt
 	echo "Testing for no ending newline:" >> test-results.txt
-	./flawfinder --omittime no-ending-newline.c | \
+	$(PYTHON) ./flawfinder --omittime no-ending-newline.c | \
 	  grep 'Lines analyzed' >> test-results.txt
-	./flawfinder --omittime --html --context test.c test2.c > test-results.html
+	$(PYTHON) ./flawfinder --omittime --html --context test.c test2.c > test-results.html
 	@echo "Differences from expected results:"
 	@diff -u correct-results.txt test-results.txt
 	@diff -u correct-results.html test-results.html
