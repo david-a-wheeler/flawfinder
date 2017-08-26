@@ -50,7 +50,6 @@ import pickle  # To support load/save/diff of hitlist
 import os
 import glob
 import operator  # To support filename expansion on Windows
-import os.path
 import time
 import csv  # To support generating CSV format
 import hashlib
