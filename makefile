@@ -155,6 +155,7 @@ test_004: flawfinder test.c
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
 test: test_001 test_002 test_003 test_004
+	@echo 'All tests pass!'
 
 check: test
 
