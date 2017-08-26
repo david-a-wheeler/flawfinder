@@ -1,7 +1,15 @@
+2017-08-26 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Version 2.0.2
+	* Flawfinder can now run on either Python 2.7 or 3
+	* Added more tests
+	* Implemented additional code cleanups recommended by Pylint
+	* Modified documentation in various ways to clarify things
+
 2017-08-13 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Version 2.0.1
 	* Tranform many internal constructs to work on Python 2 or 3,
           with the eventual goal of making it run on either.
+
 2017-07-29 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Version 2.0.0
 	* Change version numbers to use Semantic Versioning (x.y.z)
