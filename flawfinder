@@ -1437,7 +1437,7 @@ def process_c_file(f, patch_infos):
         return
 
     if f == "-":
-        input = sys.stdin
+        my_input = sys.stdin
     else:
         # Symlinks should never get here, but just in case...
         if (not allowlink) and os.path.islink(f):
@@ -1445,7 +1445,7 @@ def process_c_file(f, patch_infos):
             num_links_skipped = num_links_skipped + 1
             return
         try:
-            input = open(f, "r")
+            my_input = open(f, "r")
         except BaseException:
             print("Error: failed to open", h(f))
             sys.exit(1)
@@ -1465,7 +1465,7 @@ def process_c_file(f, patch_infos):
             print("Examining", f)
         sys.stdout.flush()
 
-    text = "".join(input.readlines())
+    text = "".join(my_input.readlines())
 
     i = 0
     while i < len(text):
