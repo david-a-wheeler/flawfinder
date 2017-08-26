@@ -1,0 +1,13 @@
+--- test.c	2017-08-26 15:33:59.480235200 -0400
++++ test-patched.c	2017-08-23 22:20:22.458331500 -0400
+@@ -9,6 +9,10 @@
+  printf("hello\n");
+ }
+ 
++int bad(char *a, char *b) {
++ strcpy(b, a);
++}
++
+ /* This is a strcpy test. */
+ 
+ int demo(char *a, char *b) {
