@@ -125,8 +125,8 @@ time:
 	echo "Lines examined:"
 	wc -l $(SAMPLE_DIR)/*/*.[ch] | tail -2
 
-test_1: flawfinder test.c test2.c
-	@echo 'test_1'
+test_001: flawfinder test.c test2.c
+	@echo 'test_001 (text output)'
 	@# Omit time report so that results are always the same textually.
 	@$(PYTHON) ./flawfinder --omittime test.c test2.c > test-results.txt
 	@echo >> test-results.txt
@@ -135,20 +135,26 @@ test_1: flawfinder test.c test2.c
 	  grep 'Lines analyzed' >> test-results.txt
 	@diff -u correct-results.txt test-results.txt
 
-test_2: flawfinder test.c test2.c
-	@echo 'test_2'
+test_002: flawfinder test.c test2.c
+	@echo 'test_002 (HTML output)'
 	@$(PYTHON) ./flawfinder --omittime --html --context test.c test2.c > test-results.html
 	@diff -u correct-results.html test-results.html
 
-test_3: flawfinder test.c test2.c
-	@echo 'test_3'
+test_003: flawfinder test.c test2.c
+	@echo 'test_003 (CSV output)'
 	@$(PYTHON) ./flawfinder --csv test.c test2.c > test-results.csv
 	@diff -u correct-results.csv test-results.csv
+
+test_004: flawfinder test.c
+	@echo 'test_004 (single-line)'
+	@$(PYTHON) ./flawfinder -m 5 -S -DC --quiet test.c > \
+	  test-results-004.txt
+	@diff -u correct-results-004.txt test-results-004.txt
 
 # Run all tests; output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
-test: test_1 test_2 test_3
+test: test_001 test_002 test_003 test_004
 
 check: test
 
@@ -157,6 +163,7 @@ test-is-correct: test-results.txt
 	mv test-results.txt correct-results.txt
 	mv test-results.html correct-results.html
 	mv test-results.csv correct-results.csv
+	mv test-results-004.txt correct-results-004.txt
 
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
