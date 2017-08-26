@@ -1973,10 +1973,12 @@ def process_options():
 
 
 def process_files():
+    """Process input (files or hitlist); return True if okay."""
     global hitlist
     if loadhitlist:
-        f = open(loadhitlist)
+        f = open(loadhitlist, "rb")
         hitlist = pickle.load(f)
+        return True
     else:
         patch_infos = None
         if patch_file != "":
@@ -1986,7 +1988,7 @@ def process_files():
             print("*** No input files")
             return None
         process_file_args(files, patch_infos)
-        return 1
+        return True
 
 def hitlist_sort_key(hit):
     """Sort key for hitlist."""
@@ -2140,7 +2142,7 @@ def save_if_desired():
     if savehitlist:
         if not quiet:
             print("Saving hitlist to", savehitlist)
-        f = open(savehitlist, "w")
+        f = open(savehitlist, "wb")
         pickle.dump(hitlist, f)
         f.close()
 

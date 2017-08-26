@@ -157,10 +157,20 @@ test_005: flawfinder test-diff-0005.patch test-patched.c
 	  test-patched.c > test-results-005.txt
 	@diff -u correct-results-005.txt test-results-005.txt
 
+test_006: flawfinder test.c
+	@echo 'test_006 (save/load hitlist)'
+	@$(PYTHON) ./flawfinder -m 5 -S -DC --quiet \
+	  --savehitlist test-saved-hitlist-006.txt \
+	  test.c > test-junk-006.txt
+	@$(PYTHON) ./flawfinder -SQDC \
+	  --loadhitlist test-saved-hitlist-006.txt > \
+	  test-results-006.txt
+	@diff -u correct-results-006.txt test-results-006.txt
+
 # Run all tests; output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
-test: test_001 test_002 test_003 test_004 test_005
+test: test_001 test_002 test_003 test_004 test_005 test_006
 	@echo 'All tests pass!'
 
 check: test
@@ -172,6 +182,7 @@ test-is-correct: test-results.txt
 	mv test-results.csv correct-results.csv
 	mv test-results-004.txt correct-results-004.txt
 	mv test-results-005.txt correct-results-005.txt
+	mv test-results-006.txt correct-results-006.txt
 
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 

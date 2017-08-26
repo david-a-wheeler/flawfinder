@@ -1,0 +1,7 @@
+test.c:32:2:  [5] (buffer) gets:Does not check for buffer overflows (CWE-120, CWE-20).  Use fgets() instead. 
+test.c:56:3:  [5] (buffer) strncat:Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) [MS-banned] (CWE-120).  Consider strcat_s, strlcat, snprintf, or automatically resizing strings. Risk is high; the length parameter appears to be a constant, instead of computing the number of characters left.
+test.c:57:3:  [5] (buffer) _tcsncat:Easily used incorrectly (e.g., incorrectly computing the correct maximum size to add) [MS-banned] (CWE-120).  Consider strcat_s, strlcat, or automatically resizing strings. Risk is high; the length parameter appears to be a constant, instead of computing the number of characters left.
+test.c:60:3:  [5] (buffer) MultiByteToWideChar:Requires maximum length in CHARACTERS, not bytes (CWE-120).  Risk is high, it appears that the size is given as bytes, but the function requires size as characters.
+test.c:62:3:  [5] (buffer) MultiByteToWideChar:Requires maximum length in CHARACTERS, not bytes (CWE-120).  Risk is high, it appears that the size is given as bytes, but the function requires size as characters.
+test.c:73:3:  [5] (misc) SetSecurityDescriptorDacl:Never create NULL ACLs; an attacker can set it to Everyone (Deny All Access), which would even forbid administrator access (CWE-732).  
+test.c:73:3:  [5] (misc) SetSecurityDescriptorDacl:Never create NULL ACLs; an attacker can set it to Everyone (Deny All Access), which would even forbid administrator access (CWE-732).  
