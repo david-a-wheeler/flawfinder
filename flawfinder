@@ -2138,7 +2138,8 @@ def show_final_results():
 def save_if_desired():
     # We'll save entire hitlist, even if only differences displayed.
     if savehitlist:
-        print("Saving hitlist to", savehitlist)
+        if not quiet:
+            print("Saving hitlist to", savehitlist)
         f = open(savehitlist, "w")
         pickle.dump(hitlist, f)
         f.close()
