@@ -387,7 +387,7 @@ this behavior is now the default.
 .TP
 \fB\-P\fR \fIpatchfile\fR
 Examine the selected files or directories, but only report hits in lines
-that are added or modified by the given patch file.
+that are added or modified as described in the given patch file.
 The patch file must be in a recognized unified diff format
 (e.g., the output of GNU "diff -u old new", "svn diff", or "git diff [commit]").
 Flawfinder assumes that the patch has already been applied to the files.
@@ -406,6 +406,16 @@ if you have a different format, again regenerate it first.
 Only hits that occur on resultant changed lines, or immediately
 above and below them, are reported.
 This option implies \-\-neverignore.
+\fBWarning\fR: Do \fInot\fR pass a patch file without the
+\fB\-P\fR, because flawfinder will then try to treat the file as a
+source file.
+This will often work, but the line numbers will be relative
+to the beginning of the patch file, not the positions in the
+source code.
+Note that you \fBmust\fR also provide the actual files to analyze,
+and not just the patch file; when using \f\-P\fR files are only reported
+if they are both listed in the patch and also listed (directly or indirectly)
+in the list of files to analyze.
 
 
 .SS "Selecting Hits to Display"
