@@ -12,7 +12,7 @@ For more information, see:
 
 Flawfinder is designed for use on Unix/Linux/POSIX systems
 (including Cygwin, Linux-based systems, MacOS, and *BSDs) as a
-command line tool.  It requires Python 2 (version 2.7 or later).
+command line tool.  It requires Python 2.7 or Python 3.
 
 You can typically install flawfinder from its source code by doing this:
   tar xvzf FILENAME.tar.gz       # Uncompress distribution file
