@@ -150,7 +150,7 @@ Suppressed hits = 2 (use --neverignore to show them)
 Minimum risk level = 1
 Not every hit is necessarily a security vulnerability.
 There may be other security vulnerabilities; review your code!
-See 'Secure Programming for Linux and Unix HOWTO'
+See 'Secure Programming HOWTO'
 (http://www.dwheeler.com/secure-programs) for more information.
 
 Testing for no ending newline:
