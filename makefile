@@ -10,7 +10,7 @@
 # Eventually switch to using DistUtils to autogenerate.
 
 NAME=flawfinder
-VERSION=2.0.1
+VERSION=2.0.2
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
@@ -177,12 +177,12 @@ check: test
 
 # Run "make test-is-correct" if the results are as expected.
 test-is-correct: test-results.txt
-	mv test-results.txt correct-results.txt
-	mv test-results.html correct-results.html
-	mv test-results.csv correct-results.csv
-	mv test-results-004.txt correct-results-004.txt
-	mv test-results-005.txt correct-results-005.txt
-	mv test-results-006.txt correct-results-006.txt
+	cp -p test-results.txt correct-results.txt
+	cp -p test-results.html correct-results.html
+	cp -p test-results.csv correct-results.csv
+	cp -p test-results-004.txt correct-results-004.txt
+	cp -p test-results-005.txt correct-results-005.txt
+	cp -p test-results-006.txt correct-results-006.txt
 
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
