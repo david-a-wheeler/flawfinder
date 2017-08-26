@@ -413,7 +413,7 @@ This will often work, but the line numbers will be relative
 to the beginning of the patch file, not the positions in the
 source code.
 Note that you \fBmust\fR also provide the actual files to analyze,
-and not just the patch file; when using \f\-P\fR files are only reported
+and not just the patch file; when using \fB\-P\fR files are only reported
 if they are both listed in the patch and also listed (directly or indirectly)
 in the list of files to analyze.
 
@@ -584,6 +584,51 @@ loaded hitlist not in F.
 The difference algorithm is conservative;
 hits are only considered the ``same'' if they have the same
 filename, line number, column position, function name, and risk level.
+
+.SS "Character Encoding"
+
+Flawfinder presumes that the character encoding your system uses is
+also the character encoding used by your source files.
+Even if this isn't correct, if you run flawfinder with Python 2
+these non-conformities often do not impact processing in practice.
+
+However, if you run flawfinder with Python 3, this can be a problem.
+Python 3 wants the world to always use encodings perfectly correctly,
+everywhere, even though the world often doesn't care what Python 3 wants.
+This is a problem even if the non-conforming text is in comments or strings
+(where it often doesn't matter).
+Python 3 fails to provide useful built-ins to deal with
+the messiness of the real world, so it's
+non-trivial to deal with this problem without depending on external
+libraries (which we're trying to avoid).
+
+A symptom of this problem
+is if you run flawfinder and you see an error message like this:
+
+\fIUnicodeDecodeError: 'utf-8' codec can't decode byte ... in position ...:
+invalid continuation byte\fR
+
+If this happens to you, there are several options.
+
+The first option is to
+convert the encoding of the files to be analyzed so that it's
+a single encoding (usually the system encoding).
+For example, the program "iconv" can be used to convert encodings.
+This works well if some files have one encoding, and some have another,
+but they are consistent within a single file.
+If the files have encoding errors, you'll have to fix them.
+I strongly recommend using the UTF-8 encoding for any source code;
+if you do that, many problems disappear.
+
+The second option is to
+tell flawfinder what the encoding of the files is.
+E.G., you can set the LANG environment variable.
+You can set PYTHONIOENCODING to
+the encoding you want your output to be in, if that's different.
+This in theory would work well, but I haven't had much success with this.
+
+The third option is to run flawfinder using Python 2 instead of Python 3.
+E.g., "python2 flawfinder ...".
 
 .SH EXAMPLES
 
