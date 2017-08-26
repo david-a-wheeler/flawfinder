@@ -564,6 +564,12 @@ Save all resulting hits (the "hitlist") to F.
 Load the hitlist from F instead of analyzing source programs.
 Warning: Do \fInot\fR load hitlists from untrusted sources
 (for security reasons).
+These are internally implemented using Python's "pickle" facility,
+which trusts the input.
+Note that stored hitlists often cannot be read when using an older version
+of Python, in particular, if savehitlist was used but
+flawfinder was run using Python 3,
+the hitlist can't be loaded by running flawfinder with Python 2.
 
 .TP
 \fB\-\-diffhitlist=\fR\fIF\fR
