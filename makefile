@@ -151,9 +151,9 @@ test_004: flawfinder test.c
 	  test-results-004.txt
 	@diff -u correct-results-004.txt test-results-004.txt
 
-test_005: flawfinder test-diff-0005.patch test-patched.c
+test_005: flawfinder test-diff-005.patch test-patched.c
 	@echo 'test_005 (diff)'
-	@$(PYTHON) ./flawfinder -SQDC -P test-diff-0005.patch \
+	@$(PYTHON) ./flawfinder -SQDC -P test-diff-005.patch \
 	  test-patched.c > test-results-005.txt
 	@diff -u correct-results-005.txt test-results-005.txt
 
