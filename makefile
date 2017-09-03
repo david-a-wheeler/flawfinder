@@ -10,7 +10,7 @@
 # Eventually switch to using DistUtils to autogenerate.
 
 NAME=flawfinder
-VERSION=2.0.3
+VERSION=2.0.4
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
@@ -118,6 +118,15 @@ distribute: clean flawfinder.pdf flawfinder.ps
 	rm -fr flawfinder-$(VERSION)
 
 dist: distribute
+
+# This *creates* a PyPi distribution package. Use "upload-pypi" to upload it
+pypi: distribute
+	rm -fr build dist flawfinder.egg-info
+	python setup.py bdist_wheel --universal
+
+# Use "-r pypitest" to upload to pypitest.
+upload-pypi:
+	twine upload dist/*
 
 time:
 	echo "Timing the program. First, time taken:"
