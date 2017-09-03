@@ -1,20 +1,45 @@
-To install flawfinder on a Unix-like system (including Cygwin):
+Installing flawfinder
+
+You can install flawfinder a number of different ways.
+Choose the approach that's most convenient for you!
+The options (described below) are (1) pip,
+(2) package for Unix-like system, (3) source install, and (4) run directly.
+
+
+1. PIP
+
+For many, the simple approach is to first install Python
+(2.7 or something in the 3.* series). Then use "pip" to install flawfinder
+(this will normally download the package):
+
+  pip install flawfinder
+
+One advantage for using pip is that you'll generally get the
+*current* released version.
+
+
+2. PACKAGE FOR UNIX-LIKE SYSTEM (including Cygwin):
 
 If you use an RPM-based system (e.g., Red Hat) or deb-based system
-(e.g., Debian), use their respective RPM or debian installation program
-and just install it; then ignore the rest of these instructions.
+(e.g., Debian), you can use their respective RPM or debian installation
+program and just install it; then ignore the rest of these instructions.
 For a ports-based system where you have a current port, just use that.
+
+This will work out-of-the-box; it may not be the most recent version.
+
+
+3. TARBALL (SOURCE INSTALL)
 
 QUICK START:
 The quick way to install flawfinder from the tarball is to
 unpack the tarball and type in something like this on the commmand line:
+
   sudo make prefix=/usr install
+
 Omit prefix=/usr to install in /usr/local instead.
 Omit "sudo" if you are already root.
-You don't even have to install it; running it as "./flawfinder ..."
-will work just fine if you have Python 2 installed (though it's
-probably more convenient to install it).
-
+Note that this installation approach follows the usual install conventions
+as described below, including prefix= and DESTDIR.
 
 Not enough?  Here are more detailed step-by-step instructions and options.
 
@@ -86,12 +111,9 @@ Not enough?  Here are more detailed step-by-step instructions and options.
 
   The installer and uninstaller honor DESTDIR.
 
-* Windows systems should be able to run this on the command line (cmd.exe)
-  directly, but I haven't tried that.
+4. DIRECT EXECUTION
 
-* You can also simply run the program in the directory you've unpacked it
-  into.   It's a simple Python program, just type into a command line:
+You can also simply run the program in the directory you've unpacked it
+into.   It's a simple Python program, just type into a command line:
 
   ./flawfinder files_or_directory
-
-

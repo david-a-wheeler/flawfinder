@@ -14,19 +14,18 @@ Flawfinder is designed for use on Unix/Linux/POSIX systems
 (including Cygwin, Linux-based systems, MacOS, and *BSDs) as a
 command line tool.  It requires Python 2.7 or Python 3.
 
-You can typically install flawfinder from its source code by doing this:
-  tar xvzf FILENAME.tar.gz       # Uncompress distribution file
-  cd flawfinder-*                # cd into it.
-  sudo make prefix=/usr install  # Install in /usr
-This installs the program as "/usr/bin/flawfinder" as well as the man page.
-You can omit the "prefix=/usr"; it will then install under "/usr/local".
-The file INSTALL.txt has more detailed installation instructions;
-flawfinder supports the usual conventions (prefix, DESTDIR, etc.).
+If you just want to *use* it, you can install flawfinder with
+Python's "pip" or with your system's package manager (flawfinder has
+packages for many systems).  It also supports easily installation
+following usual "make install" source installation conventions.
+The file INSTALL.txt has more detailed installation instructions.
 You don't HAVE to install it to run it, but it's easiest that way.
 
 To run flawfinder, just give it a list of source files or directories to
 example.  For example, to examine all files in "src/" and down recursively:
+
   flawfinder src/
+
 The manual page (flawfinder.1 or flawfinder.pdf) describes how to use
 flawfinder (including its various options) and related information
 (such as how it supports CWE).  For example, the "--html" option generates
