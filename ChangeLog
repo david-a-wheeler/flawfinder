@@ -1,3 +1,7 @@
+2017-09-02 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Version 2.0.3
+	* Switch from distutils to setuptools
+
 2017-08-26 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Version 2.0.2
 	* Flawfinder can now run on either Python 2.7 or 3

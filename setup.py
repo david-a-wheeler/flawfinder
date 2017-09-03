@@ -11,7 +11,7 @@ setup (# Distribution meta-data
        name = "flawfinder",
        packages = ["flawfinder"], # Must be same as name
        # Do not need: packages=find_packages(),
-       version = "2.0.2",
+       version = "2.0.3",
        description = "a program that examines source code looking for security weaknesses",
        author = "David A. Wheeler",
        author_email = "dwheeler@dwheeler.com",
@@ -21,7 +21,7 @@ C/C++ source code and identify out potential security flaws,
 ranking them by likely severity.
 It is released under the GNU GPL license.""",
        url = "http://www.dwheeler.com/flawfinder/",
-       download_url = "https://sourceforge.net/projects/flawfinder/files/flawfinder-2.0.2.tar.gz/download",
+       download_url = "https://sourceforge.net/projects/flawfinder/files/flawfinder-2.0.3.tar.gz/download",
        zip_safe = True,
        keywords = ['analysis', 'security', 'analyzer'],
        classifiers = [
