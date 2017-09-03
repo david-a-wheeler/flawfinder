@@ -124,6 +124,7 @@ pypi: distribute
 	rm -fr build dist flawfinder.egg-info
 	python setup.py bdist_wheel --universal
 
+# NOTE: Only do this after running "make pypi" & being satisfied with it
 # Use "-r pypitest" to upload to pypitest.
 upload-pypi:
 	twine upload dist/*
