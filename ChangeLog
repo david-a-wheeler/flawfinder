@@ -1,6 +1,7 @@
 2017-09-02 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Version 2.0.4
 	* Switch from distutils to setuptools
+	* Directly support "pip" installs
 
 2017-08-26 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Version 2.0.2
