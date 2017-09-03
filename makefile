@@ -99,6 +99,7 @@ clean:
 	rm -f *.tar *.exe ./cwe
 
 distribute: clean flawfinder.pdf flawfinder.ps
+	rm -fr build dist flawfinder.egg-info ,tempdir
 	chmod -R a+rX *
 	mkdir ,tempdir
 	cp -p [a-zA-Z]* ,tempdir
@@ -121,7 +122,6 @@ dist: distribute
 
 # This *creates* a PyPi distribution package. Use "upload-pypi" to upload it
 pypi: distribute
-	rm -fr build dist flawfinder.egg-info
 	python setup.py bdist_wheel --universal
 
 # NOTE: Only do this after running "make pypi" & being satisfied with it
