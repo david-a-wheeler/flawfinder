@@ -167,10 +167,16 @@ test_006: flawfinder test.c
 	  test-results-006.txt
 	@diff -u correct-results-006.txt test-results-006.txt
 
+test_007: setup.py
+	@echo 'test_007 (setup.py sane)'
+	@test "`$(PYTHON) setup.py --name`" == 'flawfinder'
+	@test "`$(PYTHON) setup.py --license`" == 'GPL-2.0+'
+	@test "`$(PYTHON) setup.py --author`" == 'David A. Wheeler'
+
 # Run all tests; output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
-test: test_001 test_002 test_003 test_004 test_005 test_006
+test: test_001 test_002 test_003 test_004 test_005 test_006 test_007
 	@echo 'All tests pass!'
 
 check: test
