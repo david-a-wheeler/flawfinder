@@ -1158,13 +1158,13 @@ c_ruleset = {
      "Use a more secure technique for acquiring random values",
      "random", "", {}),
 
-    "crypt":
+    "crypt|crypt_r":
     (normal, 4,
-     "Function crypt is a poor one-way hashing algorithm; " +
-     "since it only accepts passwords of 8 characters or less, " +
-     "and only a two-byte salt, it is excessively vulnerable to " +
+     "The crypt functions use a poor one-way hashing algorithm; " +
+     "since they only accept passwords of 8 characters or fewer " +
+     "and only a two-byte salt, they are excessively vulnerable to " +
      "dictionary attacks given today's faster computing equipment (CWE-327)",
-     "Use a different algorithm, such as SHA-256, with a larger " +
+     "Use a different algorithm, such as SHA-256, with a larger, " +
      "non-repeating salt",
      "crypto", "", {}),
 
