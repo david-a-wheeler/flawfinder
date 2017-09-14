@@ -1318,9 +1318,11 @@ c_ruleset = {
     # Unsafe STL functions that don't check the second iterator
     "equal|mismatch|is_permutation":
     (cpp_unsafe_stl,
-     2, # need further analysis to consider risk level
-     "Function does not check the second iterator for overflow conditions (CWE-119/CWE-120)",
-     "These functions are typically banned by most C++ coding standards in favor of their safer alternatives provided since C++14. Consider using a form of this function that checks the second iterator before potentially overflowing it",
+     # Like strlen, this is mostly a risk to availability; at worst it
+     # often causes a program crash.
+     1,
+     "Function does not check the second iterator for over-read conditions (CWE-126)",
+     "This function is often discouraged by most C++ coding standards in favor of its safer alternatives provided since C++14. Consider using a form of this function that checks the second iterator before potentially overflowing it",
      "buffer", "", {}),
 
     # TODO: detect C++'s:   cin >> charbuf, where charbuf is a char array; the problem
