@@ -169,10 +169,10 @@ test_005: flawfinder test-diff-005.patch test-patched.c
 
 test_006: flawfinder test.c
 	@echo 'test_006 (save/load hitlist)'
-	@$(PYTHON) ./flawfinder -m 5 -S -DC --quiet \
+	@$(PYTHON) ./flawfinder -S -DC --quiet \
 	  --savehitlist test-saved-hitlist-006.txt \
 	  test.c > test-junk-006.txt
-	@$(PYTHON) ./flawfinder -SQDC \
+	@$(PYTHON) ./flawfinder -SQDC -m 5 \
 	  --loadhitlist test-saved-hitlist-006.txt > \
 	  test-results-006.txt
 	@diff -u correct-results-006.txt test-results-006.txt

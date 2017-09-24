@@ -476,13 +476,12 @@ def add_warning(hit):
     if required_regex and (required_regex_compiled.search(hit.warning) is
                            None):
         return
-    if hit.level >= minimum_level:
-        if linenumber == ignoreline:
-            num_ignored_hits = num_ignored_hits + 1
-        else:
-            hitlist.append(hit)
-            if show_immediately:
-                hit.show()
+    if linenumber == ignoreline:
+        num_ignored_hits = num_ignored_hits + 1
+    else:
+        hitlist.append(hit)
+        if show_immediately:
+            hit.show()
 
 
 def internal_warn(message):
@@ -2039,9 +2038,10 @@ def show_final_results():
             print("<ul>")
         for hit in hitlist:
             if hit not in diff_hitlist:
-                hit.show()
                 count_per_level[hit.level] = count_per_level[hit.level] + 1
-                count = count + 1
+                if hit.level >= minimum_level:
+                    hit.show()
+                    count = count + 1
         if output_format:
             print("</ul>")
         diff_file.close()
@@ -2049,11 +2049,12 @@ def show_final_results():
         if output_format:
             print("<ul>")
         for hit in hitlist:
-            hit.show()
             count_per_level[hit.level] = count_per_level[hit.level] + 1
+            if hit.level >= minimum_level:
+                hit.show()
+                count = count + 1
         if output_format:
             print("</ul>")
-        count = len(hitlist)
     # Done with list, show the post-hitlist summary.
     if showheading:
         if output_format:
