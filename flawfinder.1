@@ -1155,6 +1155,29 @@ Such constructs are bad style, and will confuse many other tools too.
 If you must analyze such files, rewrite those lines.
 Thankfully, these are quite rare.
 .PP
+Flawfinder reports vulnerabilities regardless of the parameters of
+"#if" or "#ifdef".
+A construct "#if VALUE" will often have VALUE of 0 in some cases, and
+non-zero in others.
+Similarly, "#ifdef VALUE" will have VALUE defined in some cases, and
+not defined in others.
+Flawfinder reports in all cases, which
+means that flawfinder has a chance of reporting vulnerabilities in
+all alternatives.
+This is not a bug, this is intended behavior.
+.PP
+Flawfinder will report hits even if they are between
+a literal "#if 0" and "#endif".
+It would be possible to change this particular situation, but directly
+using "#if 0" to comment-out code (other than during debugging) is itself
+that the removal is very temporary (in which case we should report it) or
+an indicator of a problem with poor code practices.
+If you want to permanently get rid of code, then
+delete it instead of using "#if 0", since you can always see what it was
+using your version control software.
+If you don't use version control software, then that's the bug
+you need to fix right now.
+.PP
 Some complex or unusual constructs can mislead flawfinder.
 In particular, if a parameter begins with gettext(" and ends with ),
 flawfinder will presume that the parameter of gettext is a constant.
