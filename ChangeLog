@@ -1,3 +1,10 @@
+2017-09-24 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* add detection of crypt_r function
+	* add detection of errant equal, mismatch, and is_permutation
+	* update CWE, risk, and discussion for C++14 STL functions
+	* Always report hit counts correctly, even if ignored using -m
+	* Update www.dwheeler.com URLs to use https
+
 2017-09-02 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Version 2.0.4
 	* Switch from distutils to setuptools
