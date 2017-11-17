@@ -195,10 +195,10 @@ test: test_001 test_002 test_003 test_004 test_005 test_006 test_007
 # Usual check routine. Run all tests using *both* python2 and python3.
 check:
 	@echo "Testing with $(PYTHON2)"
-	@PYTHON="$(PYTHON2)" make test
+	@PYTHON="$(PYTHON2)" $(MAKE) test
 	@echo
 	@echo "Testing with $(PYTHON3)"
-	@PYTHON="$(PYTHON3)" make test
+	@PYTHON="$(PYTHON3)" $(MAKE) test
 
 # Run "make test-is-correct" if the results are as expected.
 test-is-correct: test-results.txt
