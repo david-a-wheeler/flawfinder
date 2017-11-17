@@ -17,6 +17,8 @@ ARCH=noarch
 
 SAMPLE_DIR=/usr/src/linux-2.2.16
 PYTHON=python
+PYTHON2=python2
+PYTHON3=python3
 
 # Flawfinder has traditionally used INSTALL_DIR, INSTALL_DIR_BIN, and
 # INSTALL_DIR_MAN.  Here we add support for GNU variables like prefix, etc.;
@@ -183,13 +185,20 @@ test_007: setup.py
 	@test "`$(PYTHON) setup.py --license`" == 'GPL-2.0+'
 	@test "`$(PYTHON) setup.py --author`" == 'David A. Wheeler'
 
-# Run all tests; output shows differences from expected results.
+# Run all tests on *one* version of Python;
+# output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
 test: test_001 test_002 test_003 test_004 test_005 test_006 test_007
 	@echo 'All tests pass!'
 
-check: test
+# Usual check routine. Run all tests using *both* python2 and python3.
+check:
+	@echo "Testing with $(PYTHON2)"
+	@PYTHON="$(PYTHON2)" make test
+	@echo
+	@echo "Testing with $(PYTHON3)"
+	@PYTHON="$(PYTHON3)" make test
 
 # Run "make test-is-correct" if the results are as expected.
 test-is-correct: test-results.txt

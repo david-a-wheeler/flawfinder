@@ -35,39 +35,21 @@ The DCO basically says that you assert that you're legally allowed to
 provide the commit.  Please include in your commit a statement of the
 form to confirm this ("git commit -s" will do this):
 
-> Signed-off-by: Your-name <your-email-address>
+> Signed-off-by: Your-name \<your-email-address\>
 
-You much include the DCO in your first commit proposal.
+You must include the DCO in your first commit proposal.
 If you forget occasionally, we'll assume that you just forgot, but
 please try to not forget.
 
-## Code Conventions
+## Development environment setup
 
-To make the program easy to install everywhere, the main executable
-is exactly one self-contained file.  That involves some compromises,
-but for now, please keep it that way.
+As always, if you're modifying the software, you'll need to have
+your development environment set up. You need:
 
-We generally use the code conventions of
-[PEP 8](https://www.python.org/dev/peps/pep-0008/).
-The Python code uses 4-space indents (we used to use 2-space indents).
-Do not use tabs.  In some cases the code doesn't yet comply;
-patches to improve that are often welcome.
-
-The code is currently Python 2, and is only tested on
-the Python 2.7 series.  Please don't make it hard to convert
-to Python 3 when that eventually happens.
-
-WE use "pylint" to check for style and other problems.
-This is configured by the included "pylintrc" file.
-We intentionally disable some checks as being "less important",
-for example, the current code has many lines longer than 80 characters.
-That said, patches to make lines fit in 80 characters are welcome.
-
-We require that the pylint results for contributions be at least 9.5/10 as
-configured with the provided "pylintrc" file, without any errors ("E").
-Better is better.  You can run "make pylint" to run this check.
-The current version *does* cause some pylint reports
-(patches to fix those are welcome!).
+* make
+* python2 (invokable as "python2")
+* python3 (invokable as "python3")
+* pylint (see below)
 
 An easy way to install pylint is to use pip.
 Most python installs have pip, but if yours does not
@@ -83,10 +65,46 @@ Finally, you can actually install pylint using:
 
 > pip install pylint
 
+## Code Conventions
+
+To make the program easy to install everywhere, the main executable
+is exactly one self-contained file.  That involves some compromises,
+but for now, please keep it that way.
+
+We generally use the code conventions of
+[PEP 8](https://www.python.org/dev/peps/pep-0008/).
+The Python code uses 4-space indents (we used to use 2-space indents).
+Do not use tabs.  In some cases the code doesn't yet comply;
+patches to improve that are often welcome.
+
+The code must run on both Python 2.7 and Python 3.
+To check that it works on both, run:
+
+~~~~
+make check
+~~~~
+
+We use "pylint" to check for style and other generic quality problems.
+To check that the code passes these quality tests, run:
+
+~~~~
+make pylint
+~~~~
+
+We require that the pylint results for contributions be at least 9.5/10 as
+configured with the provided "pylintrc" file, without any errors ("E").
+Better is better.  The current version *does* cause some pylint reports
+(patches to fix those are welcome!).  Note that we configure pylint
+with the included "pylintrc" file.
+We intentionally disable some checks as being "less important",
+for example, the current code has many lines longer than 80 characters.
+That said, patches to make lines fit in 80 characters are welcome.
+
 ## Tests
 
-Make *sure* that your code passes the automated tests. Invoke tests with
-"make check".
+Make *sure* that your code passes the automated tests.
+As noted above, invoke tests with
+"make check", which tests the code using both Python2 and Python3.
 
 It's our policy that as major new functionality is added to the software
 produced by the project, tests of that functionality should be added to
@@ -94,5 +112,5 @@ the automated test suite.
 
 ## Other
 
-We want to eventually earn a
-[CII Best Practices Badge](https://bestpractices.coreinfrastructure.org/projects/323).
+We have earned a
+[CII Best Practices Badge](https://bestpractices.coreinfrastructure.org/projects/323)... make sure we keep it!
