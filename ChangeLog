@@ -1,3 +1,7 @@
+2018-01-26 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Small fixes
+	* Update cwe.mitre.org URLs to use https
+
 2017-11-16 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* add detection of crypt_r function
 	* add detection of errant equal, mismatch, and is_permutation
