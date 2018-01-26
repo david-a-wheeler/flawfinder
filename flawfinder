@@ -335,7 +335,7 @@ def print_multi_line(text):
 
 # This matches references to CWE identifiers, so we can HTMLize them.
 # We don't refer to CWEs with one digit, so we'll only match on 2+ digits.
-link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()])')
+link_cwe_pattern = re.compile(r'(CWE-([1-9][0-9]+))([,()!/])')
 
 # This matches the CWE data, including multiple entries.
 find_cwe_pattern = re.compile(r'\(CWE-[^)]*\)')
