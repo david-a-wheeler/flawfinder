@@ -439,7 +439,7 @@ class Hit(object):
         main_text = h("%(warning)s. " % self)
         if output_format:  # Create HTML link to CWE definitions
             main_text = link_cwe_pattern.sub(
-                r'<a href="http://cwe.mitre.org/data/definitions/\2.html">\1</a>\3',
+                r'<a href="https://cwe.mitre.org/data/definitions/\2.html">\1</a>\3',
                 main_text)
         if single_line:
             print(main_text, end='')
