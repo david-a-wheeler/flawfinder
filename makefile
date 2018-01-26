@@ -2,12 +2,8 @@
 # Released under the General Public License (GPL) version 2 or later.
 # (C) 2001-2017 David A. Wheeler.
 
-# To change version number, edit this here, the beginning of the
-# "flawfinder" script, flawfinder.spec, setup.py, and index.html.
-# Then "make test-is-correct" to get the updated version number.
-# To distribute, "make distribute && su && make rpm".
-# Then use make my_install to install to website image.
-# Eventually switch to using DistUtils to autogenerate.
+# See "release_process.md" for release process, including
+# how to change version numbers.
 
 NAME=flawfinder
 VERSION=2.0.6
@@ -123,7 +119,7 @@ distribute: clean flawfinder.pdf flawfinder.ps
 dist: distribute
 
 # This *creates* a PyPi distribution package. Use "upload-pypi" to upload it
-pypi: distribute
+pypi:
 	python setup.py bdist_wheel --universal
 
 # NOTE: Only do this after running "make pypi" & being satisfied with it
