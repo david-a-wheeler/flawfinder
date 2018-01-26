@@ -1286,7 +1286,7 @@ c_ruleset = {
 
     "gsignal|ssignal":
     (normal, 2,
-     "These functions are considered obsolete on most systems, and very non-poertable (Linux-based systems handle them radically different, basically if gsignal/ssignal were the same as raise/signal respectively, while System V considers them a separate set and obsolete) (CWE-676)",
+     "These functions are considered obsolete on most systems, and very non-portable (Linux-based systems handle them radically different, basically if gsignal/ssignal were the same as raise/signal respectively, while System V considers them a separate set and obsolete) (CWE-676)",
      "Switch to raise/signal, or some other signalling approach",
      "obsolete", "", {}),
 
