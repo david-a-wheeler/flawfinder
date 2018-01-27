@@ -80,7 +80,7 @@ list_rules = 0  # If true, list the rules (helpful for debugging)
 patch_file = ""  # File containing (unified) diff output.
 loadhitlist = None
 savehitlist = None
-diffhitlist = None
+diffhitlist_filename = None
 quiet = 0
 showheading = 1  # --dataonly turns this off
 output_format = 0  # 0 = normal, 1 = html.
@@ -90,6 +90,10 @@ csv_writer = None
 omit_time = 0  # 1 = omit time-to-run (needed for testing)
 required_regex = None  # If non-None, regex that must be met to report
 required_regex_compiled = None
+
+ERROR_ON_DISABLED_VALUE = 999
+error_level = ERROR_ON_DISABLED_VALUE # Level where we're return error code
+error_level_exceeded = False
 
 displayed_header = 0  # Have we displayed the header yet?
 num_ignored_hits = 0  # Number of ignored hits (used if never_ignore==0)
@@ -242,7 +246,7 @@ def load_patch_info(input_patch_file):
         hPatch = open(input_patch_file, 'r')
     except BaseException:
         print("Error: failed to open", h(input_patch_file))
-        sys.exit(1)
+        sys.exit(10)
 
     patched_filename = ""  # Name of new file patched by current hunk.
 
@@ -256,7 +260,7 @@ def load_patch_info(input_patch_file):
         fn_get_filename = gnu_diff_get_filename
     else:
         print("Error: Unrecognized patch format")
-        sys.exit(1)
+        sys.exit(11)
 
     while True:  # Loop-and-half construct.  Read a line, end loop when no more
 
@@ -268,7 +272,7 @@ def load_patch_info(input_patch_file):
             if patched_filename in patch:
                 error("filename occurs more than once in the patch: %s" %
                       patched_filename)
-                sys.exit(1)
+                sys.exit(12)
             else:
                 patch[patched_filename] = {}
         else:
@@ -279,7 +283,7 @@ def load_patch_info(input_patch_file):
                         "wrong type of patch file : " +
                         "we have a line number without having seen a filename"
                     )
-                    sys.exit(1)
+                    sys.exit(13)
                 initial_number = hunk_match.group('linenumber')
                 line_counter = 0
             else:
@@ -1462,7 +1466,7 @@ def process_c_file(f, patch_infos):
             my_input = open(f, "r")
         except BaseException:
             print("Error: failed to open", h(f))
-            sys.exit(1)
+            sys.exit(14)
 
     # Read ENTIRE file into memory.  Use readlines() to convert \n if necessary.
     # This turns out to be very fast in Python, even on large files, and it
@@ -1611,7 +1615,7 @@ def expand_ruleset(ruleset):
                 if newrule in ruleset:
                     print("Error: Rule %s, when expanded, overlaps %s" % (
                         rule, newrule))
-                    sys.exit(1)
+                    sys.exit(15)
                 ruleset[newrule] = ruleset[rule]
             del ruleset[rule]
     # To print out the set of keys in the expanded ruleset, run:
@@ -1857,6 +1861,14 @@ flawfinder [--help | -h] [--version] [--listrules]
   --quiet | -Q
               Don't display status information (i.e., which files are being
               examined) while the analysis is going on.
+  --error-level=LEVEL
+              Return a nonzero (false) error code if there is at least one
+              hit of LEVEL or higher.  If a diffhitlist is provided,
+              hits noted in it are ignored.
+              This option can be useful within a continuous integration script,
+              especially if you mark known-okay lines as "flawfinder: ignore".
+              Usually you want level to be fairly high, such as 4 or 5.
+              By default, flawfinder returns 0 (true) on a successful run.
 
   Hitlist Management:
   --savehitlist=F
@@ -1876,10 +1888,11 @@ def process_options():
     global show_context, show_inputs, allowlink, skipdotdir, omit_time
     global output_format, minimum_level, show_immediately, single_line
     global csv_output, csv_writer
+    global error_level
     global required_regex, required_regex_compiled
     global falsepositive
     global show_columns, never_ignore, quiet, showheading, list_rules
-    global loadhitlist, savehitlist, diffhitlist
+    global loadhitlist, savehitlist, diffhitlist_filename
     global patch_file
     try:
         # Note - as a side-effect, this sets sys.argv[].
@@ -1888,6 +1901,7 @@ def process_options():
             "falsepositive", "falsepositives", "columns", "listrules",
             "omittime", "allowlink", "patch=", "followdotdir", "neverignore",
             "regex=", "quiet", "dataonly", "html", "singleline", "csv",
+            "error-level=",
             "loadhitlist=", "savehitlist=", "diffhitlist=", "version", "help"
         ])
         for (opt, value) in optlist:
@@ -1926,6 +1940,8 @@ def process_options():
                 quiet = 1
                 showheading = 0
                 csv_writer = csv.writer(sys.stdout)
+            elif opt == "--error-level":
+                error_level = int(value)
             elif opt == "--immediate" or opt == "-i":
                 show_immediately = 1
             elif opt == "-n" or opt == "--neverignore":
@@ -1954,7 +1970,7 @@ def process_options():
                 if showheading:
                     print("Saving hitlist to", value)
             elif opt == "--diffhitlist":
-                diffhitlist = value
+                diffhitlist_filename = value
                 display_header()
                 if showheading:
                     print("Showing hits not in", value)
@@ -1983,7 +1999,7 @@ def process_options():
     except getopt.error as text:
         print("*** getopt error:", text)
         usage()
-        sys.exit(1)
+        sys.exit(16)
 
 
 def process_files():
@@ -2010,6 +2026,7 @@ def hitlist_sort_key(hit):
 
 def show_final_results():
     global hitlist
+    global error_level_exceeded
     count = 0
     count_per_level = {}
     count_per_level_and_up = {}
@@ -2032,30 +2049,23 @@ def show_final_results():
     # <ul> so that the format differentiates each entry.
     # I'm not using <ol>, because its numbers might be confused with
     # the risk levels or line numbers.
-    if diffhitlist:
-        diff_file = open(diffhitlist)
+    if diffhitlist_filename:
+        diff_file = open(diffhitlist_filename)
         diff_hitlist = pickle.load(diff_file)
-        if output_format:
-            print("<ul>")
-        for hit in hitlist:
-            if hit not in diff_hitlist:
-                count_per_level[hit.level] = count_per_level[hit.level] + 1
-                if hit.level >= minimum_level:
-                    hit.show()
-                    count = count + 1
-        if output_format:
-            print("</ul>")
-        diff_file.close()
-    else:
-        if output_format:
-            print("<ul>")
-        for hit in hitlist:
+    if output_format:
+        print("<ul>")
+    for hit in hitlist:
+        if not diffhitlist_filename or not hit in diff_hitlist:
             count_per_level[hit.level] = count_per_level[hit.level] + 1
             if hit.level >= minimum_level:
                 hit.show()
                 count = count + 1
-        if output_format:
-            print("</ul>")
+            if hit.level >= error_level:
+                error_level_exceeded = True
+    if output_format:
+        print("</ul>")
+    if diffhitlist_filename:
+        diff_file.close()
     # Done with list, show the post-hitlist summary.
     if showheading:
         if output_format:
@@ -2171,10 +2181,10 @@ def flawfind():
     if process_files():
         show_final_results()
         save_if_desired()
-
+    return 1 if error_level_exceeded else 0
 
 if __name__ == '__main__':
     try:
-        flawfind()
+        sys.exit(flawfind())
     except KeyboardInterrupt:
         print("*** Flawfinder interrupted")

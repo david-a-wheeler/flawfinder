@@ -55,6 +55,7 @@ flawfinder \- lexically find potential security flaws ("hits") in source code
 .RB [ \-\-singleline | \-S ]
 .RB [ \-\-omittime ]
 .RB [ \-\-quiet | \-Q ]
+.RB [ \-\-error-level=\fRLEVEL\fR ]
 .br
 .\" Managing hit list.
 [\fB\-\-loadhitlist=\fR\fIF\fR]
@@ -218,6 +219,9 @@ is displayed; by default this is 1 (use \-\-minlevel to change this).
 The summary ends with important reminders:
 Not every hit is necessarily a security vulnerability, and
 there may be other security vulnerabilities not reported by the tool.
+.PP
+Flawfinder can easily integrate into a continuous integration system.
+You might want to check out the \-\-error\-level option to help do that.
 .PP
 Flawfinder is released under the GNU GPL license version 2 or later (GPLv2+).
 .PP
@@ -550,6 +554,15 @@ the output doesn't vary depending on how long the analysis takes.
 Don't display status information (i.e., which files are being examined)
 while the analysis is going on.
 
+.TP
+.BI "\-\-error-level=LEVEL"
+Return a nonzero (false) error code if there is at least one
+hit of LEVEL or higher.  If a diffhitlist is provided,
+hits noted in it are ignored.
+This option can be useful within a continuous integration script,
+especially if you mark known-okay lines as "flawfinder: ignore".
+Usually you want level to be fairly high, such as 4 or 5.
+By default, flawfinder returns 0 (true) on a successful run.
 
 .SS "Hitlist Management"
 
