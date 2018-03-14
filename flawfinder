@@ -315,9 +315,11 @@ def htmlize(s):
     # Take s, and return legal (UTF-8) HTML.
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+
 def h(s):
     # htmlize s if we're generating html, otherwise just return s.
     return htmlize(s) if output_format else s
+
 
 def print_multi_line(text):
     # Print text as multiple indented lines.
@@ -336,6 +338,7 @@ def print_multi_line(text):
         print(' ', end='')
         print(w, end='')
         position = position + len(w) + 1
+
 
 # This matches references to CWE identifiers, so we can HTMLize them.
 # We don't refer to CWEs with one digit, so we'll only match on 2+ digits.
@@ -607,6 +610,7 @@ def c_singleton_string(text):
     "Returns true if text is a C string with 0 or 1 character."
     return 1 if p_c_singleton_string.search(text) else 0
 
+
 # This string defines a C constant.
 p_c_constant_string = re.compile(r'^\s*L?"([^\\]|\\[^0-6]|\\[0-6]+)*"$')
 
@@ -826,8 +830,10 @@ def cpp_unsafe_stl(hit):
     if len(hit.parameters) <= 4:
         add_warning(hit)
 
+
 def normal(hit):
     add_warning(hit)
+
 
 # "c_ruleset": the rules for identifying "hits" in C (potential warnings).
 # It's a dictionary, where the key is the function name causing the hit,
@@ -2020,9 +2026,11 @@ def process_files():
         process_file_args(files, patch_infos)
         return True
 
+
 def hitlist_sort_key(hit):
     """Sort key for hitlist."""
     return (-hit.level, hit.filename, hit.line, hit.column, hit.name)
+
 
 def show_final_results():
     global hitlist
@@ -2182,6 +2190,7 @@ def flawfind():
         show_final_results()
         save_if_desired()
     return 1 if error_level_exceeded else 0
+
 
 if __name__ == '__main__':
     try:
