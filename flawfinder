@@ -1450,7 +1450,7 @@ def process_c_file(f, patch_infos):
     linebegin = 1
     codeinline = 0  # 1 when we see some code (so increment sloc at newline)
 
-    if (patch_infos is not None) and (not f in patch_infos):
+    if (patch_infos is not None) and (f not in patch_infos):
         # This file isn't in the patch list, so don't bother analyzing it.
         if not quiet:
             if output_format:
@@ -2063,7 +2063,7 @@ def show_final_results():
     if output_format:
         print("<ul>")
     for hit in hitlist:
-        if not diffhitlist_filename or not hit in diff_hitlist:
+        if not diffhitlist_filename or hit not in diff_hitlist:
             count_per_level[hit.level] = count_per_level[hit.level] + 1
             if hit.level >= minimum_level:
                 hit.show()
