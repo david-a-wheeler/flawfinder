@@ -92,7 +92,7 @@ required_regex = None  # If non-None, regex that must be met to report
 required_regex_compiled = None
 
 ERROR_ON_DISABLED_VALUE = 999
-error_level = ERROR_ON_DISABLED_VALUE # Level where we're return error code
+error_level = ERROR_ON_DISABLED_VALUE  # Level where we're return error code
 error_level_exceeded = False
 
 displayed_header = 0  # Have we displayed the header yet?
@@ -1610,7 +1610,7 @@ def expand_ruleset(ruleset):
     # Note that this "for" loop modifies the ruleset while it's iterating,
     # so we *must* convert the keys into a list before iterating.
     for rule in list(ruleset.keys()):
-        if "|" in rule: # We found a rule to expand.
+        if "|" in rule:  # We found a rule to expand.
             for newrule in rule.split("|"):
                 if newrule in ruleset:
                     print("Error: Rule %s, when expanded, overlaps %s" % (
