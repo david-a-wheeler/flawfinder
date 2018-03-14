@@ -177,9 +177,9 @@ test_006: flawfinder test.c
 
 test_007: setup.py
 	@echo 'test_007 (setup.py sane)'
-	@test "`$(PYTHON) setup.py --name`" == 'flawfinder'
-	@test "`$(PYTHON) setup.py --license`" == 'GPL-2.0+'
-	@test "`$(PYTHON) setup.py --author`" == 'David A. Wheeler'
+	@test "`$(PYTHON) setup.py --name`" = 'flawfinder'
+	@test "`$(PYTHON) setup.py --license`" = 'GPL-2.0+'
+	@test "`$(PYTHON) setup.py --author`" = 'David A. Wheeler'
 
 # Run all tests on *one* version of Python;
 # output shows differences from expected results.
