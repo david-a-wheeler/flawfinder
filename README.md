@@ -23,7 +23,7 @@ If you just want to *use* it, you can install flawfinder with
 Python's "pip" or with your system's package manager (flawfinder has
 packages for many systems).  It also supports easy installation
 following usual `make install` source installation conventions.
-The file [INSTALL.txt](INSTALL.txt) has more detailed installation instructions.
+The file [INSTALL.md](INSTALL.md) has more detailed installation instructions.
 You don't HAVE to install it to run it, but it's easiest that way.
 
 # Usage
