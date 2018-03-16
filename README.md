@@ -22,7 +22,7 @@ command line tool.  It requires Python 2.7 or Python 3.
 If you just want to *use* it, you can install flawfinder with
 Python's "pip" or with your system's package manager (flawfinder has
 packages for many systems).  It also supports easy installation
-following usual "make install" source installation conventions.
+following usual `make install` source installation conventions.
 The file [INSTALL.txt](INSTALL.txt) has more detailed installation instructions.
 You don't HAVE to install it to run it, but it's easiest that way.
 
@@ -31,12 +31,12 @@ You don't HAVE to install it to run it, but it's easiest that way.
 To run flawfinder, just give it a list of source files or directories to
 example.  For example, to examine all files in "src/" and down recursively:
 
-  flawfinder src/
+`flawfinder src/`
 
 The manual page (flawfinder.1 or flawfinder.pdf) describes how to use
 flawfinder (including its various options) and related information
-(such as how it supports CWE).  For example, the "--html" option generates
-output in HTML format. The "--help" option gives a brief list of options.
+(such as how it supports CWE).  For example, the `--html` option generates
+output in HTML format. The `--help` option gives a brief list of options.
 
 # Under the hood
 

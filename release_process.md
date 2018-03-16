@@ -15,26 +15,24 @@ setup.py
 index.html
 
 Then run:
-make test && make test-is-correct # update version number in tests
+`make test && make test-is-correct` # update version number in tests
 
 ## Test it
 
-make check # Run tests in Python 2 and 3
+`make check` # Run tests in Python 2 and 3
 
 ## Tag version
 
 Once you're sure this is the *real* version, tag it:
 
-git tag VERSION
-git push
+`git tag VERSION`
+`git push`
 
 ## Create tarball
 
 Run:
+`make distribute`
 
-~~~~
-make distribute
-~~~~
 
 ## Post tarball
 
@@ -48,12 +46,8 @@ the usual places:
 
 Create a PyPi distribution package:
 
-~~~~
-make pypi
-~~~~
+`make pypi`
 
 And upload it:
 
-~~~~
-make upload-pypi
-~~~~
+`make upload-pypi`

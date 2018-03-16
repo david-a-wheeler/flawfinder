@@ -55,15 +55,15 @@ An easy way to install pylint is to use pip.
 Most python installs have pip, but if yours does not
 (e.g., Cygwin), install pip with:
 
-> python -m ensurepip
+`python -m ensurepip`
 
 You may want to upgrade pip with:
 
-> pip install --upgrade pip
+`pip install --upgrade pip`
 
 Finally, you can actually install pylint using:
 
-> pip install pylint
+`pip install pylint`
 
 ## Code Conventions
 
@@ -80,16 +80,12 @@ patches to improve that are often welcome.
 The code must run on both Python 2.7 and Python 3.
 To check that it works on both, run:
 
-~~~~
-make check
-~~~~
+`make check`
 
 We use "pylint" to check for style and other generic quality problems.
 To check that the code passes these quality tests, run:
 
-~~~~
-make pylint
-~~~~
+`make pylint`
 
 We require that the pylint results for contributions be at least 9.5/10 as
 configured with the provided "pylintrc" file, without any errors ("E").
