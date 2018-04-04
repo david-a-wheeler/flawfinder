@@ -1,5 +1,5 @@
 '\"
-.\" (C) Copyright 2001-2014 David A. Wheeler (dwheeler@dwheeler.com)
+.\" (C) Copyright 2001-2018 David A. Wheeler (dwheeler@dwheeler.com)
 .\"
 .\" This program is free software; you can redistribute it and/or modify
 .\" it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
 .\"
 .\" Man page created 17 May 2001 by David A. Wheeler (dwheeler@dwheeler.com)
 .\"
-.TH FLAWFINDER 1 "26 Aug 2017" "Flawfinder" "Flawfinder"
+.TH FLAWFINDER 1 "4 Apr 2018" "Flawfinder" "Flawfinder"
 .SH NAME
 flawfinder \- lexically find potential security flaws ("hits") in source code
 .SH SYNOPSIS
@@ -267,7 +267,7 @@ variable names look like dangerous function names, use the \-F option
 to remove reports about them.
 If you don't understand the error message, please see documents such as the
 .UR "https://www.dwheeler.com/secure-programs"
-.I "Writing Secure Programs HOWTO"
+.I "Secure Programming HOWTO"
 .UE
 at
 https://www.dwheeler.com/secure-programs
@@ -630,15 +630,15 @@ For example, the program "iconv" can be used to convert encodings.
 This works well if some files have one encoding, and some have another,
 but they are consistent within a single file.
 If the files have encoding errors, you'll have to fix them.
-I strongly recommend using the UTF-8 encoding for any source code;
-if you do that, many problems disappear.
+I strongly recommend using the UTF-8 encoding for all source code
+and in the system itself; if you do that, many problems disappear.
 
 The second option is to
 tell flawfinder what the encoding of the files is.
 E.G., you can set the LANG environment variable.
 You can set PYTHONIOENCODING to
 the encoding you want your output to be in, if that's different.
-This in theory would work well, but I haven't had much success with this.
+This in theory would work, but I haven't had much success with this.
 
 The third option is to run flawfinder using Python 2 instead of Python 3.
 E.g., "python2 flawfinder ...".
