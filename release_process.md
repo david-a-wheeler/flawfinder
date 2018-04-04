@@ -26,7 +26,7 @@ make check # Run tests in Python 2 and 3
 Once you're sure this is the *real* version, tag it:
 
 git tag VERSION
-git push
+git push --tags
 
 ## Create tarball
 
