@@ -2042,7 +2042,7 @@ def show_final_results():
     possible_levels = (0, 1, 2, 3, 4, 5)
     for i in possible_levels:  # Initialize count_per_level
         count_per_level[i] = 0
-    for i in possible_levels:  # Initialize count_per_level
+    for i in possible_levels:  # Initialize count_per_level_and_up
         count_per_level_and_up[i] = 0
     if show_immediately or not quiet:  # Separate the final results.
         print()
