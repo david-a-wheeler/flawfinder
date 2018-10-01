@@ -1,3 +1,11 @@
+2018-09-30 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Incorporate many small improvements from nickthetait
+	* Fix a number of bugs reported by philipp
+	* Update URLs for www.dwheeler.com -> dwheeler.com
+
+2018-04-04 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Version 2.0.6
+
 2018-01-26 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Small fixes
 	* Update cwe.mitre.org URLs to use https
