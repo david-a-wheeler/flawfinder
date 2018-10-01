@@ -9,7 +9,7 @@
 /*.egg-info
 
 # Don't distribute test results, since they get regenerated
-/test-results*
+/test-*
 
 # We may create tarballs, don't include those
 /*.tar.gz

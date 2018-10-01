@@ -92,7 +92,7 @@ required_regex = None  # If non-None, regex that must be met to report
 required_regex_compiled = None
 
 ERROR_ON_DISABLED_VALUE = 999
-error_level = ERROR_ON_DISABLED_VALUE # Level where we're return error code
+error_level = ERROR_ON_DISABLED_VALUE  # Level where we're return error code
 error_level_exceeded = False
 
 displayed_header = 0  # Have we displayed the header yet?
@@ -315,9 +315,11 @@ def htmlize(s):
     # Take s, and return legal (UTF-8) HTML.
     return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+
 def h(s):
     # htmlize s if we're generating html, otherwise just return s.
     return htmlize(s) if output_format else s
+
 
 def print_multi_line(text):
     # Print text as multiple indented lines.
@@ -336,6 +338,7 @@ def print_multi_line(text):
         print(' ', end='')
         print(w, end='')
         position = position + len(w) + 1
+
 
 # This matches references to CWE identifiers, so we can HTMLize them.
 # We don't refer to CWEs with one digit, so we'll only match on 2+ digits.
@@ -607,6 +610,7 @@ def c_singleton_string(text):
     "Returns true if text is a C string with 0 or 1 character."
     return 1 if p_c_singleton_string.search(text) else 0
 
+
 # This string defines a C constant.
 p_c_constant_string = re.compile(r'^\s*L?"([^\\]|\\[^0-6]|\\[0-6]+)*"$')
 
@@ -826,8 +830,10 @@ def cpp_unsafe_stl(hit):
     if len(hit.parameters) <= 4:
         add_warning(hit)
 
+
 def normal(hit):
     add_warning(hit)
+
 
 # "c_ruleset": the rules for identifying "hits" in C (potential warnings).
 # It's a dictionary, where the key is the function name causing the hit,
@@ -1444,7 +1450,7 @@ def process_c_file(f, patch_infos):
     linebegin = 1
     codeinline = 0  # 1 when we see some code (so increment sloc at newline)
 
-    if (patch_infos is not None) and (not f in patch_infos):
+    if (patch_infos is not None) and (f not in patch_infos):
         # This file isn't in the patch list, so don't bother analyzing it.
         if not quiet:
             if output_format:
@@ -1610,7 +1616,7 @@ def expand_ruleset(ruleset):
     # Note that this "for" loop modifies the ruleset while it's iterating,
     # so we *must* convert the keys into a list before iterating.
     for rule in list(ruleset.keys()):
-        if "|" in rule: # We found a rule to expand.
+        if "|" in rule:  # We found a rule to expand.
             for newrule in rule.split("|"):
                 if newrule in ruleset:
                     print("Error: Rule %s, when expanded, overlaps %s" % (
@@ -2020,9 +2026,11 @@ def process_files():
         process_file_args(files, patch_infos)
         return True
 
+
 def hitlist_sort_key(hit):
     """Sort key for hitlist."""
     return (-hit.level, hit.filename, hit.line, hit.column, hit.name)
+
 
 def show_final_results():
     global hitlist
@@ -2034,7 +2042,7 @@ def show_final_results():
     possible_levels = (0, 1, 2, 3, 4, 5)
     for i in possible_levels:  # Initialize count_per_level
         count_per_level[i] = 0
-    for i in possible_levels:  # Initialize count_per_level
+    for i in possible_levels:  # Initialize count_per_level_and_up
         count_per_level_and_up[i] = 0
     if show_immediately or not quiet:  # Separate the final results.
         print()
@@ -2055,7 +2063,7 @@ def show_final_results():
     if output_format:
         print("<ul>")
     for hit in hitlist:
-        if not diffhitlist_filename or not hit in diff_hitlist:
+        if not diffhitlist_filename or hit not in diff_hitlist:
             count_per_level[hit.level] = count_per_level[hit.level] + 1
             if hit.level >= minimum_level:
                 hit.show()
@@ -2182,6 +2190,7 @@ def flawfind():
         show_final_results()
         save_if_desired()
     return 1 if error_level_exceeded else 0
+
 
 if __name__ == '__main__':
     try:

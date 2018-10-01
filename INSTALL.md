@@ -1,24 +1,23 @@
-Installing flawfinder
+# Installing flawfinder
 
 You can install flawfinder a number of different ways.
 Choose the approach that's most convenient for you!
-The options (described below) are (1) pip,
-(2) package for Unix-like system, (3) source install, and (4) run directly.
+The options (described below) are (1) pip, (2) package for Unix-like system, (3) source install, and (4) run directly.
 
 
-1. PIP
+## 1. PIP
 
 For many, the simple approach is to first install Python
 (2.7 or something in the 3.* series). Then use "pip" to install flawfinder
 (this will normally download the package):
 
-  pip install flawfinder
+`pip install flawfinder`
 
 One advantage for using pip is that you'll generally get the
 *current* released version.
 
 
-2. PACKAGE FOR UNIX-LIKE SYSTEM (including Cygwin):
+## 2. PACKAGE FOR UNIX-LIKE SYSTEM (including Cygwin):
 
 If you use an RPM-based system (e.g., Red Hat) or deb-based system
 (e.g., Debian), you can use their respective RPM or debian installation
@@ -27,14 +26,17 @@ For a ports-based system where you have a current port, just use that.
 
 This will work out-of-the-box; it may not be the most recent version.
 
+One way to accomplish this is:
+`sudo apt install flawfinder`
 
-3. TARBALL (SOURCE INSTALL)
+
+## 3. TARBALL (SOURCE INSTALL)
 
 QUICK START:
 The quick way to install flawfinder from the tarball is to
 unpack the tarball and type in something like this on the commmand line:
 
-  sudo make prefix=/usr install
+`sudo make prefix=/usr install`
 
 Omit prefix=/usr to install in /usr/local instead.
 Omit "sudo" if you are already root.
@@ -44,12 +46,12 @@ as described below, including prefix= and DESTDIR.
 Not enough?  Here are more detailed step-by-step instructions and options.
 
 * Download the "tarball" and uncompress it.
-  GNU-based systems can run "tar xvzf flawfinder*.tar.gz" to do so,
-  then "cd" into the directory created.  If that doesn't work
-  (e.g., you have an old tar program), use:
-    gunzip flawfinder*.tar.gz
-    tar xvf flawfinder*.tar
-    cd flawfinder-*
+  GNU-based systems can run `tar xvzf flawfinder-<version>.tar.gz` to do so,
+  then move into the newly created directory with `cd flawfinder-<version>`
+  If that doesn't work (e.g., you have an old tar program), use:
+    `gunzip flawfinder-<version>.tar.gz`
+    `tar xvf flawfinder-<version>.tar`
+    `cd flawfinder-<version>`
 
 * Decide where you want to put it.  Flawfinder normally installs everything
   in /usr/local, with the program in /usr/local/bin and the man page in
@@ -79,7 +81,7 @@ Not enough?  Here are more detailed step-by-step instructions and options.
   whenever you use make.  This will be another make install override.
   If you'll just install it, do this:
 
-  make PYTHONEXT=.py install
+  `make PYTHONEXT=.py install`
 
   If you don't want to pass the "PYTHONEXT" extension each time,
   you can change the file "makefile" to remember this. Just change
@@ -89,31 +91,31 @@ Not enough?  Here are more detailed step-by-step instructions and options.
 * Now install it, giving whatever overrides you need.  Currently it really
   only installs two files, an executable and a man page (documentation).
   In most cases, you'll need to be root, so run this first:
-  su
+  `su`
 
-  Then give the "make install" command appropriate for your system.
+  Then give the `make install` command appropriate for your system.
   For an all-default installation, which is what you need for most cases:
   make install
 
-  (you need to be root; "make uninstall" reverses it).
+  (you need to be root; `make uninstall` reverses it).
 
   To install in /usr (the program in /usr/bin, the manual in /usr/man):
-    make prefix=/usr install
+    `make prefix=/usr install`
   or alternatively, using the older flawfinder conventions:
-    make INSTALL_DIR=/usr install
+    `make INSTALL_DIR=/usr install`
 
   To install in /usr on Cygwin:
-    make prefix=/usr PYTHONEXT=.py install
+    `make prefix=/usr PYTHONEXT=.py install`
 
   To put the binaries in /usr/bin, and the manuals under /usr/local/share/man
   (common for Red Hat Linux), do:
-    make prefix=/usr mandir=/usr/local/share/man install
+    `make prefix=/usr mandir=/usr/local/share/man install`
 
-  The installer and uninstaller honor DESTDIR.
+  The installer and uninstaller honor `DESTDIR`.
 
-4. DIRECT EXECUTION
+## 4. DIRECT EXECUTION
 
 You can also simply run the program in the directory you've unpacked it
 into.   It's a simple Python program, just type into a command line:
 
-  ./flawfinder files_or_directory
+`./flawfinder files_or_directory`
