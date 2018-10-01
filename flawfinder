@@ -574,6 +574,7 @@ def extract_c_parameters(text, pos=0):
         i = i + 1
     internal_warn("Parsing failed to find end of parameter list in %s" %
                   text[pos:pos + 200])
+    return []  # Treat unterminated list as an empty list
 
 
 # These patterns match gettext() and _() for internationalization.
