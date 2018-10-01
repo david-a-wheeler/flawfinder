@@ -2000,6 +2000,9 @@ def process_options():
         print("*** getopt error:", text)
         usage()
         sys.exit(16)
+    if output_format == 1 and list_rules == 1:
+        print('You cannot list rules in HTML format')
+        sys.exit(20)
 
 
 def process_files():
