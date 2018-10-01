@@ -8,7 +8,8 @@ The options (described below) are (1) pip, (2) package for Unix-like system, (3)
 ## 1. PIP
 
 For many, the simple approach is to first install Python
-(2.7 or something in the 3.* series). Then use "pip" to install flawfinder
+(2.7 or something reasonable in the 3.X series).
+Then use `pip` to install flawfinder
 (this will normally download the package):
 
 `pip install flawfinder`
@@ -34,7 +35,7 @@ One way to accomplish this is:
 
 QUICK START:
 The quick way to install flawfinder from the tarball is to
-unpack the tarball and type in something like this on the commmand line:
+unpack the tarball and type in something like this on the command line:
 
 `sudo make prefix=/usr install`
 
@@ -70,11 +71,11 @@ Not enough?  Here are more detailed step-by-step instructions and options.
 
   You can also use the older flawfinder makefile variables to control
   installation; you can set:
-  INSTALL_DIR = prefix, default $(prefix)
-  INSTALL_DIR_BIN = program location, default $(bindir)
-  INSTALL_DIR_MAN = manual location, default $(man1dir)
-  Note that the default of INSTALL_DIR_MAN has changed; at one time
-  it was $(prefix)/man/man1, but now it is $(prefix)/share/man/man1
+  `INSTALL_DIR` = prefix, default $(prefix);
+  `INSTALL_DIR_BIN` = program location, default `$(bindir)`;
+  `INSTALL_DIR_MAN` = manual location, default `$(man1dir)`.
+  Note that the default of `INSTALL_DIR_MAN` has changed; at one time
+  it was `$(prefix)/man/man1`, but now it is `$(prefix)/share/man/man1`
 
 * If you're using Cygwin on Windows, you can install it using "make install"
   but you need to tell the makefile to use the .py extension
