@@ -151,7 +151,7 @@ Minimum risk level = 1
 Not every hit is necessarily a security vulnerability.
 There may be other security vulnerabilities; review your code!
 See 'Secure Programming HOWTO'
-(https://www.dwheeler.com/secure-programs) for more information.
+(https://dwheeler.com/secure-programs) for more information.
 
 Testing for no ending newline:
 Lines analyzed = 32

@@ -21,7 +21,7 @@ setup (# Distribution meta-data
 C/C++ source code and identify out potential security flaws,
 ranking them by likely severity.
 It is released under the GNU GPL license.""",
-       url = "http://www.dwheeler.com/flawfinder/",
+       url = "http://dwheeler.com/flawfinder/",
        download_url = "https://sourceforge.net/projects/flawfinder/files/flawfinder-2.0.6.tar.gz/download",
        zip_safe = True,
        keywords = ['analysis', 'security', 'analyzer'],

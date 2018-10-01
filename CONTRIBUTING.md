@@ -9,7 +9,7 @@ For normal problems, bugs, and feature requests, please file a
 [ticket](https://sourceforge.net/p/flawfinder/_list/tickets).
 
 If you find a vulnerability, please separately send a private email to
-[David A. Wheeler](https://www.dwheeler.com/contactme.html).
+[David A. Wheeler](https://dwheeler.com/contactme.html).
 We plan to handle vulnerabilities separately, fixing them and *then*
 telling the world.  We will gladly provide credit to vulnerability reporters
 (unless you don't want the credit).  We've never had a vulnerability

@@ -1670,8 +1670,8 @@ def display_header():
             print("<body>")
             print("<h1>Flawfinder Results</h1>")
             print("Here are the security scan results from")
-            print('<a href="https://www.dwheeler.com/flawfinder">Flawfinder version %s</a>,' % version)
-            print('(C) 2001-2017 <a href="https://www.dwheeler.com">David A. Wheeler</a>.')
+            print('<a href="https://dwheeler.com/flawfinder">Flawfinder version %s</a>,' % version)
+            print('(C) 2001-2017 <a href="https://dwheeler.com">David A. Wheeler</a>.')
         else:
             print("Flawfinder version %s, (C) 2001-2017 David A. Wheeler." % version)
         displayed_header = 1
@@ -2159,11 +2159,11 @@ def show_final_results():
         print("There may be other security vulnerabilities; review your code!")
         if output_format:
             print("<br>")
-            print("See '<a href=\"https://www.dwheeler.com/secure-programs\">Secure Programming HOWTO</a>'")
-            print("(<a href=\"https://www.dwheeler.com/secure-programs\">https://www.dwheeler.com/secure-programs</a>) for more information.")
+            print("See '<a href=\"https://dwheeler.com/secure-programs\">Secure Programming HOWTO</a>'")
+            print("(<a href=\"https://dwheeler.com/secure-programs\">https://dwheeler.com/secure-programs</a>) for more information.")
         else:
             print("See 'Secure Programming HOWTO'")
-            print("(https://www.dwheeler.com/secure-programs) for more information.")
+            print("(https://dwheeler.com/secure-programs) for more information.")
         if output_format:
             print("</body>")
             print("</html>")

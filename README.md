@@ -9,12 +9,12 @@ static source code analysis tools more generally.  It is designed to
 be easy to install and use.  Flawfinder supports the Common Weakness
 Enumeration (CWE) and is officially CWE-Compatible.
 
-For more information, see the [project website](http://www.dwheeler.com/flawfinder)
+For more information, see the [project website](http://dwheeler.com/flawfinder)
 
 # Platforms
 
 Flawfinder is designed for use on Unix/Linux/POSIX systems
-(including Cygwin, Linux-based systems, MacOS, and *BSDs) as a
+(including Cygwin, Linux-based systems, MacOS, and various BSDs) as a
 command line tool.  It requires Python 2.7 or Python 3.
 
 # Installation
