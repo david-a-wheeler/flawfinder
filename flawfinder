@@ -116,9 +116,6 @@ sumlines = 0  # Number of lines (total) examined.
 sloc = 0  # Physical SLOC
 starttime = time.time()  # Used to determine analyzed lines/second.
 
-line_beginning = re.compile(r'(?m)^')
-blank_line = re.compile(r'(?m)^\s+$')
-
 
 # Send warning message.  This is written this way to work on
 # Python version 2.5 through Python 3.
@@ -224,10 +221,6 @@ def gnu_diff_get_filename(sLine):
         # Clean up filename - remove trailing timestamp and/or (comment).
         return diff_findjunk.match(patched_filename)
     return None
-
-
-git_splitter = ' b/'
-len_git_splitter = len(git_splitter)
 
 
 def git_diff_get_filename(sLine):
