@@ -68,7 +68,7 @@ INSTALL_DATA=cp -p
 # compiled code to override later uncompiled Python code.
 install:
 	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_BIN)
-	$(INSTALL_PROGRAM) flawfinder$(PYTHONEXT) $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
+	$(INSTALL_PROGRAM) flawfinder $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
 	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_MAN)
 	$(INSTALL_DATA) flawfinder.1 $(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1
 
