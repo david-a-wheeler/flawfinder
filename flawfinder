@@ -1775,9 +1775,27 @@ def process_file_args(files, patch_infos):
             maybe_process_file(f, patch_infos)
         elif not os.path.exists(f):
             if not quiet:
-                if h(f).startswith("\342\210\222"):
+                # Help humans avoid a long mysterious debugging session.
+                # Sometimes people copy/paste from HTML that has a leading
+                # en dash (\u2013 aka 0xE2 0x80 0x93) or
+                # em dash (\u2014 aka 0xE2 0x80 0x94) instead of the
+                # correct dash marker (in an attempt to make things "pretty").
+                # These symbols *look* like the regular dash
+                # option marker, but they are not the same characters.
+                # If there's no such file, give a special warning,
+                # because otherwise this can be extremely
+                # difficult for humans to notice.  We'll do the check in
+                # this odd way so it works on both Python 2 and Python 3.
+                # (Python 3 wants \u...).
+                # Note that we *only* make this report if the file doesn't
+                # exist - if someone asks to process a file with this crazy
+                # name, and it exists, we'll process it without complaint.
+                if (h(f).startswith("\xe2\x80\x93") or
+                    h(f).startswith("\xe2\x80\x94") or
+                    h(f).startswith("\u2013") or
+                    h(f).startswith("\u2014")):
                     print_warning(
-                        "Skipping non-existent filename starting with UTF-8 long dash "
+                        "Skipping non-existent filename starting with em dash or en dash "
                         + h(f))
                 else:
                     print_warning("Skipping non-existent file " + h(f))
