@@ -221,7 +221,7 @@ rpm: distribute
 	# cp -p /usr/src/redhat/RPMS/$(ARCH)/$(VERSIONEDNAME)-$(RPM_VERSION)*.rpm  $(VERSIONEDNAME)-$(RPM_VERSION).noarch.rpm
 	cp -p /usr/src/redhat/RPMS/$(ARCH)/$(VERSIONEDNAME)-$(RPM_VERSION)*.rpm  .
 	cp -p /usr/src/redhat/SRPMS/$(VERSIONEDNAME)-$(RPM_VERSION)*.src.rpm .
-	chown --reference=README *.rpm
+	chown --reference=README.md *.rpm
 	# Install, for testing.  Ignore the "not installed" message here,
 	# unless you already installed it; we're just removing any old copies:
 	-rpm -e flawfinder

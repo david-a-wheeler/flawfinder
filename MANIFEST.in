@@ -1,5 +1,5 @@
 include COPYING
-include README
+include README.md
 include announcement
 include ChangeLog
 include flawfinder.1*

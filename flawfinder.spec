@@ -31,7 +31,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%doc README ChangeLog COPYING flawfinder.ps
+%doc README.md ChangeLog COPYING flawfinder.ps
 %{_bindir}/*
 %{_mandir}/man1/*
 
