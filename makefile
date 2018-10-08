@@ -6,7 +6,7 @@
 # how to change version numbers.
 
 NAME=flawfinder
-VERSION=2.0.7
+VERSION=2.0.8
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
