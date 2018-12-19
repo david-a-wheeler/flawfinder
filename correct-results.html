@@ -26,7 +26,7 @@ Examining test2.c <br>
 <pre>
  gets(f);
 </pre>
-<li>test.c:56: <b>  [5] </b> (buffer) <i> strncat:
+<li>test.c:60: <b>  [5] </b> (buffer) <i> strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) [MS-banned] (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
@@ -36,7 +36,7 @@ Examining test2.c <br>
 <pre>
   strncat(d,s,sizeof(d)); /* Misuse - this should be flagged as riskier. */
 </pre>
-<li>test.c:57: <b>  [5] </b> (buffer) <i> _tcsncat:
+<li>test.c:61: <b>  [5] </b> (buffer) <i> _tcsncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) [MS-banned] (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
@@ -46,7 +46,7 @@ Examining test2.c <br>
 <pre>
   _tcsncat(d,s,sizeof(d)); /* Misuse - flag as riskier */
 </pre>
-<li>test.c:60: <b>  [5] </b> (buffer) <i> MultiByteToWideChar:
+<li>test.c:64: <b>  [5] </b> (buffer) <i> MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Risk
   is high, it appears that the size is given as bytes, but the function
@@ -54,7 +54,7 @@ Examining test2.c <br>
 <pre>
   MultiByteToWideChar(CP_ACP,0,szName,-1,wszUserName,sizeof(wszUserName));
 </pre>
-<li>test.c:62: <b>  [5] </b> (buffer) <i> MultiByteToWideChar:
+<li>test.c:66: <b>  [5] </b> (buffer) <i> MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Risk
   is high, it appears that the size is given as bytes, but the function
@@ -62,14 +62,14 @@ Examining test2.c <br>
 <pre>
   MultiByteToWideChar(CP_ACP,0,szName,-1,wszUserName,sizeof wszUserName);
 </pre>
-<li>test.c:73: <b>  [5] </b> (misc) <i> SetSecurityDescriptorDacl:
+<li>test.c:77: <b>  [5] </b> (misc) <i> SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
   Access), which would even forbid administrator access (<a
   href="https://cwe.mitre.org/data/definitions/732.html">CWE-732</a>). </i>
 <pre>
   SetSecurityDescriptorDacl(&amp;sd,TRUE,NULL,FALSE);
 </pre>
-<li>test.c:73: <b>  [5] </b> (misc) <i> SetSecurityDescriptorDacl:
+<li>test.c:77: <b>  [5] </b> (misc) <i> SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
   Access), which would even forbid administrator access (<a
   href="https://cwe.mitre.org/data/definitions/732.html">CWE-732</a>). </i>
@@ -146,14 +146,14 @@ Examining test2.c <br>
 <pre>
   _mbscpy(d,s); /* like strcpy, this doesn't check for buffer overflow */
 </pre>
-<li>test.c:52: <b>  [4] </b> (buffer) <i> lstrcat:
+<li>test.c:56: <b>  [4] </b> (buffer) <i> lstrcat:
   Does not check for buffer overflows when concatenating to destination
   [MS-banned] (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). </i>
 <pre>
   lstrcat(d,s);
 </pre>
-<li>test.c:75: <b>  [3] </b> (shell) <i> CreateProcess:
+<li>test.c:79: <b>  [3] </b> (shell) <i> CreateProcess:
   This causes a new process to execute and is difficult to use safely (<a
   href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>). Specify
   the application path in the first argument, NOT as part of the second, or
@@ -162,7 +162,7 @@ Examining test2.c <br>
 <pre>
   CreateProcess(NULL, "C:\\Program Files\\GoodGuy\\GoodGuy.exe -x", "");
 </pre>
-<li>test.c:75: <b>  [3] </b> (shell) <i> CreateProcess:
+<li>test.c:79: <b>  [3] </b> (shell) <i> CreateProcess:
   This causes a new process to execute and is difficult to use safely (<a
   href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>). Specify
   the application path in the first argument, NOT as part of the second, or
@@ -171,7 +171,7 @@ Examining test2.c <br>
 <pre>
   CreateProcess(NULL, "C:\\Program Files\\GoodGuy\\GoodGuy.exe -x", "");
 </pre>
-<li>test.c:91: <b>  [3] </b> (buffer) <i> getopt_long:
+<li>test.c:95: <b>  [3] </b> (buffer) <i> getopt_long:
   Some older implementations do not protect against internal buffer overflows
   (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
   href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Check
@@ -220,16 +220,30 @@ Examining test2.c <br>
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
   sure destination can always hold the source data. </i>
 <pre>
-  memcpy(d,s);
+  memcpy(d,s); // fail - no size
 </pre>
-<li>test.c:51: <b>  [2] </b> (buffer) <i> CopyMemory:
+<li>test.c:53: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<pre>
+  memcpy(&amp;n,s,sizeof(s)); // fail - sizeof not of destination
+</pre>
+<li>test.c:54: <b>  [2] </b> (buffer) <i> memcpy:
+  Does not check for buffer overflows when copying to destination (<a
+  href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
+  sure destination can always hold the source data. </i>
+<pre>
+  memcpy(d,s,n); // fail - size unguessable
+</pre>
+<li>test.c:55: <b>  [2] </b> (buffer) <i> CopyMemory:
   Does not check for buffer overflows when copying to destination (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Make
   sure destination can always hold the source data. </i>
 <pre>
   CopyMemory(d,s);
 </pre>
-<li>test.c:97: <b>  [2] </b> (misc) <i> fopen:
+<li>test.c:101: <b>  [2] </b> (misc) <i> fopen:
   Check when opening files - can an attacker redirect it (via symlinks),
   force the opening of special file type (e.g., device files), move things
   around to create a race condition, control its ancestors, or change its
@@ -261,21 +275,21 @@ Examining test2.c <br>
 <pre>
  scanf("%10s", s);
 </pre>
-<li>test.c:53: <b>  [1] </b> (buffer) <i> strncpy:
+<li>test.c:57: <b>  [1] </b> (buffer) <i> strncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
   pointers [MS-banned] (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). </i>
 <pre>
   strncpy(d,s);
 </pre>
-<li>test.c:54: <b>  [1] </b> (buffer) <i> _tcsncpy:
+<li>test.c:58: <b>  [1] </b> (buffer) <i> _tcsncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
   pointers [MS-banned] (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). </i>
 <pre>
   _tcsncpy(d,s);
 </pre>
-<li>test.c:55: <b>  [1] </b> (buffer) <i> strncat:
+<li>test.c:59: <b>  [1] </b> (buffer) <i> strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) [MS-banned] (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
@@ -283,21 +297,21 @@ Examining test2.c <br>
 <pre>
   strncat(d,s,10);
 </pre>
-<li>test.c:58: <b>  [1] </b> (buffer) <i> strlen:
+<li>test.c:62: <b>  [1] </b> (buffer) <i> strlen:
   Does not handle strings that are not \0-terminated; if given one it may
   perform an over-read (it could cause a crash if unprotected) (<a
   href="https://cwe.mitre.org/data/definitions/126.html">CWE-126</a>). </i>
 <pre>
   n = strlen(d);
 </pre>
-<li>test.c:64: <b>  [1] </b> (buffer) <i> MultiByteToWideChar:
+<li>test.c:68: <b>  [1] </b> (buffer) <i> MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Risk
   is very low, the length appears to be in characters not bytes. </i>
 <pre>
   MultiByteToWideChar(CP_ACP,0,szName,-1,wszUserName,sizeof(wszUserName)/sizeof(wszUserName[0]));
 </pre>
-<li>test.c:66: <b>  [1] </b> (buffer) <i> MultiByteToWideChar:
+<li>test.c:70: <b>  [1] </b> (buffer) <i> MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (<a
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). Risk
   is very low, the length appears to be in characters not bytes. </i>
@@ -307,15 +321,15 @@ Examining test2.c <br>
 </ul>
 <h2>Analysis Summary</h2>
 <p>
-Hits = 36
+Hits = 38
 <br>
-Lines analyzed = 118
+Lines analyzed = 122
 <br>
-Physical Source Lines of Code (SLOC) = 80
+Physical Source Lines of Code (SLOC) = 84
 <br>
-Hits@level = [0]  16 [1]   9 [2]   7 [3]   3 [4]  10 [5]   7 <br>
-Hits@level+ = [0+]  52 [1+]  36 [2+]  27 [3+]  20 [4+]  17 [5+]   7 <br>
-Hits/KSLOC@level+ = [0+] 650 [1+] 450 [2+] 337.5 [3+] 250 [4+] 212.5 [5+] 87.5 <br>
+Hits@level = [0]  16 [1]   9 [2]   9 [3]   3 [4]  10 [5]   7 <br>
+Hits@level+ = [0+]  54 [1+]  38 [2+]  29 [3+]  20 [4+]  17 [5+]   7 <br>
+Hits/KSLOC@level+ = [0+] 642.857 [1+] 452.381 [2+] 345.238 [3+] 238.095 [4+] 202.381 [5+] 83.3333 <br>
 Suppressed hits = 2 (use --neverignore to show them)
 <br>
 Minimum risk level = 1

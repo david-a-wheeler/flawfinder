@@ -7,29 +7,29 @@ FINAL RESULTS:
 
 test.c:32:  [5] (buffer) gets:
   Does not check for buffer overflows (CWE-120, CWE-20). Use fgets() instead.
-test.c:56:  [5] (buffer) strncat:
+test.c:60:  [5] (buffer) strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, snprintf,
   or automatically resizing strings. Risk is high; the length parameter
   appears to be a constant, instead of computing the number of characters
   left.
-test.c:57:  [5] (buffer) _tcsncat:
+test.c:61:  [5] (buffer) _tcsncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, or
   automatically resizing strings. Risk is high; the length parameter appears
   to be a constant, instead of computing the number of characters left.
-test.c:60:  [5] (buffer) MultiByteToWideChar:
+test.c:64:  [5] (buffer) MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is high,
   it appears that the size is given as bytes, but the function requires size
   as characters.
-test.c:62:  [5] (buffer) MultiByteToWideChar:
+test.c:66:  [5] (buffer) MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is high,
   it appears that the size is given as bytes, but the function requires size
   as characters.
-test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
+test.c:77:  [5] (misc) SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
   Access), which would even forbid administrator access (CWE-732).
-test.c:73:  [5] (misc) SetSecurityDescriptorDacl:
+test.c:77:  [5] (misc) SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
   Access), which would even forbid administrator access (CWE-732).
 test.c:17:  [4] (buffer) strcpy:
@@ -62,20 +62,20 @@ test.c:49:  [4] (buffer) _mbscpy:
   Does not check for buffer overflows when copying to destination [MS-banned]
   (CWE-120). Consider using a function version that stops copying at the end
   of the buffer.
-test.c:52:  [4] (buffer) lstrcat:
+test.c:56:  [4] (buffer) lstrcat:
   Does not check for buffer overflows when concatenating to destination
   [MS-banned] (CWE-120).
-test.c:75:  [3] (shell) CreateProcess:
+test.c:79:  [3] (shell) CreateProcess:
   This causes a new process to execute and is difficult to use safely
   (CWE-78). Specify the application path in the first argument, NOT as part
   of the second, or embedded spaces could allow an attacker to force a
   different program to run.
-test.c:75:  [3] (shell) CreateProcess:
+test.c:79:  [3] (shell) CreateProcess:
   This causes a new process to execute and is difficult to use safely
   (CWE-78). Specify the application path in the first argument, NOT as part
   of the second, or embedded spaces could allow an attacker to force a
   different program to run.
-test.c:91:  [3] (buffer) getopt_long:
+test.c:95:  [3] (buffer) getopt_long:
   Some older implementations do not protect against internal buffer overflows
   (CWE-120, CWE-20). Check implementation on installation, or limit the size
   of all string inputs.
@@ -99,10 +99,16 @@ test.c:46:  [2] (buffer) char:
 test.c:50:  [2] (buffer) memcpy:
   Does not check for buffer overflows when copying to destination (CWE-120).
   Make sure destination can always hold the source data.
-test.c:51:  [2] (buffer) CopyMemory:
+test.c:53:  [2] (buffer) memcpy:
   Does not check for buffer overflows when copying to destination (CWE-120).
   Make sure destination can always hold the source data.
-test.c:97:  [2] (misc) fopen:
+test.c:54:  [2] (buffer) memcpy:
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Make sure destination can always hold the source data.
+test.c:55:  [2] (buffer) CopyMemory:
+  Does not check for buffer overflows when copying to destination (CWE-120).
+  Make sure destination can always hold the source data.
+test.c:101:  [2] (misc) fopen:
   Check when opening files - can an attacker redirect it (via symlinks),
   force the opening of special file type (e.g., device files), move things
   around to create a race condition, control its ancestors, or change its
@@ -118,34 +124,34 @@ test.c:26:  [1] (buffer) scanf:
   It's unclear if the %s limit in the format string is small enough
   (CWE-120). Check that the limit is sufficiently small, or use a different
   input function.
-test.c:53:  [1] (buffer) strncpy:
+test.c:57:  [1] (buffer) strncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
   pointers [MS-banned] (CWE-120).
-test.c:54:  [1] (buffer) _tcsncpy:
+test.c:58:  [1] (buffer) _tcsncpy:
   Easily used incorrectly; doesn't always \0-terminate or check for invalid
   pointers [MS-banned] (CWE-120).
-test.c:55:  [1] (buffer) strncat:
+test.c:59:  [1] (buffer) strncat:
   Easily used incorrectly (e.g., incorrectly computing the correct maximum
   size to add) [MS-banned] (CWE-120). Consider strcat_s, strlcat, snprintf,
   or automatically resizing strings.
-test.c:58:  [1] (buffer) strlen:
+test.c:62:  [1] (buffer) strlen:
   Does not handle strings that are not \0-terminated; if given one it may
   perform an over-read (it could cause a crash if unprotected) (CWE-126).
-test.c:64:  [1] (buffer) MultiByteToWideChar:
+test.c:68:  [1] (buffer) MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is very
   low, the length appears to be in characters not bytes.
-test.c:66:  [1] (buffer) MultiByteToWideChar:
+test.c:70:  [1] (buffer) MultiByteToWideChar:
   Requires maximum length in CHARACTERS, not bytes (CWE-120). Risk is very
   low, the length appears to be in characters not bytes.
 
 ANALYSIS SUMMARY:
 
-Hits = 36
-Lines analyzed = 118
-Physical Source Lines of Code (SLOC) = 80
-Hits@level = [0]  16 [1]   9 [2]   7 [3]   3 [4]  10 [5]   7
-Hits@level+ = [0+]  52 [1+]  36 [2+]  27 [3+]  20 [4+]  17 [5+]   7
-Hits/KSLOC@level+ = [0+] 650 [1+] 450 [2+] 337.5 [3+] 250 [4+] 212.5 [5+] 87.5
+Hits = 38
+Lines analyzed = 122
+Physical Source Lines of Code (SLOC) = 84
+Hits@level = [0]  16 [1]   9 [2]   9 [3]   3 [4]  10 [5]   7
+Hits@level+ = [0+]  54 [1+]  38 [2+]  29 [3+]  20 [4+]  17 [5+]   7
+Hits/KSLOC@level+ = [0+] 642.857 [1+] 452.381 [2+] 345.238 [3+] 238.095 [4+] 202.381 [5+] 83.3333
 Suppressed hits = 2 (use --neverignore to show them)
 Minimum risk level = 1
 Not every hit is necessarily a security vulnerability.
