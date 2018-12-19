@@ -47,7 +47,11 @@ demo2() {
   int n;
 
   _mbscpy(d,s); /* like strcpy, this doesn't check for buffer overflow */
-  memcpy(d,s);
+  memcpy(d,s); // fail - no size
+  memcpy(d, s, sizeof(d)); // pass
+  memcpy(& n, s, sizeof( n )); // pass
+  memcpy(&n,s,sizeof(s)); // fail - sizeof not of destination
+  memcpy(d,s,n); // fail - size unguessable
   CopyMemory(d,s);
   lstrcat(d,s);
   strncpy(d,s);

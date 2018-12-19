@@ -615,6 +615,19 @@ def c_constant_string(text):
 
 # Precompile patterns for speed.
 
+p_memcpy_sizeof = re.compile(r'sizeof\s*\(\s*([^)\s]*)\s*\)')
+p_memcpy_param_amp = re.compile(r'&?\s*(.*)')
+
+def c_memcpy(hit):
+    if len(hit.parameters) < 4: # 3 parameters
+        add_warning(hit)
+        return
+
+    m1 = re.search(p_memcpy_param_amp, hit.parameters[1])
+    m3 = re.search(p_memcpy_sizeof, hit.parameters[3])
+    if not m1 or not m3 or m1.group(1) != m3.group(1):
+        add_warning(hit)
+
 
 def c_buffer(hit):
     source_position = hit.source_position
@@ -859,7 +872,7 @@ c_ruleset = {
      "Consider using a function version that stops copying at the end of the buffer",
      "buffer", "", {}),
     "memcpy|CopyMemory|bcopy":
-    (normal, 2,  # I've found this to have a lower risk in practice.
+    (c_memcpy, 2,  # I've found this to have a lower risk in practice.
      "Does not check for buffer overflows when copying to destination (CWE-120)",
      "Make sure destination can always hold the source data",
      "buffer", "", {}),
