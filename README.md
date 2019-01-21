@@ -15,7 +15,7 @@ For more information, see the [project website](http://dwheeler.com/flawfinder)
 
 Flawfinder is designed for use on Unix/Linux/POSIX systems
 (including Cygwin, Linux-based systems, MacOS, and various BSDs) as a
-command line tool.  It requires Python 2.7 or Python 3.
+command line tool.  It requires either Python 2.7 or Python 3.
 
 # Installation
 
@@ -31,7 +31,24 @@ You don't HAVE to install it to run it, but it's easiest that way.
 To run flawfinder, just give it a list of source files or directories to
 example.  For example, to examine all files in "src/" and down recursively:
 
-`flawfinder src/`
+~~~~
+flawfinder src/
+~~~~
+
+To examine all files in the *current* directory and down recursively:
+
+~~~~
+flawfinder ./
+~~~~
+
+Hits (findings) are given a risk level from 0 (very low risk) to 5 (high risk),
+By default, findings of risk level 1 or higher are shown.
+You can show only the hits of risk level 4 or higher in the current
+directory and down this way:
+
+~~~~
+flawfinder --minlevel 4 ./
+~~~~
 
 The manual page (flawfinder.1 or flawfinder.pdf) describes how to use
 flawfinder (including its various options) and related information

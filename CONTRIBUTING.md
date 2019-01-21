@@ -3,13 +3,24 @@
 We love contributions!  Here's how to do them in a way that will
 make everyone's lives easy.
 
+Flawfinder has long been maintained on SourceForge.
+We now support reporting and changes using either SourceForge or GitHub.
+
 ## Reporting
 
-For normal problems, bugs, and feature requests, please file a
-[ticket](https://sourceforge.net/p/flawfinder/_list/tickets).
+For normal problems, bugs, and feature requests, *except* for
+vulnerabilities, please file a
+[GitHub issue](https://github.com/david-a-wheeler/flawfinder/issues) or
+[SourceForge ticket](https://sourceforge.net/p/flawfinder/_list/tickets).
 
 If you find a vulnerability, please separately send a private email to
 [David A. Wheeler](https://dwheeler.com/contactme.html).
+To maintain confidentiality,
+please use an email system that implements STARTTLS hop-by-hop email
+encryption on outgoing email (many do, including
+Gmail, hotmail.com, live.com, outlook.com, and runbox.com).
+For more about STARTTLS, see the
+EFF's [STARTTLS Everywhere](https://www.starttls-everywhere.org/) project.
 We plan to handle vulnerabilities separately, fixing them and *then*
 telling the world.  We will gladly provide credit to vulnerability reporters
 (unless you don't want the credit).  We've never had a vulnerability
@@ -19,9 +30,13 @@ report, so this is theoretical at this time.
 
 We use "git" to track changes.  To propose a change, create a fork
 (copy) of the repository, make your changes, and create a
-merge request (also called a pull request).
+GitHub pull request or SourceForge merge request (they are the same thing).
+
 If you're not familiar with the process, here's some
-[documentation](https://sourceforge.net/p/forge/documentation/Git/).
+documentation for
+[GitHub](https://help.github.com/articles/about-pull-requests/)
+and
+[SourceForge](https://sourceforge.net/p/forge/documentation/Git/).
 
 ## License and DCO
 
@@ -55,15 +70,21 @@ An easy way to install pylint is to use pip.
 Most python installs have pip, but if yours does not
 (e.g., Cygwin), install pip with:
 
-`python -m ensurepip`
+~~~~
+python -m ensurepip
+~~~~
 
 You may want to upgrade pip with:
 
-`pip install --upgrade pip`
+~~~~
+pip install --upgrade pip
+~~~~
 
 Finally, you can actually install pylint using:
 
-`pip install pylint`
+~~~~
+pip install pylint
+~~~~
 
 ## Code Conventions
 
@@ -80,12 +101,16 @@ patches to improve that are often welcome.
 The code must run on both Python 2.7 and Python 3.
 To check that it works on both, run:
 
-`make check`
+~~~~
+make check
+~~~~
 
 We use "pylint" to check for style and other generic quality problems.
 To check that the code passes these quality tests, run:
 
-`make pylint`
+~~~~
+make pylint
+~~~~
 
 We require that the pylint results for contributions be at least 9.5/10 as
 configured with the provided "pylintrc" file, without any errors ("E").
@@ -107,6 +132,13 @@ produced by the project, tests of that functionality should be added to
 the automated test suite.
 
 ## Other
+
+Project documentation tends to be in markdown (.md) format.
+We use "~~~~" so that it's easy to cut-and-paste commands if desired.
+The main document is a man page, which is then converted to PDF.
+
+Avoid trailing space or tab on a line in source files - those can create
+hard-to-understand "differences" on lines.
 
 We have earned a
 [CII Best Practices Badge](https://bestpractices.coreinfrastructure.org/projects/323)... make sure we keep it!

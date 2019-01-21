@@ -12,7 +12,9 @@ For many, the simple approach is to first install Python
 Then use `pip` to install flawfinder
 (this will normally download the package):
 
-`pip install flawfinder`
+~~~~
+pip install flawfinder
+~~~~
 
 One advantage for using pip is that you'll generally get the
 *current* released version.
@@ -28,7 +30,10 @@ For a ports-based system where you have a current port, just use that.
 This will work out-of-the-box; it may not be the most recent version.
 
 One way to accomplish this is:
-`sudo apt install flawfinder`
+
+~~~~
+sudo apt install flawfinder
+~~~~
 
 
 ## 3. TARBALL (SOURCE INSTALL)
@@ -37,7 +42,9 @@ QUICK START:
 The quick way to install flawfinder from the tarball is to
 unpack the tarball and type in something like this on the command line:
 
-`sudo make prefix=/usr install`
+~~~~
+sudo make prefix=/usr install
+~~~~
 
 Omit prefix=/usr to install in /usr/local instead.
 Omit "sudo" if you are already root.
@@ -119,4 +126,6 @@ Not enough?  Here are more detailed step-by-step instructions and options.
 You can also simply run the program in the directory you've unpacked it
 into.   It's a simple Python program, just type into a command line:
 
-`./flawfinder files_or_directory`
+~~~~
+./flawfinder FILES-OR-DIRECTORY
+~~~~
