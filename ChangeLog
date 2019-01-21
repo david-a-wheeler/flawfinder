@@ -1,3 +1,13 @@
+2019-01-21 David A. Wheeler <dwheeler, at, dwheeler.com>
+	* Version 2.0.8
+	* Don't warn if memcpy call includes sizeof(first arg).
+	  Thanks to Michael Clark for this improvement!
+	* Bugfix (banned function _ftcsat should be _ftcscat).
+	  Thanks to Lucas Ramage for reporting this!
+	* Documentation tweaks. Make it clear that GitHub issues and
+	  pull requests are supported, and use ~~~~ in markdown
+	  to ease copy-and-paste from documentation.
+
 2018-09-30 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Incorporate many small improvements from nickthetait
 	* Fix a number of bugs reported by philipp
