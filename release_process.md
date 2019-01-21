@@ -4,7 +4,7 @@ Here's information on how to release an update to flawfinder.
 
 ## Changing version number
 
-You should really change the version number before changing anything else.
+Ensure that the version number is the intended final value.
 Make sure every release has a unique version number.
 
 To change version number, edit the following files:
@@ -12,7 +12,7 @@ makefile
 flawfinder
 flawfinder.spec
 setup.py
-index.html
+index.html # in dwheeler.com/flawfinder
 
 Then run:
 
@@ -32,7 +32,8 @@ Once you're sure this is the *real* version, tag it:
 
 ~~~~
 git tag VERSION
-git push --tags
+git push --tags origin # SourceForge
+git push --tags github # GitHub
 ~~~~
 
 ## Create tarball
@@ -52,16 +53,35 @@ the usual places:
 * SourceForge "files" directory, and set it to be the default download.
 * dwheeler.com/flawfinder
 
+Do this *before* creating the PyPi distribution package for pip.
+
 ## Post to pip
 
-Create a PyPi distribution package:
+First, install the programs to create a PyPi distribution package
+if they are not already installed.  On Cygwin first run:
+
+~~~~
+python -m ensurepip
+pip install --upgrade pip
+pip install wheel
+pip install twine
+~~~~
+
+Then create a PyPi distribution package (for Python2 and Python3):
 
 ~~~~
 make pypi
 ~~~~
 
-And upload it:
+Now upload the PyPi distribution package:
 
 ~~~~
 make upload-pypi
 ~~~~
+
+## After it's uploaded
+
+Change the version number in the repo NOW, so that there will not
+be two different released versions with the same version number.
+See the list at the beginning of this document for the list of
+files to change.
