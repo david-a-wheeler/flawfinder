@@ -330,7 +330,7 @@ def print_multi_line(text):
             position = starting_position
         print(' ', end='')
         print(w, end='')
-        position = position + len(w) + 1
+        position += len(w) + 1
 
 
 # This matches references to CWE identifiers, so we can HTMLize them.
@@ -448,8 +448,8 @@ class Hit(object):
             print(' ' + h(self.note), end='')
         else:
             if self.suggestion:
-                main_text = main_text + h(self.suggestion) + ". "
-            main_text = main_text + h(self.note)
+                main_text += h(self.suggestion) + ". "
+            main_text += h(self.note)
             print()
             print_multi_line(main_text)
         if output_format:
@@ -477,7 +477,7 @@ def add_warning(hit):
                            None):
         return
     if linenumber == ignoreline:
-        num_ignored_hits = num_ignored_hits + 1
+        num_ignored_hits += 1
     else:
         hitlist.append(hit)
         if show_immediately:
@@ -500,12 +500,12 @@ def extract_c_parameters(text, pos=0):
         if text[i] == '(':
             break
         elif text[i] in string.whitespace:
-            i = i + 1
+            i += 1
         else:
             return []
     else:  # Never found a reasonable ending.
         return []
-    i = i + 1
+    i += 1
     parameters = [""]  # Insert 0th entry, so 1st parameter is parameter[1].
     currentstart = i
     parenlevel = 1
@@ -525,11 +525,11 @@ def extract_c_parameters(text, pos=0):
                 # parse that deeply, we just need to know we'll stay
                 # in string mode:
             elif c == '\\':
-                i = i + 1
+                i += 1
         elif incomment:
             if c == '*' and text[i:i + 2] == '*/':
                 incomment = 0
-                i = i + 1
+                i += 1
         else:
             if c == '"':
                 instring = 1
@@ -537,20 +537,20 @@ def extract_c_parameters(text, pos=0):
                 instring = 2
             elif c == '/' and text[i:i + 2] == '/*':
                 incomment = 1
-                i = i + 1
+                i += 1
             elif c == '/' and text[i:i + 2] == '//':
                 while i < len(text) and text[i] != "\n":
-                    i = i + 1
+                    i += 1
             elif c == '\\' and text[i:i + 2] == '\\"':
-                i = i + 1  # Handle exposed '\"'
+                i += 1  # Handle exposed '\"'
             elif c == '(':
-                parenlevel = parenlevel + 1
+                parenlevel += 1
             elif c == ',' and (parenlevel == 1):
                 parameters.append(
                     p_trailingbackslashes.sub('', text[currentstart:i]).strip())
                 currentstart = i + 1
             elif c == ')':
-                parenlevel = parenlevel - 1
+                parenlevel -= 1
                 if parenlevel <= 0:
                     parameters.append(
                         p_trailingbackslashes.sub(
@@ -564,7 +564,7 @@ def extract_c_parameters(text, pos=0):
                     "Parsing failed to find end of parameter list; "
                     "semicolon terminated it in %s" % text[pos:pos + 200])
                 return parameters
-        i = i + 1
+        i += 1
     internal_warn("Parsing failed to find end of parameter list in %s" %
                   text[pos:pos + 200])
     return []  # Treat unterminated list as an empty list
@@ -1381,7 +1381,7 @@ def c_valid_match(text, position):
         if c == '(':
             return 1
         elif c in string.whitespace:
-            i = i + 1
+            i += 1
         else:
             if falsepositive:
                 return 0  # No following "(", presume invalid.
@@ -1421,7 +1421,7 @@ def process_directive():
         if hitlist[i].filename == filename and hitlist[i].line == linenumber:
             del hitlist[i]  # DESTROY - this is a DESTRUCTIVE iterator.
             hitfound = 1  # Don't break, because there may be more than one.
-            num_ignored_hits = num_ignored_hits + 1
+            num_ignored_hits += 1
     if not hitfound:
         ignoreline = linenumber + 1  # Nothing found - ignore next line.
 
@@ -1473,7 +1473,7 @@ def process_c_file(f, patch_infos):
         # Symlinks should never get here, but just in case...
         if (not allowlink) and os.path.islink(f):
             print("BUG! Somehow got a symlink in process_c_file!")
-            num_links_skipped = num_links_skipped + 1
+            num_links_skipped += 1
             return
         try:
             my_input = open(f, "r")
@@ -1526,26 +1526,26 @@ def process_c_file(f, patch_infos):
                 i = m.end(0)
                 continue
         if c == "\n":
-            linenumber = linenumber + 1
-            sumlines = sumlines + 1
+            linenumber += 1
+            sumlines += 1
             linebegin = 1
             if codeinline:
-                sloc = sloc + 1
+                sloc += 1
             codeinline = 0
-            i = i + 1
+            i += 1
             continue
-        i = i + 1  # From here on, text[i] points to next character.
+        i += 1  # From here on, text[i] points to next character.
         if i < len(text):
             nextc = text[i]
         else:
             nextc = ''
         if incomment:
             if c == '*' and nextc == '/':
-                i = i + 1
+                i += 1
                 incomment = 0
         elif instring:
             if c == '\\' and (nextc != "\n"):
-                i = i + 1
+                i += 1
             elif c == '"' and instring == 1:
                 instring = 0
             elif c == "'" and instring == 2:
@@ -1556,7 +1556,7 @@ def process_c_file(f, patch_infos):
                                       i + 1)  # Is there a directive here?
                 if m:
                     process_directive()
-                i = i + 1
+                i += 1
                 incomment = 1
             elif c == '/' and nextc == '/':  # "//" comments - skip to EOL.
                 m = p_directive.match(text,
@@ -1564,7 +1564,7 @@ def process_c_file(f, patch_infos):
                 if m:
                     process_directive()
                 while i < len(text) and text[i] != "\n":
-                    i = i + 1
+                    i += 1
             elif c == '"':
                 instring = 1
                 codeinline = 1
@@ -1605,11 +1605,11 @@ def process_c_file(f, patch_infos):
                 elif p_digits.match(c):
                     while i < len(text) and p_digits.match(
                             text[i]):  # Process a number.
-                        i = i + 1
+                        i += 1
                 # else some other character, which we ignore.
                 # End of loop through text. Wrap up.
     if codeinline:
-        sloc = sloc + 1
+        sloc += 1
     if incomment:
         error("File ended while in comment.")
     if instring:
@@ -1720,14 +1720,14 @@ def maybe_process_file(f, patch_infos):
         if (not allowlink) and os.path.islink(f):
             if not quiet:
                 print_warning("Skipping symbolic link directory " + h(f))
-            num_links_skipped = num_links_skipped + 1
+            num_links_skipped += 1
             return
         base_filename = os.path.basename(f)
         if (skipdotdir and len(base_filename) > 1
                 and (base_filename[0] == ".")):
             if not quiet:
                 print_warning("Skipping directory with initial dot " + h(f))
-            num_dotdirs_skipped = num_dotdirs_skipped + 1
+            num_dotdirs_skipped += 1
             return
         for dir_entry in os.listdir(f):
             maybe_process_file(os.path.join(f, dir_entry), patch_infos)
@@ -1743,7 +1743,7 @@ def maybe_process_file(f, patch_infos):
             if (not allowlink) and os.path.islink(f):
                 if not quiet:
                     print_warning("Skipping symbolic link file " + h(f))
-                num_links_skipped = num_links_skipped + 1
+                num_links_skipped += 1
             elif not os.path.isfile(f):
                 # Skip anything not a normal file.  This is so that
                 # device files, etc. won't cause trouble.
@@ -1773,7 +1773,7 @@ def process_file_args(files, patch_infos):
         if (not allowlink) and os.path.islink(f):
             if not quiet:
                 print_warning("Skipping symbolic link " + h(f))
-            num_links_skipped = num_links_skipped + 1
+            num_links_skipped += 1
         elif os.path.isfile(f) or f == "-":
             # If on the command line, FORCE processing of it.
             # Currently, we only process C/C++.
@@ -2095,7 +2095,7 @@ def show_final_results():
             count_per_level[hit.level] = count_per_level[hit.level] + 1
             if hit.level >= minimum_level:
                 hit.show()
-                count = count + 1
+                count += 1
             if hit.level >= error_level:
                 error_level_exceeded = True
     if output_format:
