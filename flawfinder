@@ -1804,9 +1804,9 @@ def process_file_args(files, patch_infos):
                 # exist - if someone asks to process a file with this crazy
                 # name, and it exists, we'll process it without complaint.
                 if (h(f).startswith("\xe2\x80\x93") or
-                    h(f).startswith("\xe2\x80\x94") or
-                    h(f).startswith("\u2013") or
-                    h(f).startswith("\u2014")):
+                        h(f).startswith("\xe2\x80\x94") or
+                        h(f).startswith("\u2013") or
+                        h(f).startswith("\u2014")):
                     print_warning(
                         "Skipping non-existent filename starting with em dash or en dash "
                         + h(f))
