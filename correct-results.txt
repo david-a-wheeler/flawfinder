@@ -1,4 +1,4 @@
-Flawfinder version 2.0.8, (C) 2001-2017 David A. Wheeler.
+Flawfinder version 2.0.9, (C) 2001-2017 David A. Wheeler.
 Number of rules (primarily dangerous function names) in C/C++ ruleset: 223
 Examining test.c
 Examining test2.c
