@@ -394,6 +394,16 @@ class Hit(object):
     def __getitem__(self, X):  # Define this so this works: "%(line)" % hit
         return getattr(self, X)
 
+    def __eq__(self, other):
+        return (self.filename == other.filename
+                and self.line == other.line
+                and self.column == other.column
+                and self.level == other.level
+                and self.name == other.name)
+
+    def __ne__(self, other):
+        return not self == other
+
     # return CWEs
     def cwes(self):
         result = find_cwe_pattern.search(self.warning)
