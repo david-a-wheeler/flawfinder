@@ -1,0 +1,17 @@
+Flawfinder version 2.0.9, (C) 2001-2017 David A. Wheeler.
+Showing hits not in test-saved-hitlist-008.txt
+Number of rules (primarily dangerous function names) in C/C++ ruleset: 223
+
+ANALYSIS SUMMARY:
+
+No hits found.
+Lines analyzed = 121
+Physical Source Lines of Code (SLOC) = 84
+Hits@level = [0]   0 [1]   0 [2]   0 [3]   0 [4]   0 [5]   0
+Hits@level+ = [0+]   0 [1+]   0 [2+]   0 [3+]   0 [4+]   0 [5+]   0
+Hits/KSLOC@level+ = [0+]   0 [1+]   0 [2+]   0 [3+]   0 [4+]   0 [5+]   0
+Suppressed hits = 2 (use --neverignore to show them)
+Minimum risk level = 1
+There may be other security vulnerabilities; review your code!
+See 'Secure Programming HOWTO'
+(https://dwheeler.com/secure-programs) for more information.

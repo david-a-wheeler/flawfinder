@@ -181,11 +181,21 @@ test_007: setup.py
 	@test "`$(PYTHON) setup.py --license`" = 'GPL-2.0+'
 	@test "`$(PYTHON) setup.py --author`" = 'David A. Wheeler'
 
+test_008: flawfinder test.c
+	@echo 'test_008 (diff hitlist)'
+	@$(PYTHON) ./flawfinder -S -DC --quiet \
+	  --savehitlist test-saved-hitlist-008.txt \
+	  test.c > test-junk-008.txt
+	@$(PYTHON) ./flawfinder -S -C --quiet --omittime \
+	  --diffhitlist  test-saved-hitlist-008.txt test.c > \
+	  test-results-008.txt
+	@diff -u correct-results-008.txt test-results-008.txt
+
 # Run all tests on *one* version of Python;
 # output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
-test: test_001 test_002 test_003 test_004 test_005 test_006 test_007
+test: test_001 test_002 test_003 test_004 test_005 test_006 test_007 test_008
 	@echo 'All tests pass!'
 
 # Usual check routine. Run all tests using *both* python2 and python3.
@@ -204,6 +214,7 @@ test-is-correct: test-results.txt
 	cp -p test-results-004.txt correct-results-004.txt
 	cp -p test-results-005.txt correct-results-005.txt
 	cp -p test-results-006.txt correct-results-006.txt
+	cp -p test-results-008.txt correct-results-008.txt
 
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
