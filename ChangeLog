@@ -1,5 +1,9 @@
+2019-05-19 David A. Wheeler
+	* Version 2.0.9
+	* Fixes a serious defect in --diffhitlist
+
 2019-05-17 Labidurie Jerome
-    * Fixed a serious defect in --diffhitlist option and added a unit test
+	* Fixed a serious defect in --diffhitlist option and added a unit test
 
 2019-01-21 David A. Wheeler <dwheeler, at, dwheeler.com>
 	* Version 2.0.8
