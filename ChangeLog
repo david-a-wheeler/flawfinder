@@ -1,3 +1,8 @@
+2019-06-22 David A. Wheeler
+	* Use binary mode when reading a diffhitlist.
+	  My thanks to Michał Górny, who both reported the problem
+	  and provided the patch!
+
 2019-05-19 David A. Wheeler
 	* Version 2.0.9
 	* Fixes a serious defect in --diffhitlist
