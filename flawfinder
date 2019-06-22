@@ -2095,7 +2095,7 @@ def show_final_results():
     # I'm not using <ol>, because its numbers might be confused with
     # the risk levels or line numbers.
     if diffhitlist_filename:
-        diff_file = open(diffhitlist_filename)
+        diff_file = open(diffhitlist_filename, 'rb')
         diff_hitlist = pickle.load(diff_file)
     if output_format:
         print("<ul>")
