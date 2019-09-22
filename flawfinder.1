@@ -598,17 +598,22 @@ The difference algorithm is conservative;
 hits are only considered the ``same'' if they have the same
 filename, line number, column position, function name, and risk level.
 
-.SS "Character Encoding"
+.SS "Character Encoding Errors"
 
-Flawfinder presumes that the character encoding your system uses is
-also the character encoding used by your source files.
-Even if this isn't correct, if you run flawfinder with Python 2
+Flawfinder uses the character encoding rules set by Python.
+Sometimes source code does not perfectly follow some encoding rules.
+If you run flawfinder with Python 2
 these non-conformities often do not impact processing in practice.
 
 However, if you run flawfinder with Python 3, this can be a problem.
-Python 3 wants the world to always use encodings perfectly correctly,
-everywhere, even though the world often doesn't care what Python 3 wants.
-This is a problem even if the non-conforming text is in comments or strings
+Python 3 developers wants the world to always use encodings perfectly correctly,
+everywhere, and in general wants everyone to only use UTF-8.
+UTF-8 is a great encoding, and it is very popular, but
+the world often doesn't care what the Python 3 developers want.
+
+When running flawfinder using Python 3, the program will crash hard if
+\fIany\fR source file has \fIany\fR non-conforming text.
+It will do this even if the non-conforming text is in comments or strings
 (where it often doesn't matter).
 Python 3 fails to provide useful built-ins to deal with
 the messiness of the real world, so it's
@@ -618,30 +623,63 @@ libraries (which we're trying to avoid).
 A symptom of this problem
 is if you run flawfinder and you see an error message like this:
 
-\fIUnicodeDecodeError: 'utf-8' codec can't decode byte ... in position ...:
-invalid continuation byte\fR
+\fIError: encoding error in ,1.c\fR
 
-If this happens to you, there are several options.
+\fI'utf-8' codec can't decode byte 0xff in position 45: invalid start byte\fR
 
-The first option is to
-convert the encoding of the files to be analyzed so that it's
-a single encoding (usually the system encoding).
+What you are seeing is the result of an internal UnicodeDecodeError.
+
+If this happens to you, there are several options:
+
+Option #1 (special case):
+if your system normally uses an encoding other than UTF-8,
+is properly set up to use that encoding (using LC_ALL and maybe LC_CTYPE),
+and the input files are in that non-UTF-8 encoding,
+it may be that Python3 is (incorrectly) ignoring your configuration.
+In that case, simply tell Python3 to use your
+configuration by setting the environment variable PYTHONUTF8=0, e.g.,
+run flawfinder as:
+"PYTHONUTF8=0 python3 flawfinder ...".
+
+Option #2 (special case): If you know what the encoding of the files is,
+you can force use of that encoding. E.g., if the encoding
+is BLAH, run flawfinder as:
+"PYTHONUTF8=0 LC_ALL=C.BLAH python3 flawfinder ...".
+You can replace "C" after LC_ALL= with your real language locale
+(e.g., "en_US").
+
+Option #3: If you don't know what the encoding is, or the encoding is
+inconsistent (e.g., the common case of UTF-8 files with some
+characters encoded using Windows-1252 instead),
+then you can force the system to use the
+ISO-8859-1 (Latin-1) encoding in which all bytes are allowed.
+If the inconsistencies are only in comments and strings, and the
+underlying character set is "close enough" to ASCII, this can get you
+going in a hurry.
+You can do this by running:
+"PYTHONUTF8=0 LC_ALL=C.ISO-8859-1 python3 flawfinder ...".
+In some cases you may not need the "PYTHONUTF8=0".
+You may be able to replace "C" after LC_ALL= with your real language locale
+(e.g., "en_US").
+
+Option #4: Convert the encoding of the files to be analyzed so that it's
+a single encoding - it's highly recommended to convert to UTF-8.
 For example, the program "iconv" can be used to convert encodings.
 This works well if some files have one encoding, and some have another,
 but they are consistent within a single file.
 If the files have encoding errors, you'll have to fix them.
-I strongly recommend using the UTF-8 encoding for all source code
-and in the system itself; if you do that, many problems disappear.
 
-The second option is to
-tell flawfinder what the encoding of the files is.
-E.G., you can set the LANG environment variable.
-You can set PYTHONIOENCODING to
-the encoding you want your output to be in, if that's different.
-This in theory would work, but I haven't had much success with this.
-
-The third option is to run flawfinder using Python 2 instead of Python 3.
+Option #5: Run flawfinder using Python 2 instead of Python 3.
 E.g., "python2 flawfinder ...".
+
+To be clear:
+I strongly recommend using the UTF-8 encoding for all source code,
+and use continuous integration tests to ensure that the source code
+is always valid UTF-8.
+If you do that, many problems disappear.
+But in the real world this is not always the situation.
+Hopefully
+this information will help you deal with real-world encoding problems.
 
 .SH EXAMPLES
 
