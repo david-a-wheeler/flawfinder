@@ -1505,7 +1505,19 @@ def process_c_file(f, patch_infos):
             print("Examining", f)
         sys.stdout.flush()
 
-    text = "".join(my_input.readlines())
+    # Python3 is often configured to use only UTF-8, and presumes
+    # that inputs cannot have encoding errors.
+    # The real world isn't like that, so provide a prettier warning
+    # in such cases - with some hints on how to solve it.
+    try:
+        text = "".join(my_input.readlines())
+    except UnicodeDecodeError as err:
+        print('Error: encoding error in', h(f))
+        print(err)
+        print('Run as PYTHONUTF8=0 LC_ALL=C.ISO-8859-1 python3 flawfinder,')
+        print('convert source code to UTF-8, or run flawfinder using python2.')
+        print('See documentation for more information.')
+        sys.exit(15)
 
     i = 0
     while i < len(text):
