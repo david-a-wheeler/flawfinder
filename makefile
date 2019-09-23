@@ -12,9 +12,6 @@ VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
 
 SAMPLE_DIR=/usr/src/linux-2.2.16
-PYTHON=python
-PYTHON2=python2
-PYTHON3=python3
 
 # Flawfinder has traditionally used INSTALL_DIR, INSTALL_DIR_BIN, and
 # INSTALL_DIR_MAN.  Here we add support for GNU variables like prefix, etc.;
@@ -48,6 +45,8 @@ PYTHONEXT=
 RPMBUILD=rpmbuild
 
 DESTDIR=
+
+TESTDIR=test/
 
 all: flawfinder.pdf flawfinder.1.gz
 	chmod -R a+rX *
@@ -100,7 +99,7 @@ distribute: clean flawfinder.pdf flawfinder.ps
 	rm -fr build dist flawfinder.egg-info ,tempdir
 	chmod -R a+rX *
 	mkdir ,tempdir
-	cp -p [a-zA-Z]* ,tempdir
+	cp -r -p [a-zA-Z]* ,tempdir
 	rm -f ,tempdir/*.tar.gz
 	rm -f ,tempdir/*.rpm
 	# We don't need both "flawfinder" and "flawfinder.py":
@@ -133,88 +132,8 @@ time:
 	echo "Lines examined:"
 	wc -l $(SAMPLE_DIR)/*/*.[ch] | tail -2
 
-test_001: flawfinder test.c test2.c
-	@echo 'test_001 (text output)'
-	@# Omit time report so that results are always the same textually.
-	@$(PYTHON) ./flawfinder --omittime test.c test2.c > test-results.txt
-	@echo >> test-results.txt
-	@echo "Testing for no ending newline:" >> test-results.txt
-	@$(PYTHON) ./flawfinder --omittime no-ending-newline.c | \
-	  grep 'Lines analyzed' >> test-results.txt
-	@diff -u correct-results.txt test-results.txt
-
-test_002: flawfinder test.c test2.c
-	@echo 'test_002 (HTML output)'
-	@$(PYTHON) ./flawfinder --omittime --html --context test.c test2.c > test-results.html
-	@diff -u correct-results.html test-results.html
-
-test_003: flawfinder test.c test2.c
-	@echo 'test_003 (CSV output)'
-	@$(PYTHON) ./flawfinder --csv test.c test2.c > test-results.csv
-	@diff -u correct-results.csv test-results.csv
-
-test_004: flawfinder test.c
-	@echo 'test_004 (single-line)'
-	@$(PYTHON) ./flawfinder -m 5 -S -DC --quiet test.c > \
-	  test-results-004.txt
-	@diff -u correct-results-004.txt test-results-004.txt
-
-test_005: flawfinder test-diff-005.patch test-patched.c
-	@echo 'test_005 (diff)'
-	@$(PYTHON) ./flawfinder -SQDC -P test-diff-005.patch \
-	  test-patched.c > test-results-005.txt
-	@diff -u correct-results-005.txt test-results-005.txt
-
-test_006: flawfinder test.c
-	@echo 'test_006 (save/load hitlist)'
-	@$(PYTHON) ./flawfinder -S -DC --quiet \
-	  --savehitlist test-saved-hitlist-006.txt \
-	  test.c > test-junk-006.txt
-	@$(PYTHON) ./flawfinder -SQDC -m 5 \
-	  --loadhitlist test-saved-hitlist-006.txt > \
-	  test-results-006.txt
-	@diff -u correct-results-006.txt test-results-006.txt
-
-test_007: setup.py
-	@echo 'test_007 (setup.py sane)'
-	@test "`$(PYTHON) setup.py --name`" = 'flawfinder'
-	@test "`$(PYTHON) setup.py --license`" = 'GPL-2.0+'
-	@test "`$(PYTHON) setup.py --author`" = 'David A. Wheeler'
-
-test_008: flawfinder test.c
-	@echo 'test_008 (diff hitlist)'
-	@$(PYTHON) ./flawfinder -S -DC --quiet \
-	  --savehitlist test-saved-hitlist-008.txt \
-	  test.c > test-junk-008.txt
-	@$(PYTHON) ./flawfinder -S -C --quiet --omittime \
-	  --diffhitlist  test-saved-hitlist-008.txt test.c > \
-	  test-results-008.txt
-	@diff -u correct-results-008.txt test-results-008.txt
-
-# Run all tests on *one* version of Python;
-# output shows differences from expected results.
-# If everything works as expected, it just prints test numbers.
-# Set PYTHON as needed, including to ""
-test: test_001 test_002 test_003 test_004 test_005 test_006 test_007 test_008
-	@echo 'All tests pass!'
-
-# Usual check routine. Run all tests using *both* python2 and python3.
-check:
-	@echo "Testing with $(PYTHON2)"
-	@PYTHON="$(PYTHON2)" $(MAKE) test
-	@echo
-	@echo "Testing with $(PYTHON3)"
-	@PYTHON="$(PYTHON3)" $(MAKE) test
-
-# Run "make test-is-correct" if the results are as expected.
-test-is-correct: test-results.txt
-	cp -p test-results.txt correct-results.txt
-	cp -p test-results.html correct-results.html
-	cp -p test-results.csv correct-results.csv
-	cp -p test-results-004.txt correct-results-004.txt
-	cp -p test-results-005.txt correct-results-005.txt
-	cp -p test-results-006.txt correct-results-006.txt
-	cp -p test-results-008.txt correct-results-008.txt
+test:
+	$(MAKE) -C $(TESTDIR) test
 
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
@@ -245,7 +164,7 @@ my-install: flawfinder.pdf flawfinder.ps test
 	cp -p $(VERSIONEDNAME).tar.gz \
 	      flawfinder flawfinder.1 makefile \
 	      flawfinder.pdf flawfinder.ps ChangeLog \
-	      test.c test2.c test-results.txt test-results.html \
+	      $(TESTDIR)/test.c $(TESTDIR)/test2.c $(TESTDIR)/test-results.txt $(TESTDIR)/test-results.html \
 	           /home/dwheeler/dwheeler.com/flawfinder/
 
 # This is intended to be a local capability to list CWEs
@@ -261,7 +180,7 @@ show-cwes: cwe
 pylint:
 	pylint flawfinder
 
-.PHONY: install clean test check profile test-is-correct rpm \
+.PHONY: install clean test profile rpm \
   uninstall distribute my-install show-cwes pylint
 
 # When I switch to using "DistUtils", I may need to move the MANIFEST.in
