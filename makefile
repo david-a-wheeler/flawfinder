@@ -135,6 +135,14 @@ time:
 test:
 	cd $(TESTDIR); $(MAKE) test
 
+# Usual check routine. Run all tests using *both* python2 and python3.
+check:
+	cd $(TESTDIR); $(MAKE) check
+
+# Run "make test-is-correct" if the results are as expected.
+test-is-correct:
+	cd $(TESTDIR); $(MAKE) test-is-correct
+
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
 
@@ -180,7 +188,7 @@ show-cwes: cwe
 pylint:
 	pylint flawfinder
 
-.PHONY: install clean test profile rpm \
+.PHONY: install clean test check profile test-is-correct rpm \
   uninstall distribute my-install show-cwes pylint
 
 # When I switch to using "DistUtils", I may need to move the MANIFEST.in
