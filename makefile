@@ -133,7 +133,7 @@ time:
 	wc -l $(SAMPLE_DIR)/*/*.[ch] | tail -2
 
 test:
-	$(MAKE) -C $(TESTDIR) test
+	cd $(TESTDIR); $(MAKE) test
 
 profile:
 	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
