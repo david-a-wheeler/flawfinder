@@ -664,7 +664,10 @@ You may be able to replace "C" after LC_ALL= with your real language locale
 
 Option #4: Convert the encoding of the files to be analyzed so that it's
 a single encoding - it's highly recommended to convert to UTF-8.
-For example, the program "iconv" can be used to convert encodings.
+For example, the system program "iconv"
+or the Python program cvt2utf
+can be used to convert encodings.
+(You can install cvt2utf with "pip install cvtutf").
 This works well if some files have one encoding, and some have another,
 but they are consistent within a single file.
 If the files have encoding errors, you'll have to fix them.

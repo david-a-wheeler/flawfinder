@@ -55,6 +55,32 @@ flawfinder (including its various options) and related information
 (such as how it supports CWE).  For example, the `--html` option generates
 output in HTML format. The `--help` option gives a brief list of options.
 
+# Character Encoding Errors
+
+Flawfinder must be able to correctly interpret your source code's
+character encoding.
+In the vast majority of cases this is not a problem, especially
+if the source code is correctly encoded using UTF-8 and your system
+is configured to use UTF-8 (the most common situation by far).
+
+However, it's possible for flawfinder to halt if there is a
+character encoding problem and you're running Python3.
+The usual symptom is error meesages like this:
+`Error: encoding error in FILENAME 'ENCODING' codec can't decode byte ... in position ...: invalid start byte`
+
+Unfortunately, Python3 fails to provide useful built-ins to deal with this.
+Thus, it's non-trivial to deal with this problem without depending on external
+libraries (which we're trying to avoid).
+
+If you have this problem, see the flawfinder manual page for a collection
+of various solutions.
+One of the simplest is to simply convert the source code and system
+configuration to UTF-8.
+You can convert source code to UTF-8 using tools such as the
+system tool `iconv` or the Python program
+[`cvt2utf`](https://pypi.org/project/cvt2utf/);
+you can install `cvt2utf` using `pip install cvt2utf`.
+
 # Under the hood
 
 More technically, flawfinder uses lexical scanning to find tokens
