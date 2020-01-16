@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """flawfinder: Find potential security flaws ("hits") in source code.
  Usage:
@@ -418,9 +418,12 @@ class Hit(object):
     # Show as CSV format
     def show_csv(self):
         csv_writer.writerow([
-            self.filename, self.line, self.column, self.level, self.category,
-            self.name, self.warning, self.suggestion, self.note,
-            self.cwes(), self.context_text, self.fingerprint()
+            self.filename.encode('utf8'), self.line,
+            self.column, self.level,
+            self.category.encode('utf8'), self.name.encode('utf8'),
+            self.warning.encode('utf8'), self.suggestion.encode('utf8'),
+            self.note.encode('utf8'), self.cwes().encode('utf8'),
+            self.context_text.encode('utf8'), self.fingerprint().encode('utf8')
         ])
 
     def show(self):
@@ -1485,7 +1488,7 @@ def process_c_file(f, patch_infos):
             num_links_skipped += 1
             return
         try:
-            my_input = open(f, "r")
+            my_input = open(f, "r", encoding="ISO-8859-1")
         except BaseException:
             print("Error: failed to open", h(f))
             sys.exit(14)
