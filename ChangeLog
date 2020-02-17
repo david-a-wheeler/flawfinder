@@ -1,4 +1,17 @@
+2020-02-17 David A. Wheeler
+	* Version 2.0.11
+	* Provide a much more detailed error report, including recommended
+	  solutions, when character encoding problems hit.
+	  As Python3 has slowly gained in popularity, its failure to provide
+	  useful built-ins to handle real-world character encoding problems
+	  hurts more people. (E.g., many files don't comply with *any*
+	  character set encoding standard, and Python3 can't read them
+	  without enabling options that are wrong for others.)
+	  We can at least provide much more detailed feedback to help
+	  explain the various options available.
+
 2019-06-22 David A. Wheeler
+	* Version 2.0.10
 	* Use binary mode when reading a diffhitlist.
 	  My thanks to Michał Górny, who both reported the problem
 	  and provided the patch!
