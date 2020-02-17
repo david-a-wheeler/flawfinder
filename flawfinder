@@ -1514,9 +1514,28 @@ def process_c_file(f, patch_infos):
     except UnicodeDecodeError as err:
         print('Error: encoding error in', h(f))
         print(err)
-        print('Run as PYTHONUTF8=0 LC_ALL=C.ISO-8859-1 python3 flawfinder,')
-        print('convert source code to UTF-8, or run flawfinder using python2.')
-        print('See documentation for more information.')
+        print()
+        print('Python3 requires input character data to be perfectly encoded;')
+        print('it also requires perfectly correct system encoding settings.')
+        print('Unfortunately, your data and/or system settings are not.')
+        print('Here are some options:')
+        print('1. Run: PYTHONUTF8=0 python3 flawfinder')
+        print('   if your system and and data are all properly set up for')
+        print('   a non-UTF-8 encoding.')
+        print('2. Run: PYTHONUTF8=0 LC_ALL=C.ISO-2022 python3 flawfinder')
+        print('   if your data has a specific encoding such as ISO-2022')
+        print('   (replace "ISO-2022" with the name of your encoding,')
+        print('   and optionally replace "C" with your native language).')
+        print('3. Run: PYTHONUTF8=0 LC_ALL=C.ISO-8859-1 python3 flawfinder')
+        print('   if your data has an unknown or inconsistent encoding')
+        print('   (ISO-8859-1 encoders normally allow anything).')
+        print('4. Convert all your source code to the UTF-8 encoding;')
+        print('   the program "iconv" is good at this.')
+        print('5. Run: python2 flawfinder')
+        print('   (That is, use Python 2 instead of Python 3).')
+        print('Some of these options may not work depending on circumstance.')
+        print('In the long term, we recommend using UTF-8 for source code.')
+        print('For more information, see the documentation.')
         sys.exit(15)
 
     i = 0
@@ -1826,8 +1845,8 @@ def process_file_args(files, patch_infos):
                 # name, and it exists, we'll process it without complaint.
                 if (h(f).startswith("\xe2\x80\x93") or
                         h(f).startswith("\xe2\x80\x94") or
-                        h(f).startswith("\u2013") or
-                        h(f).startswith("\u2014")):
+                        h(f).startswith(u"\u2013") or
+                        h(f).startswith(u"\u2014")):
                     print_warning(
                         "Skipping non-existent filename starting with em dash or en dash "
                         + h(f))
