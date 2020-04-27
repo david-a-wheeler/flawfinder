@@ -66,11 +66,21 @@ test_008: $(FLAWFINDER) test.c
 	  test-results-008.txt
 	@diff -u correct-results-008.txt test-results-008.txt
 
+test_009: $(FLAWFINDER) test-cpp-digit-separator.cpp
+	@echo 'test_009 (C++ digit separator)'
+# C++ file should have no problem recognizing ' as digit separator
+	@$(PYTHON) $(FLAWFINDER) test-cpp-digit-separator.cpp > /dev/null
+# C file should fail with unterminated char literal error
+	@$(PYTHON) $(FLAWFINDER) test-cpp-digit-separator.c 2>&1 \
+		| grep 'File ended while in string.' \
+		> /dev/null
+
 # Run all tests on *one* version of Python;
 # output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
-test: test_001 test_002 test_003 test_004 test_005 test_006 test_007 test_008
+test: test_001 test_002 test_003 test_004 test_005 test_006 test_007 test_008 \
+	  test_009
 	@echo 'All tests pass!'
 
 # Usual check routine. Run all tests using *both* python2 and python3.
