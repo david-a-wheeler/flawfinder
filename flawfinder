@@ -579,7 +579,6 @@ def extract_c_parameters(text, pos=0):
                   text[pos:pos + 200])
     return []  # Treat unterminated list as an empty list
 
-
 # These patterns match gettext() and _() for internationalization.
 # This is compiled here, to avoid constant recomputation.
 # FIXME: assumes simple function call if it ends with ")",
@@ -851,6 +850,13 @@ def cpp_unsafe_stl(hit):
 def normal(hit):
     add_warning(hit)
 
+# Ignore "system" if it's "system::" (that is, a C++ namespace such as
+# boost::system::...), because that produces too many false positives.
+# We ignore spaces before "::"
+def found_system(hit):
+    follow_text = hit.lookahead[len(hit.name):].lstrip()
+    if not follow_text.startswith('::'):
+        normal(hit)
 
 # "c_ruleset": the rules for identifying "hits" in C (potential warnings).
 # It's a dictionary, where the key is the function name causing the hit,
@@ -1150,12 +1156,20 @@ c_ruleset = {
      "tmpfile", "avoid-race", {}),
 
     # TODO: Need to detect varying levels of danger.
-    "execl|execlp|execle|execv|execvp|system|popen|WinExec|ShellExecute":
+    "execl|execlp|execle|execv|execvp|popen|WinExec|ShellExecute":
     (normal, 4,
      "This causes a new program to execute and is difficult to use safely (CWE-78)",
      "try using a library call that implements the same functionality "
      "if available",
      "shell", "", {}),
+
+    # TODO: Need to detect varying levels of danger.
+    "system":
+    (found_system, 4,
+     "This causes a new program to execute and is difficult to use safely (CWE-78)",
+     "try using a library call that implements the same functionality "
+     "if available",
+     "shell", "", {'extract_lookahead': 1}),
 
     # TODO: Be more specific.  The biggest problem involves "first" param NULL,
     # second param with embedded space. Windows.

@@ -75,12 +75,17 @@ test_009: $(FLAWFINDER) test-cpp-digit-separator.cpp
 		| grep 'File ended while in string.' \
 		> /dev/null
 
+test_010: $(FLAWFINDER) test-boost-system.hpp
+	@echo 'test_010 (system:: ignored)'
+	@$(PYTHON) $(FLAWFINDER) --error-level 2 test-boost-system.hpp \
+	  > /dev/null
+
 # Run all tests on *one* version of Python;
 # output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
 test: test_001 test_002 test_003 test_004 test_005 test_006 test_007 test_008 \
-	  test_009
+	  test_009 test_010
 	@echo 'All tests pass!'
 
 # Usual check routine. Run all tests using *both* python2 and python3.
