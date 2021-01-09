@@ -5,8 +5,8 @@ Number of rules (primarily dangerous function names) in C/C++ ruleset: 222
 ANALYSIS SUMMARY:
 
 No hits found.
-Lines analyzed = 121
-Physical Source Lines of Code (SLOC) = 84
+Lines analyzed = 123
+Physical Source Lines of Code (SLOC) = 85
 Hits@level = [0]   0 [1]   0 [2]   0 [3]   0 [4]   0 [5]   0
 Hits@level+ = [0+]   0 [1+]   0 [2+]   0 [3+]   0 [4+]   0 [5+]   0
 Hits/KSLOC@level+ = [0+]   0 [1+]   0 [2+]   0 [3+]   0 [4+]   0 [5+]   0

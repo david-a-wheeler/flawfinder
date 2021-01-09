@@ -846,6 +846,12 @@ def cpp_unsafe_stl(hit):
     if len(hit.parameters) <= 4:
         add_warning(hit)
 
+def load_library_ex(hit):
+    # If parameter 3 is 'LOAD_LIBRARY_SEARCH_SYSTEM32', it's safe.
+    if (len(hit.parameters) >= 4 and
+       hit.parameters[3] == 'LOAD_LIBRARY_SEARCH_SYSTEM32'):
+        return
+    normal(hit)
 
 def normal(hit):
     add_warning(hit)
@@ -1290,8 +1296,13 @@ c_ruleset = {
     #  "Use InitializeCriticalSectionAndSpinCount instead",
     #  "misc", "", {}),
 
-    "LoadLibrary|LoadLibraryEx":
+    "LoadLibrary":
     (normal, 3, "Ensure that the full path to the library is specified, or current directory may be used (CWE-829, CWE-20)",
+     "Use registry entry or GetWindowsDirectory to find library path, if you aren't already",
+     "misc", "", {'input': 1}),
+
+    "LoadLibraryEx":
+    (load_library_ex, 3, "Ensure that the full path to the library is specified, or current directory may be used (CWE-829, CWE-20)",
      "Use registry entry or GetWindowsDirectory to find library path, if you aren't already",
      "misc", "", {'input': 1}),
 

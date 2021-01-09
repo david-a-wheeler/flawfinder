@@ -75,7 +75,7 @@ test.c:79:  [3] (shell) CreateProcess:
   (CWE-78). Specify the application path in the first argument, NOT as part
   of the second, or embedded spaces could allow an attacker to force a
   different program to run.
-test.c:95:  [3] (buffer) getopt_long:
+test.c:97:  [3] (buffer) getopt_long:
   Some older implementations do not protect against internal buffer overflows
   (CWE-120, CWE-20). Check implementation on installation, or limit the size
   of all string inputs.
@@ -108,7 +108,7 @@ test.c:54:  [2] (buffer) memcpy:
 test.c:55:  [2] (buffer) CopyMemory:
   Does not check for buffer overflows when copying to destination (CWE-120).
   Make sure destination can always hold the source data.
-test.c:101:  [2] (misc) fopen:
+test.c:103:  [2] (misc) fopen:
   Check when opening files - can an attacker redirect it (via symlinks),
   force the opening of special file type (e.g., device files), move things
   around to create a race condition, control its ancestors, or change its
@@ -147,11 +147,11 @@ test.c:70:  [1] (buffer) MultiByteToWideChar:
 ANALYSIS SUMMARY:
 
 Hits = 38
-Lines analyzed = 122
-Physical Source Lines of Code (SLOC) = 84
+Lines analyzed = 124
+Physical Source Lines of Code (SLOC) = 85
 Hits@level = [0]  16 [1]   9 [2]   9 [3]   3 [4]  10 [5]   7
 Hits@level+ = [0+]  54 [1+]  38 [2+]  29 [3+]  20 [4+]  17 [5+]   7
-Hits/KSLOC@level+ = [0+] 642.857 [1+] 452.381 [2+] 345.238 [3+] 238.095 [4+] 202.381 [5+] 83.3333
+Hits/KSLOC@level+ = [0+] 635.294 [1+] 447.059 [2+] 341.176 [3+] 235.294 [4+] 200 [5+] 82.3529
 Suppressed hits = 2 (use --neverignore to show them)
 Minimum risk level = 1
 

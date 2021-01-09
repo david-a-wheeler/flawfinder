@@ -171,7 +171,7 @@ Examining test2.c <br>
 <pre>
   CreateProcess(NULL, "C:\\Program Files\\GoodGuy\\GoodGuy.exe -x", "");
 </pre>
-<li>test.c:95: <b>  [3] </b> (buffer) <i> getopt_long:
+<li>test.c:97: <b>  [3] </b> (buffer) <i> getopt_long:
   Some older implementations do not protect against internal buffer overflows
   (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
   href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Check
@@ -243,7 +243,7 @@ Examining test2.c <br>
 <pre>
   CopyMemory(d,s);
 </pre>
-<li>test.c:101: <b>  [2] </b> (misc) <i> fopen:
+<li>test.c:103: <b>  [2] </b> (misc) <i> fopen:
   Check when opening files - can an attacker redirect it (via symlinks),
   force the opening of special file type (e.g., device files), move things
   around to create a race condition, control its ancestors, or change its
@@ -323,13 +323,13 @@ Examining test2.c <br>
 <p>
 Hits = 38
 <br>
-Lines analyzed = 122
+Lines analyzed = 124
 <br>
-Physical Source Lines of Code (SLOC) = 84
+Physical Source Lines of Code (SLOC) = 85
 <br>
 Hits@level = [0]  16 [1]   9 [2]   9 [3]   3 [4]  10 [5]   7 <br>
 Hits@level+ = [0+]  54 [1+]  38 [2+]  29 [3+]  20 [4+]  17 [5+]   7 <br>
-Hits/KSLOC@level+ = [0+] 642.857 [1+] 452.381 [2+] 345.238 [3+] 238.095 [4+] 202.381 [5+] 83.3333 <br>
+Hits/KSLOC@level+ = [0+] 635.294 [1+] 447.059 [2+] 341.176 [3+] 235.294 [4+] 200 [5+] 82.3529 <br>
 Suppressed hits = 2 (use --neverignore to show them)
 <br>
 Minimum risk level = 1
