@@ -1,3 +1,18 @@
+2021-01-09 David A. Wheeler
+	* Version 2.0.12
+	* If there are >0 hits, tell users how to ignore them as part of the
+	  tool output.
+	* Various Windows improvments.
+	  Ignore LoadLibraryEx if its third parameter is
+	  LOAD_LIBRARY_SEARCH_SYSTEM32, as this is safe, and
+	  remove the rule for InitialCriticalSection
+	  (this is no longer a vulnerability on current widely-used versions
+	  of Windows)
+	* Various C++ improvements.  Add .hpp support for C++,
+	  ignore "system::" to reduce false positives,
+	  treat ' as digit separator when file extension is a C++ file
+	  (for C++14).
+
 2020-02-17 David A. Wheeler
 	* Version 2.0.11
 	* Provide a much more detailed error report, including recommended
