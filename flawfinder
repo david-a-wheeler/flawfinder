@@ -2243,10 +2243,18 @@ def show_final_results():
         print("Minimum risk level = %d" % minimum_level)
         if output_format:
             print("<br>")
+        else:
+            print()
         if count > 0:
             print("Not every hit is necessarily a security vulnerability.")
+            print("You can inhibit a report by adding a comment in this form:")
+            print("// flawfinder: ignore")
+            print("Make *sure* it's a false positive!")
+            print("You can use the option --neverignore to show these.")
             if output_format:
                 print("<br>")
+            else:
+                print()
         print("There may be other security vulnerabilities; review your code!")
         if output_format:
             print("<br>")

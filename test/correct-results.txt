@@ -154,7 +154,13 @@ Hits@level+ = [0+]  54 [1+]  38 [2+]  29 [3+]  20 [4+]  17 [5+]   7
 Hits/KSLOC@level+ = [0+] 642.857 [1+] 452.381 [2+] 345.238 [3+] 238.095 [4+] 202.381 [5+] 83.3333
 Suppressed hits = 2 (use --neverignore to show them)
 Minimum risk level = 1
+
 Not every hit is necessarily a security vulnerability.
+You can inhibit a report by adding a comment in this form:
+// flawfinder: ignore
+Make *sure* it's a false positive!
+You can use the option --neverignore to show these.
+
 There may be other security vulnerabilities; review your code!
 See 'Secure Programming HOWTO'
 (https://dwheeler.com/secure-programs) for more information.
