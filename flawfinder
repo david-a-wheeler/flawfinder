@@ -1277,10 +1277,18 @@ c_ruleset = {
      "Use InitializeCriticalSectionAndSpinCount instead",
      "misc", "", {}),
 
-    "EnterCriticalSection":
-    (normal, 3, "On some versions of Windows, exceptions can be thrown in low-memory situations",
-     "Use InitializeCriticalSectionAndSpinCount instead",
-     "misc", "", {}),
+    # We have *removed* the check for EnterCriticalSection.
+    # The page from the "book Writing Secure Code" describes
+    # EnterCriticalSection as something that will not throw errors on XP,
+    # .NET Server, and later. Windows XP EOL in April 8, 2014,
+    # .Net Server EOL 14 July 2015, so users of those systems will have
+    # larger security issues anyway.
+    # My thanks to rgetz for reporting this. For details, see:
+    # https://github.com/david-a-wheeler/flawfinder/issues/19
+    # "EnterCriticalSection":
+    # (normal, 3, "On some versions of Windows, exceptions can be thrown in low-memory situations",
+    #  "Use InitializeCriticalSectionAndSpinCount instead",
+    #  "misc", "", {}),
 
     "LoadLibrary|LoadLibraryEx":
     (normal, 3, "Ensure that the full path to the library is specified, or current directory may be used (CWE-829, CWE-20)",
