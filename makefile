@@ -6,7 +6,7 @@
 # how to change version numbers.
 
 NAME=flawfinder
-VERSION=2.0.11
+VERSION=2.0.12
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
@@ -112,7 +112,7 @@ distribute: clean flawfinder.pdf flawfinder.ps
 	# Don't include (out of date) index.html
 	rm -f ,tempdir/index.html
 	tar cvfz flawfinder-$(VERSION).tar.gz flawfinder-$(VERSION)
-	chown --reference=. flawfinder-$(VERSION).tar.gz
+	chmod ugo+r flawfinder-$(VERSION).tar.gz
 	rm -fr flawfinder-$(VERSION)
 
 dist: distribute
