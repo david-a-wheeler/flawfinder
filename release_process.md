@@ -14,16 +14,22 @@ flawfinder.spec
 setup.py
 index.html # in dwheeler.com/flawfinder
 
-Then run:
+Then run several times:
 
 ~~~~
-make test && make test-is-correct # update version number in tests
+make test ; make test-is-correct # update version number in tests
 ~~~~
 
 ## Test it
 
 ~~~~
 make check # Run tests in Python 2 and 3
+~~~~
+
+## Commit it
+
+~~~~
+git commit -asv
 ~~~~
 
 ## Tag version

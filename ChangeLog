@@ -1,5 +1,5 @@
 2021-01-09 David A. Wheeler
-	* Version 2.0.12
+	* Version 2.0.14
 	* If there are >0 hits, tell users how to ignore them as part of the
 	  tool output.
 	* Various Windows improvments.
@@ -12,6 +12,9 @@
 	  ignore "system::" to reduce false positives,
 	  treat ' as digit separator when file extension is a C++ file
 	  (for C++14).
+	* I had some release problems; this is identified as 2.0.14
+	  (skipping a few minor numbers) to ensure that the version
+	  number uniquely identifies a specific release.
 
 2020-02-17 David A. Wheeler
 	* Version 2.0.11
