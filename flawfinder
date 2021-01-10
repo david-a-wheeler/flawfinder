@@ -846,24 +846,27 @@ def cpp_unsafe_stl(hit):
     if len(hit.parameters) <= 4:
         add_warning(hit)
 
+safe_load_library_flags = [
+    # Load only from the folder where the .exe file is located
+    'LOAD_LIBRARY_SEARCH_APPLICATION_DIR',
+    # Combination of application, System32 and user directories
+    'LOAD_LIBRARY_SEARCH_DEFAULT_DIRS',
+    # This flag requires an absolute path to the DLL to be passed
+    'LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR',
+    # Load only from System32
+    'LOAD_LIBRARY_SEARCH_SYSTEM32',
+    # Load only from directories specified with AddDllDirectory
+    # or SetDllDirectory
+    'LOAD_LIBRARY_SEARCH_USER_DIRS',
+    # Loading from the current directory will only proceed if
+    # the current directory is part of the safe load list
+    'LOAD_LIBRARY_SAFE_CURRENT_DIRS'
+]
+
 def load_library_ex(hit):
     # If parameter 3 has one of the flags below, it's safe.
-    safe_search = [
-        # Load only from the folder where the .exe file is located
-        'LOAD_LIBRARY_SEARCH_APPLICATION_DIR',
-        # Combination of application, System32 and user directories
-        'LOAD_LIBRARY_SEARCH_DEFAULT_DIRS',
-        # Load only from System32
-        'LOAD_LIBRARY_SEARCH_SYSTEM32',
-        # Load only from directories specified with AddDllDirectory
-        # or SetDllDirectory
-        'LOAD_LIBRARY_SEARCH_USER_DIRS',
-        # Loading from the current directory will only proceed if
-        # the current directory is part of the safe load list
-        'LOAD_LIBRARY_SAFE_CURRENT_DIRS'
-    ]
     if (len(hit.parameters) >= 4 and
-            any(flag in hit.parameters[3] for flag in safe_search)):
+            any(flag in hit.parameters[3] for flag in safe_load_library_flags)):
         return
     normal(hit)
 
