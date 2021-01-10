@@ -847,9 +847,23 @@ def cpp_unsafe_stl(hit):
         add_warning(hit)
 
 def load_library_ex(hit):
-    # If parameter 3 is 'LOAD_LIBRARY_SEARCH_SYSTEM32', it's safe.
+    # If parameter 3 has one of the flags below, it's safe.
+    safe_search = [
+        # Load only from the folder where the .exe file is located
+        'LOAD_LIBRARY_SEARCH_APPLICATION_DIR',
+        # Combination of application, System32 and user directories
+        'LOAD_LIBRARY_SEARCH_DEFAULT_DIRS',
+        # Load only from System32
+        'LOAD_LIBRARY_SEARCH_SYSTEM32',
+        # Load only from directories specified with AddDllDirectory
+        # or SetDllDirectory
+        'LOAD_LIBRARY_SEARCH_USER_DIRS',
+        # Loading from the current directory will only proceed if
+        # the current directory is part of the safe load list
+        'LOAD_LIBRARY_SAFE_CURRENT_DIRS'
+    ]
     if (len(hit.parameters) >= 4 and
-       hit.parameters[3] == 'LOAD_LIBRARY_SEARCH_SYSTEM32'):
+            any(flag in hit.parameters[3] for flag in safe_search)):
         return
     normal(hit)
 
@@ -1298,12 +1312,12 @@ c_ruleset = {
 
     "LoadLibrary":
     (normal, 3, "Ensure that the full path to the library is specified, or current directory may be used (CWE-829, CWE-20)",
-     "Use registry entry or GetWindowsDirectory to find library path, if you aren't already",
+     "Use LoadLibraryEx with one of the search flags, or call SetSearchPathMode to use a safe search path, or pass a full path to the library",
      "misc", "", {'input': 1}),
 
     "LoadLibraryEx":
     (load_library_ex, 3, "Ensure that the full path to the library is specified, or current directory may be used (CWE-829, CWE-20)",
-     "Use registry entry or GetWindowsDirectory to find library path, if you aren't already",
+     "Use a flag like LOAD_LIBRARY_SEARCH_SYSTEM32 or LOAD_LIBRARY_SEARCH_APPLICATION_DIR to search only desired folders",
      "misc", "", {'input': 1}),
 
     "SetSecurityDescriptorDacl":
