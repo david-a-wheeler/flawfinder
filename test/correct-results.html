@@ -171,7 +171,17 @@ Examining test2.c <br>
 <pre>
   CreateProcess(NULL, "C:\\Program Files\\GoodGuy\\GoodGuy.exe -x", "");
 </pre>
-<li>test.c:97: <b>  [3] </b> (buffer) <i> getopt_long:
+<li>test.c:81: <b>  [3] </b> (misc) <i> LoadLibraryEx:
+  Ensure that the full path to the library is specified, or current directory
+  may be used (<a
+  href="https://cwe.mitre.org/data/definitions/829.html">CWE-829</a>, <a
+  href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Use a
+  flag like LOAD_LIBRARY_SEARCH_SYSTEM32 or
+  LOAD_LIBRARY_SEARCH_APPLICATION_DIR to search only desired folders. </i>
+<pre>
+  (void) LoadLibraryEx(L"user32.dll", nullptr, LOAD_LIBRARY_AS_DATAFILE);
+</pre>
+<li>test.c:99: <b>  [3] </b> (buffer) <i> getopt_long:
   Some older implementations do not protect against internal buffer overflows
   (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>, <a
   href="https://cwe.mitre.org/data/definitions/20.html">CWE-20</a>). Check
@@ -243,7 +253,7 @@ Examining test2.c <br>
 <pre>
   CopyMemory(d,s);
 </pre>
-<li>test.c:103: <b>  [2] </b> (misc) <i> fopen:
+<li>test.c:105: <b>  [2] </b> (misc) <i> fopen:
   Check when opening files - can an attacker redirect it (via symlinks),
   force the opening of special file type (e.g., device files), move things
   around to create a race condition, control its ancestors, or change its
@@ -321,15 +331,15 @@ Examining test2.c <br>
 </ul>
 <h2>Analysis Summary</h2>
 <p>
-Hits = 38
+Hits = 39
 <br>
-Lines analyzed = 124
+Lines analyzed = 126
 <br>
-Physical Source Lines of Code (SLOC) = 85
+Physical Source Lines of Code (SLOC) = 86
 <br>
-Hits@level = [0]  16 [1]   9 [2]   9 [3]   3 [4]  10 [5]   7 <br>
-Hits@level+ = [0+]  54 [1+]  38 [2+]  29 [3+]  20 [4+]  17 [5+]   7 <br>
-Hits/KSLOC@level+ = [0+] 635.294 [1+] 447.059 [2+] 341.176 [3+] 235.294 [4+] 200 [5+] 82.3529 <br>
+Hits@level = [0]  16 [1]   9 [2]   9 [3]   4 [4]  10 [5]   7 <br>
+Hits@level+ = [0+]  55 [1+]  39 [2+]  30 [3+]  21 [4+]  17 [5+]   7 <br>
+Hits/KSLOC@level+ = [0+] 639.535 [1+] 453.488 [2+] 348.837 [3+] 244.186 [4+] 197.674 [5+] 81.3953 <br>
 Suppressed hits = 2 (use --neverignore to show them)
 <br>
 Minimum risk level = 1
