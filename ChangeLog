@@ -1,3 +1,10 @@
+2021-01-11 David A. Wheeler
+	* Version 2.0.15
+	* Fixed some release problems in 2.0.14.
+	* Improved handling of LoadLibraryEx; flawfinderr no longer complains
+	  about certain constructs that are known to be safe (eliminating
+	  some false positives).
+
 2021-01-09 David A. Wheeler
 	* Version 2.0.14
 	* If there are >0 hits, tell users how to ignore them as part of the
