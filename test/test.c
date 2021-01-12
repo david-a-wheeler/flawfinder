@@ -77,8 +77,10 @@ demo2() {
   SetSecurityDescriptorDacl(&sd,TRUE,NULL,FALSE);
   /* This one is a bad idea - first param shouldn't be NULL */
   CreateProcess(NULL, "C:\\Program Files\\GoodGuy\\GoodGuy.exe -x", "");
-  /* This should be ignored */
-  (void) LoadLibraryEx(L"user32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
+  /* Bad, may load from current directory */
+  (void) LoadLibraryEx(L"user32.dll", nullptr, LOAD_LIBRARY_AS_DATAFILE);
+  /* This should be ignored, since it's loading only from System32 */
+  (void) LoadLibraryEx(L"user32.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32 | LOAD_LIBRARY_REQUIRE_SIGNED_TARGET);
   /* Test interaction of quote characters */
   printf("%c\n", 'x');
   printf("%c\n", '"');
