@@ -82,6 +82,7 @@ flawfinder.ps: flawfinder.1
 	man -t ./flawfinder.1 > flawfinder.ps
 
 flawfinder.pdf: flawfinder.ps
+	which ps2pdf # Ensure we have ps2pdf installed (from ghostscript)
 	ps2pdf flawfinder.ps flawfinder.pdf
 
 # Not built by default, since man2html is not widely available
