@@ -1,12 +1,12 @@
 # Flawfinder.
 # Released under the General Public License (GPL) version 2 or later.
-# (C) 2001-2017 David A. Wheeler.
+# (C) 2001-2021 David A. Wheeler.
 
 # See "release_process.md" for release process, including
 # how to change version numbers.
 
 NAME=flawfinder
-VERSION=2.0.14
+VERSION=2.0.15
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
