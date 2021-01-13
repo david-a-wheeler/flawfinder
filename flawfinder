@@ -1583,7 +1583,7 @@ def process_c_file(f, patch_infos):
         print('   (ISO-8859-1 encoders normally allow anything).')
         print('4. Convert all your source code to the UTF-8 encoding.')
         print('   The system program "iconv" or Python program "cvt2utf" can')
-        print('   do this (for cvt2tuf, you can use "pip install cvt2utf").')
+        print('   do this (for cvt2utf, you can use "pip install cvt2utf").')
         print('5. Run: python2 flawfinder')
         print('   (That is, use Python 2 instead of Python 3).')
         print('Some of these options may not work depending on circumstance.')
