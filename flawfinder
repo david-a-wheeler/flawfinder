@@ -379,7 +379,7 @@ class Hit(object):
 
     def __init__(self, data):
         hook, level, warning, suggestion, category, url, other, ruleid = data
-        self.hook, self.level = hook, level
+        self.hook, self.level, self.defaultlevel = hook, level, level
         self.warning, self.suggestion = warning, suggestion
         self.category, self.url = category, url
         self.ruleid = ruleid
@@ -427,7 +427,7 @@ class Hit(object):
     # Show as CSV format
     def show_csv(self):
         csv_writer.writerow([
-            self.filename, self.line, self.column, self.level, self.category,
+            self.filename, self.line, self.column, self.defaultlevel, self.level, self.category,
             self.name, self.warning + ".", self.suggestion + "." if self.suggestion else "", self.note,
             self.cwes(), self.context_text, self.fingerprint(),
             version, self.ruleid, self.helpuri()
@@ -1786,7 +1786,7 @@ def display_header():
     global displayed_header
     if csv_output:
         csv_writer.writerow([
-            'File', 'Line', 'Column', 'Level', 'Category', 'Name', 'Warning',
+            'File', 'Line', 'Column', 'DefaultLevel', 'Level', 'Category', 'Name', 'Warning',
             'Suggestion', 'Note', 'CWEs', 'Context', 'Fingerprint', 'ToolVersion', 'RuleId', 'HelpUri'
         ])
         return
