@@ -2352,8 +2352,11 @@ def flawfind():
     return 1 if error_level_exceeded else 0
 
 
-if __name__ == '__main__':
+def main():
     try:
         sys.exit(flawfind())
     except KeyboardInterrupt:
         print("*** Flawfinder interrupted")
+
+if __name__ == '__main__':
+    main()
