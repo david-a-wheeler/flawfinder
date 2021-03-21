@@ -1828,6 +1828,8 @@ c_extensions = {
     '.CC': 1,
     '.c++': 1,  # C++.
     '.pcc': 1,  # Oracle C++
+    '.pc': 1,  # Oracle SQL-embedded C
+    '.sc': 1,  # Oracle Pro*C pre-compiler
     '.hpp': 1,
     '.H': 1,  # .h - usually C++.
 }
