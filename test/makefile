@@ -5,7 +5,7 @@
 PYTHON=python
 PYTHON2=python2
 PYTHON3=python3
-FLAWFINDER=../flawfinder
+FLAWFINDER=../flawfinder.py
 SETUPPY=../setup.py
 
 test_001: $(FLAWFINDER) test.c test2.c

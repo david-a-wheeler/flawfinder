@@ -41,7 +41,11 @@ It is released under the GNU GPL license.""",
            'Topic :: Software Development :: Testing'
            ],
        python_requires = '>=2.7',
-       scripts = [ 'flawfinder' ],
+       entry_points={
+        'console_scripts': [
+            'flawfinder = flawfinder:main',
+        ],
+       },
        data_files = [ ('share/man/man1', [ 'flawfinder.1.gz' ]) ],
-       py_modules = [ ],
+       py_modules = ['flawfinder'],
       )

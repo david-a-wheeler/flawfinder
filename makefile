@@ -67,7 +67,7 @@ INSTALL_DATA=cp -p
 # compiled code to override later uncompiled Python code.
 install:
 	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_BIN)
-	$(INSTALL_PROGRAM) flawfinder $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
+	$(INSTALL_PROGRAM) flawfinder.py $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
 	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_MAN)
 	$(INSTALL_DATA) flawfinder.1 $(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1
 
@@ -129,7 +129,7 @@ upload-pypi:
 
 time:
 	echo "Timing the program. First, time taken:"
-	time ./flawfinder $(SAMPLE_DIR)/*/*.[ch] > /dev/null
+	time ./flawfinder.py $(SAMPLE_DIR)/*/*.[ch] > /dev/null
 	echo "Lines examined:"
 	wc -l $(SAMPLE_DIR)/*/*.[ch] | tail -2
 
@@ -145,7 +145,7 @@ test-is-correct:
 	cd $(TESTDIR); $(MAKE) test-is-correct
 
 profile:
-	/usr/lib/python1.5/profile.py ./flawfinder > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results 
+	/usr/lib/python1.5/profile.py ./flawfinder.py > profile-results $(SAMPLE_DIR)/*/*.[ch] > profile-results
 
 
 rpm: distribute
@@ -184,7 +184,7 @@ cwe: cwe.c
 	$(CC) -o cwe cwe.c -lfl
 
 show-cwes: cwe
-	./cwe < flawfinder | sort -u -V
+	./cwe < flawfinder.py | sort -u -V
 
 pylint:
 	pylint flawfinder
