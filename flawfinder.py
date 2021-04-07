@@ -173,7 +173,7 @@ def print_warning(message):
 diff_index_filename = re.compile(r'^Index:\s+(?P<filename>.*)')
 diff_git_filename = re.compile(r'^diff --git a/.* b/(?P<filename>.*)$')
 diff_newfile = re.compile(r'^\+\+\+\s(?P<filename>.*)$')
-diff_hunk = re.compile(r'^@@ -\d+(,\d+)?\s+\+(?P<linenumber>\d+)[, ].*@@$')
+diff_hunk = re.compile(r'^@@ -\d+(,\d+)?\s+\+(?P<linenumber>\d+)[, ].*@@')
 diff_line_added = re.compile(r'^\+[^+].*')
 diff_line_del = re.compile(r'^-[^-].*')
 # The "+++" newfile entries have the filename, followed by a timestamp
