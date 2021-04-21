@@ -66,14 +66,15 @@ INSTALL_DATA=cp -p
 # (admittedly rare) problem of bad date/timestamps causing the
 # compiled code to override later uncompiled Python code.
 install:
-	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_BIN)
-	$(INSTALL_PROGRAM) flawfinder.py $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
-	-$(MKDIR_P) $(DESTDIR)$(INSTALL_DIR_MAN)
-	$(INSTALL_DATA) flawfinder.1 $(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1
+	-$(MKDIR_P) "$(DESTDIR)$(INSTALL_DIR_BIN)"
+	$(INSTALL_PROGRAM) flawfinder.py "$(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)"
+	chmod a+x "$(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)"
+	-$(MKDIR_P) "$(DESTDIR)$(INSTALL_DIR_MAN)"
+	$(INSTALL_DATA) flawfinder.1 "$(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1"
 
 uninstall:
-	rm -f $(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)
-	rm -f $(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1
+	rm -f "$(DESTDIR)$(INSTALL_DIR_BIN)/flawfinder$(PYTHONEXT)"
+	rm -f "$(DESTDIR)$(INSTALL_DIR_MAN)/flawfinder.1"
 
 flawfinder.1.gz: flawfinder.1
 	gzip -c9 < flawfinder.1 > flawfinder.1.gz
@@ -196,4 +197,3 @@ pylint:
 # file into a subdirectory (named flawfinder-versionnumber).
 # I can then create all the distribution files by just typing:
 #  python setup.py bdist_rpm
-
