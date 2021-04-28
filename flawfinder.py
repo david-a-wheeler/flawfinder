@@ -54,6 +54,7 @@ import time
 import csv  # To support generating CSV format
 import hashlib
 # import formatter
+from sariflogger import SarifLogger
 
 version = "2.0.15"
 
@@ -87,6 +88,7 @@ output_format = 0  # 0 = normal, 1 = html.
 single_line = 0  # 1 = singleline (can 't be 0 if html)
 csv_output = 0  # 1 = Generate CSV
 csv_writer = None
+sarif_output = 0  # 1 = Generate SARIF report
 omit_time = 0  # 1 = omit time-to-run (needed for testing)
 required_regex = None  # If non-None, regex that must be met to report
 required_regex_compiled = None
@@ -436,6 +438,8 @@ class Hit(object):
     def show(self):
         if csv_output:
             self.show_csv()
+            return
+        if sarif_output:
             return
         if output_format:
             print("<li>", end='')
@@ -1790,6 +1794,8 @@ def display_header():
             'Suggestion', 'Note', 'CWEs', 'Context', 'Fingerprint', 'ToolVersion', 'RuleId', 'HelpUri'
         ])
         return
+    if sarif_output:
+        return
     if not showheading:
         return
     if not displayed_header:
@@ -2044,7 +2050,7 @@ flawfinder [--help | -h] [--version] [--listrules]
 def process_options():
     global show_context, show_inputs, allowlink, skipdotdir, omit_time
     global output_format, minimum_level, show_immediately, single_line
-    global csv_output, csv_writer
+    global csv_output, csv_writer, sarif_output
     global error_level
     global required_regex, required_regex_compiled
     global falsepositive
@@ -2058,7 +2064,7 @@ def process_options():
             "falsepositive", "falsepositives", "columns", "listrules",
             "omittime", "allowlink", "patch=", "followdotdir", "neverignore",
             "regex=", "quiet", "dataonly", "html", "singleline", "csv",
-            "error-level=",
+            "error-level=", "sarif",
             "loadhitlist=", "savehitlist=", "diffhitlist=", "version", "help"
         ])
         for (opt, value) in optlist:
@@ -2097,6 +2103,10 @@ def process_options():
                 quiet = 1
                 showheading = 0
                 csv_writer = csv.writer(sys.stdout)
+            elif opt == "--sarif":
+                sarif_output = 1
+                quiet = 1
+                showheading = 0
             elif opt == "--error-level":
                 error_level = int(value)
             elif opt == "--immediate" or opt == "-i":
@@ -2349,7 +2359,10 @@ def flawfind():
     display_header()
     initialize_ruleset()
     if process_files():
-        show_final_results()
+        if sarif_output:
+            print(SarifLogger(hitlist).output_sarif())
+        else:
+            show_final_results()
         save_if_desired()
     return 1 if error_level_exceeded else 0
 
