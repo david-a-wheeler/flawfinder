@@ -529,6 +529,7 @@ def extract_c_parameters(text, pos=0):
     parameters = [""]  # Insert 0th entry, so 1st parameter is parameter[1].
     currentstart = i
     parenlevel = 1
+    curlylevel = 0
     instring = 0  # 1=in double-quote, 2=in single-quote
     incomment = 0
     while i < len(text):
@@ -579,7 +580,11 @@ def extract_c_parameters(text, pos=0):
                     # print " EXTRACT_C_PARAMETERS: ", text[pos:pos+80]
                     # print " RESULTS: ", parameters
                     return parameters
-            elif c == ';':
+            elif c == '{':
+                curlylevel += 1
+            elif c == '}':
+                curlylevel -= 1
+            elif c == ';' and curlylevel < 1:
                 internal_warn(
                     "Parsing failed to find end of parameter list; "
                     "semicolon terminated it in %s" % text[pos:pos + 200])
