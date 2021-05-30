@@ -52,6 +52,7 @@ flawfinder \- lexically find potential security flaws ("hits") in source code
 .RB [ \-\-dataonly | \-D ]
 .RB [ \-\-html | \-H ]
 .RB [ \-\-immediate | -i ]
+.RB [ \-\-sarif ]
 .RB [ \-\-singleline | \-S ]
 .RB [ \-\-omittime ]
 .RB [ \-\-quiet | \-Q ]
@@ -300,7 +301,8 @@ integrated development environments; see the examples for
 more information.
 .PP
 Flawfinder includes many other options, including ones to
-create HTML versions of the output (useful for prettier displays).
+create HTML versions of the output (useful for prettier displays) and
+Static Analysis Results Interchange Format (SARIF) output.
 The next section describes those options in more detail.
 
 .SH OPTIONS
@@ -533,6 +535,35 @@ Format the output as HTML instead of as simple text.
 .TP
 .BI -i
 Immediately display hits (don't just wait until the end).
+
+
+.TP
+.BI \-\-sarif
+Produce output in the OASIS
+Static Analysis Results Interchange Format (SARIF) format (a JSON-based format).
+The goals of the SARIF format, as explained in
+version 2.1.0 (27 March 2020) of its specification, include being able to
+"comprehensively capture the range of data produced by commonly
+used static analysis tools."
+SARIF output identifies the tool name as "Flawfinder".
+The flawfinder levels 0 through 5 are mapped to SARIF rank (by dividing by 5),
+SARIF level, and the default viewer action as follows:
+
+Flawfinder 0: SARIF rank 0.0, SARIF level notei, Does not display by default
+
+Flawfinder 1: SARIF rank 0.2, SARIF level note,Does not display by default
+
+Flawfinder 2: SARIF rank 0.4, SARIF level note, Does not display by default
+
+Flawfinder 3: SARIF rank 0.6, SARIF level warning, Displays by default, does not break build / other processes
+
+Flawfinder 4: SARIF rank 0.8, SARIF level error,Displays by default, breaks build/ other processes
+
+Flawfinder 5: SARIF rank 1.0, SAIRF level error, Displays by default, breaks build/ other processes
+
+A big thanks to Yong Yan implementing SARIF output generation for flawfinder!
+For more about the SARIF format, see:
+https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif
 
 .TP
 .BI "\-\-singleline"
