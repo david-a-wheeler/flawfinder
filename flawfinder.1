@@ -302,7 +302,7 @@ more information.
 .PP
 Flawfinder includes many other options, including ones to
 create HTML versions of the output (useful for prettier displays) and
-Static Analysis Results Interchange Format (SARIF) output.
+OASIS Static Analysis Results Interchange Format (SARIF) output.
 The next section describes those options in more detail.
 
 .SH OPTIONS
@@ -549,7 +549,7 @@ SARIF output identifies the tool name as "Flawfinder".
 The flawfinder levels 0 through 5 are mapped to SARIF rank (by dividing by 5),
 SARIF level, and the default viewer action as follows:
 
-Flawfinder 0: SARIF rank 0.0, SARIF level notei, Does not display by default
+Flawfinder 0: SARIF rank 0.0, SARIF level note, Does not display by default
 
 Flawfinder 1: SARIF rank 0.2, SARIF level note,Does not display by default
 
@@ -559,7 +559,7 @@ Flawfinder 3: SARIF rank 0.6, SARIF level warning, Displays by default, does not
 
 Flawfinder 4: SARIF rank 0.8, SARIF level error,Displays by default, breaks build/ other processes
 
-Flawfinder 5: SARIF rank 1.0, SAIRF level error, Displays by default, breaks build/ other processes
+Flawfinder 5: SARIF rank 1.0, SARIF level error, Displays by default, breaks build/ other processes
 
 A big thanks to Yong Yan implementing SARIF output generation for flawfinder!
 For more about the SARIF format, see:
@@ -1254,9 +1254,9 @@ This is not a bug, this is intended behavior.
 Flawfinder will report hits even if they are between
 a literal "#if 0" and "#endif".
 It would be possible to change this particular situation, but directly
-using "#if 0" to comment-out code (other than during debugging) is itself
-that the removal is very temporary (in which case we should report it) or
-an indicator of a problem with poor code practices.
+using "#if 0" to comment-out code (other than during debugging) indicates
+(1) the removal is very temporary (in which case we should still report it) or
+(2) very poor code practices.
 If you want to permanently get rid of code, then
 delete it instead of using "#if 0", since you can always see what it was
 using your version control software.
