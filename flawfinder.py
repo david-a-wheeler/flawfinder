@@ -138,7 +138,8 @@ class SarifLogger(object):
     _hitlist = None
     TOOL_NAME = "Flawfinder"
     TOOL_URL = "https://dwheeler.com/flawfinder/"
-    TOOL_VERSION = "2.0.15"
+    # TOOL_VERSION = "2.0.15"
+    TOOL_VERSION = version
     URI_BASE_ID = "SRCROOT"
     SARIF_SCHEMA = "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json"
     SARIF_SCHEMA_VERSION = "2.1.0"
