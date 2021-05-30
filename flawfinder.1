@@ -222,7 +222,10 @@ Not every hit is necessarily a security vulnerability, and
 there may be other security vulnerabilities not reported by the tool.
 .PP
 Flawfinder can easily integrate into a continuous integration system.
-You might want to check out the \-\-error\-level option to help do that.
+You might want to check out the \-\-error\-level option to help do that, e.g.,
+using \-\-error\-level=4 will cause an error to be returned if flawfinder
+finds a vulnerability of level 4 or higher.
+
 .PP
 Flawfinder is released under the GNU GPL license version 2 or later (GPLv2+).
 .PP
@@ -732,6 +735,14 @@ Examine all the C/C++ files in the directory
 reporting on all hits found.
 By default flawfinder will skip symbolic links and
 directories with names that start with a period.
+
+.TP
+.B "flawfinder \-\-error-level=4 ."
+Examine all the C/C++ files in the current directory
+and its subdirectories (recursively);
+return an error code if there are vulnerabilities
+level 4 and up (the two highest risk levels).
+This is a plausible way to use flawfinder in a continuous integration system.
 
 .TP
 .B "flawfinder \-\-minlevel=4 ."
