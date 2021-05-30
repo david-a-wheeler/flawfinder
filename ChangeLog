@@ -1,4 +1,17 @@
 2021-01-11 David A. Wheeler
+	* Added support for generating SARIF output, use --sarif.
+	  A big thanks to Yong Yan for this work!
+	* Track curly brace level to reduce some problems, my thanks to
+	  Greg Myers for the work!
+	* Improved handling of Git patch format, thanks to
+	  Robin Geffroy.
+	* Improve cross-platform ease-of-use by using entry_points.
+	  Note that this means that the program is now named
+	  flawfinder.py (not "flawfinder"), though "make install" will still
+	  install it as "flawfinder" (so those who install it via
+	  "make install" will see no change). Many thanks to Ben Spoor!
+
+2021-01-11 David A. Wheeler
 	* Version 2.0.15
 	* Fixed some release problems in 2.0.14.
 	* Improved handling of LoadLibraryEx; flawfinderr no longer complains
