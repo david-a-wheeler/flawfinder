@@ -9,7 +9,7 @@ Make sure every release has a unique version number.
 
 To change version number, edit the following files:
 makefile
-flawfinder
+flawfinder.py
 flawfinder.spec
 setup.py
 index.html # in dwheeler.com/flawfinder

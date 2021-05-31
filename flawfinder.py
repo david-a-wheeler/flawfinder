@@ -55,7 +55,7 @@ import csv  # To support generating CSV format
 import hashlib
 import json
 
-version = "2.0.15"
+version = "2.0.16"
 
 # Program Options - these are the default values.
 # TODO: Switch to boolean types where appropriate.
@@ -138,7 +138,6 @@ class SarifLogger(object):
     _hitlist = None
     TOOL_NAME = "Flawfinder"
     TOOL_URL = "https://dwheeler.com/flawfinder/"
-    # TOOL_VERSION = "2.0.15"
     TOOL_VERSION = version
     URI_BASE_ID = "SRCROOT"
     SARIF_SCHEMA = "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json"
