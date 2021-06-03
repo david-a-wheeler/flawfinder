@@ -2240,18 +2240,18 @@ def process_options():
             "loadhitlist=", "savehitlist=", "diffhitlist=", "version", "help"
         ])
         for (opt, value) in optlist:
-            if opt == "--context" or opt == "-c":
+            if opt in ("--context", "-c"):
                 show_context = 1
-            elif opt == "--columns" or opt == "-C":
+            elif opt in ("--columns", "-C"):
                 show_columns = 1
-            elif opt == "--quiet" or opt == "-Q":
+            elif opt in ("--quiet", "-Q"):
                 quiet = 1
-            elif opt == "--dataonly" or opt == "-D":
+            elif opt in ("--dataonly", "-D"):
                 showheading = 0
-            elif opt == "--inputs" or opt == "--input" or opt == "-I":
+            elif opt in ("--inputs", "--input", "-I"):
                 show_inputs = 1
                 minimum_level = 0
-            elif opt == "--falsepositive" or opt == "falsepositives" or opt == "-F":
+            elif opt in ("--falsepositive", "falsepositives", "-F"):
                 falsepositive = 1
             elif opt == "--nolink":
                 allowlink = 0
@@ -2263,12 +2263,12 @@ def process_options():
                 skipdotdir = 0
             elif opt == "--listrules":
                 list_rules = 1
-            elif opt == "--html" or opt == "-H":
+            elif opt in ("--html", "-H"):
                 output_format = 1
                 single_line = 0
-            elif opt == "--minlevel" or opt == "-m":
+            elif opt in ("--minlevel", "-m"):
                 minimum_level = int(value)
-            elif opt == "--singleline" or opt == "-S":
+            elif opt in ("--singleline", "-S"):
                 single_line = 1
             elif opt == "--csv":
                 csv_output = 1
@@ -2281,22 +2281,22 @@ def process_options():
                 showheading = 0
             elif opt == "--error-level":
                 error_level = int(value)
-            elif opt == "--immediate" or opt == "-i":
+            elif opt in ("--immediate", "-i"):
                 show_immediately = 1
-            elif opt == "-n" or opt == "--neverignore":
+            elif opt in ("-n", "--neverignore"):
                 never_ignore = 1
-            elif opt == "-e" or opt == "--regex":
+            elif opt in ("-e", "--regex"):
                 required_regex = value
                 # This will raise an exception if it can't be compiled as a
                 # regex:
                 required_regex_compiled = re.compile(required_regex)
-            elif opt == "-P" or opt == "--patch":
+            elif opt in ("-P", "--patch"):
                 # Note: This is -P, so that a future -p1 option can strip away
                 # pathname prefixes (with the same option name as "patch").
                 patch_file = value
                 # If we consider ignore comments we may change a line which was
-                # previously ignored but which will raise now a valid warning without
-                # noticing it now.  So, set never_ignore.
+                # previously ignored but which will raise now a valid warning
+                # without noticing it now.  So, set never_ignore.
                 never_ignore = 1
             elif opt == "--loadhitlist":
                 loadhitlist = value
@@ -2316,10 +2316,12 @@ def process_options():
             elif opt == "--version":
                 print(version)
                 sys.exit(0)
-            elif opt in ['-h', '-?', '--help']:
-                # We accept "-?" but do not document it.  On Unix-like systems the
-                # question mark in "-?" should be escaped, and many forget
-                # that.
+            elif opt in ('-h', '-?', '--help'):
+                # We accept "-?" but do not document it because we don't
+                # want to encourage its use.
+                # Unix-like systems with typical shells expand glob
+                # patterns, so the question mark in "-?" should be escaped,
+                # and many forget that.
                 usage()
                 sys.exit(0)
         # For DOS/Windows, expand filenames; for Unix, DON'T expand them
@@ -2327,7 +2329,7 @@ def process_options():
         # always call "glob", but that's WRONG -- on Unix-like systems that
         # will expand twice.  Python doesn't have a clean way to detect
         # "has globbing occurred", so this is the best I've found:
-        if os.name == "windows" or os.name == "nt" or os.name == "dos":
+        if os.name in ("windows", "nt", "dos"):
             sys.argv[1:] = functools.reduce(operator.add,
                                             list(map(glob.glob, args)))
         else:
