@@ -3,6 +3,8 @@
 	* Fix the distributed tarball, which didn't include the
 	   key source file due to the earlier file restructure.
 	* Minor code style fix, which simplifies the code slightly.
+	* Update date in manual page to 2021. That's important because
+	  the documentation now includes information on `--sarif`.
 
 2021-05-31 David A. Wheeler
 	* Version 2.0.16
