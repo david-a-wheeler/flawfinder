@@ -1,3 +1,9 @@
+2021-06-02 David A. Wheeler
+	* Version 2.0.17
+	* Fix the distributed tarball, which didn't include the
+	   key source file due to the earlier file restructure.
+	* Minor code style fix, which simplifies the code slightly.
+
 2021-05-31 David A. Wheeler
 	* Version 2.0.16
 	* The distributed source file is now flawfinder.py, not flawfinder.
