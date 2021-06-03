@@ -104,8 +104,6 @@ distribute: clean flawfinder.pdf flawfinder.ps
 	cp -r -p [a-zA-Z]* ,tempdir
 	rm -f ,tempdir/*.tar.gz
 	rm -f ,tempdir/*.rpm
-	# We don't need both "flawfinder" and "flawfinder.py":
-	rm -f ,tempdir/flawfinder.py
 	mv ,tempdir flawfinder-$(VERSION)
 	# Nobody else needs "update" either.
 	rm -f ,tempdir/update
