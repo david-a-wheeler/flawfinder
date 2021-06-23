@@ -1,0 +1,16 @@
+on: [push]
+
+jobs:
+  sarif:
+    runs-on: ubuntu-latest
+    name: Flawfinder
+    steps:
+      # To use this repository's private action,
+      # you must check out the repository
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Flawfinder action step
+        uses: ./ # Uses an action in the root directory
+        with:
+          command: '--version'
