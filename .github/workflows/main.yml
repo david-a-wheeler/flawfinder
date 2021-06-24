@@ -4,10 +4,6 @@ jobs:
   flawfinder:
     name: Flawfinder
     runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-      security-events: write
     steps:
       # To use this repository's private action,
       # you must check out the repository
@@ -17,9 +13,15 @@ jobs:
       - name: Flawfinder action step
         uses: ./ # Uses an action in the root directory
         with:
-          command: '--sarif ./ > flawfinder-results.sarif'
+          arguments: '--sarif ./'
+          output: 'flawfinder_results.sarif'
+
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          path: flawfinder_results.sarif   
 
       - name: Upload analysis results to GitHub Security tab
         uses: github/codeql-action/upload-sarif@v1
         with:
-          sarif_file: ./flawfinder-results.sarif
+          sarif_file: ${{github.workspace}}/flawfinder_results.sarif
