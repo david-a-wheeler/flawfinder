@@ -103,13 +103,14 @@ See [action.yml](https://github.com/david-a-wheeler/flawfinder/blob/main/action.
 Create a .yml file under .github/workflows with the following contents:
 
 ### Basic:
-````yml
+```yml
 - name: Flawfinder
   uses: david-a-wheeler/flawfinder@v1.0
   with:
     arguments: '--sarif ./'
     output: 'flawfinder_results.sarif'
-````
+```
+
 ### Input options:
 - arguments: Flawfinder command arguments. 
 Visit https://github.com/david-a-wheeler/flawfinder/blob/master/README.md#usage to check all parameters.
