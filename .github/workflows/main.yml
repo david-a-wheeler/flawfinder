@@ -13,7 +13,7 @@ jobs:
       - name: Flawfinder action step
         uses: ./ # Uses an action in the root directory
         with:
-          arguments: '--sarif ./'
+          arguments: '--sarif ./setup.py'
           output: 'flawfinder_results.sarif'
 
       - name: Upload a Build Artifact
