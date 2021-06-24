@@ -250,7 +250,7 @@ class SarifLogger(object):
             if cwestr:
                 relationship = {
                     "target": {
-                        "id": int(cwestr.replace("CWE-", "").replace("!", "")),
+                        "id": cwestr.replace("!", ""),
                         "toolComponent": {
                             "name": self.CWE_TAXONOMY_NAME,
                             "guid": self.CWE_TAXONOMY_GUID,
