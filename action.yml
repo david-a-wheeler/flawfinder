@@ -1,0 +1,17 @@
+name: 'Flawfinder'
+description: 'Execute Flawfinder'
+inputs:
+  arguments:
+    description: 'Command arguments to be sent to Flawfinder'
+    required: true
+    default: ''
+  output:
+    description: 'Output file name'
+    required: true
+    default: ''
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.arguments }}
+    - ${{ inputs.output }}

@@ -94,6 +94,28 @@ vulnerabilities in programs that cannot be built or cannot be linked.
 Flawfinder also doesn't get as confused by macro definitions
 and other oddities that more sophisticated tools have trouble with.
 
+# Flawfinder Github Action
+
+## Usage
+
+See [action.yml](https://github.com/david-a-wheeler/flawfinder/blob/main/action.yml)
+
+Create a .yml file under .github/workflows with the following contents:
+
+### Basic:
+```yml
+- name: Flawfinder
+  uses: david-a-wheeler/flawfinder@v1.0
+  with:
+    arguments: '--sarif ./'
+    output: 'flawfinder_results.sarif'
+```
+
+### Input options:
+- arguments: Flawfinder command arguments. 
+Visit https://github.com/david-a-wheeler/flawfinder/blob/master/README.md#usage to check all parameters.
+- output: Flawfinder output file name. Can be uploaded to Github.
+
 # Contributions
 
 We love contributions!  For more information on contributing, see
