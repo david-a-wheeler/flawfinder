@@ -1,7 +1,11 @@
 #!/bin/sh -l
-# $1 arguments. BEWARE: Some filenames may need to be escaped.
+# $1 whitespace-separated arguments. Some filenames may need to be escaped.
 # $2 output filename
 
-flawfinder $1 > "$2"
+output="${2:-flawfinder-output.txt}"
 
-echo "Executed with success."
+flawfinder $1 > "$output"
+result="$?"
+
+cat "$output"
+exit "$result"
