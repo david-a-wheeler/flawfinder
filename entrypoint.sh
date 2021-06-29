@@ -1,5 +1,5 @@
 #!/bin/sh -l
-# $1 arguments. BEWARE: Some filenames may need to be escaped.
+# $1 whitespace-separated arguments. Some filenames may need to be escaped.
 # $2 output filename
 
-flawfinder "$@" > "$2"
+flawfinder $1 | tee "$2"
