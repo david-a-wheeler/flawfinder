@@ -94,7 +94,9 @@ vulnerabilities in programs that cannot be built or cannot be linked.
 Flawfinder also doesn't get as confused by macro definitions
 and other oddities that more sophisticated tools have trouble with.
 
-# Flawfinder Github Action
+# Flawfinder GitHub Action
+
+There's a GitHub action available for those who use GitHub.
 
 ## Usage
 
@@ -102,7 +104,8 @@ See [action.yml](https://github.com/david-a-wheeler/flawfinder/blob/main/action.
 
 Create a .yml file under .github/workflows with the following contents:
 
-### Basic:
+### Basic demo:
+
 ```yml
 - name: Flawfinder
   uses: david-a-wheeler/flawfinder@v1.0
@@ -111,10 +114,14 @@ Create a .yml file under .github/workflows with the following contents:
     output: 'flawfinder_results.sarif'
 ```
 
+You can add many other additions to the arguments.
+For example, `--error-level=4` will cause an error to be returned if
+flawfinder finds a vulnerability of level 4 or higher.
+
 ### Input options:
-- arguments: Flawfinder command arguments. 
-Visit https://github.com/david-a-wheeler/flawfinder/blob/master/README.md#usage to check all parameters.
-- output: Flawfinder output file name. Can be uploaded to Github.
+
+- arguments: [Flawfinder command arguments](ttps://github.com/david-a-wheeler/flawfinder/blob/master/README.md#usage)
+- output: Flawfinder output file name. Can be uploaded to GitHub.
 
 # Contributions
 
