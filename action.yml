@@ -1,5 +1,5 @@
-name: 'Flawfinder'
-description: 'Execute Flawfinder'
+name: 'flawfinder_scan'
+description: 'Execute Flawfinder to scan source code for vulnerabilities'
 inputs:
   arguments:
     description: 'Command arguments to be sent to Flawfinder'
