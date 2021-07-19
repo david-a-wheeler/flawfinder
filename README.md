@@ -107,8 +107,8 @@ Create a .yml file under .github/workflows with the following contents:
 ### Basic demo:
 
 ```yml
-- name: Flawfinder
-  uses: david-a-wheeler/flawfinder@v1.0
+- name: flawfinder_scan
+  uses: david-a-wheeler/flawfinder@2.0.19-alpha1
   with:
     arguments: '--sarif ./'
     output: 'flawfinder_results.sarif'
@@ -117,6 +117,9 @@ Create a .yml file under .github/workflows with the following contents:
 You can add many other additions to the arguments.
 For example, `--error-level=4` will cause an error to be returned if
 flawfinder finds a vulnerability of level 4 or higher.
+
+You can find the action name and version string from [Marketplace](https://github.com/marketplace/actions/flawfinder_scan)
+by clicking "Use latest/xxx version" button.
 
 ### Input options:
 
