@@ -675,7 +675,7 @@ def add_warning(hit):
 
 
 def internal_warn(message):
-    print(h(message))
+    print(h(message), file=sys.stderr)
 
 
 # C Language Specific
