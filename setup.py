@@ -9,7 +9,7 @@ from setuptools import setup # Don't need find_packages
 
 setup (# Distribution meta-data
        name = "flawfinder",
-       version = "2.0.18",
+       version = "2.0.19",
        # We install a script, not a separate package.
        # packages = ["flawfinder"], # Must be same as name
        # Do not need: packages=find_packages(),
