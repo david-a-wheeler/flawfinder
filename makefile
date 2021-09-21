@@ -6,7 +6,7 @@
 # how to change version numbers.
 
 NAME=flawfinder
-VERSION=2.0.18
+VERSION=2.0.19
 RPM_VERSION=1
 VERSIONEDNAME=$(NAME)-$(VERSION)
 ARCH=noarch
@@ -19,7 +19,7 @@ SAMPLE_DIR=/usr/src/linux-2.2.16
 # not notice any changes.  We define exec_prefix oddly so we can
 # quietly merge these 2 systems:
 
-prefix=/usr/local
+prefix?=/usr/local
 INSTALL_DIR=$(prefix)
 exec_prefix=$(INSTALL_DIR)
 bindir=$(exec_prefix)/bin
@@ -44,7 +44,7 @@ PYTHONEXT=
 
 RPMBUILD=rpmbuild
 
-DESTDIR=
+DESTDIR?=
 
 TESTDIR=test/
 
