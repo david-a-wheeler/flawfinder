@@ -644,7 +644,6 @@ class Hit(object):
             print_multi_line(main_text)
         if output_format:
             print(" </i>", end='')
-        if output_format:
             print("</li>", end='')
         print()
         if show_context:
