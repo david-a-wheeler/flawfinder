@@ -62,8 +62,8 @@ As always, if you're modifying the software, you'll need to have
 your development environment set up. You need:
 
 * make
-* python2 (invokable as "python2")
-* python3 (invokable as "python3")
+* python2 (invocable as "python2")
+* python3 (invocable as "python3")
 * pylint (see below)
 
 An easy way to install pylint is to use pip.

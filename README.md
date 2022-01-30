@@ -65,7 +65,7 @@ is configured to use UTF-8 (the most common situation by far).
 
 However, it's possible for flawfinder to halt if there is a
 character encoding problem and you're running Python3.
-The usual symptom is error meesages like this:
+The usual symptom is error messages like this:
 `Error: encoding error in FILENAME 'ENCODING' codec can't decode byte ... in position ...: invalid start byte`
 
 Unfortunately, Python3 fails to provide useful built-ins to deal with this.
