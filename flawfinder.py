@@ -1500,7 +1500,7 @@ c_ruleset = {
      "access", "", {}, "FF1056"),
 
     "InitializeCriticalSection":
-    (normal, 3, "Exceptions can be thrown in low-memory situations",
+    (normal, 3, "Exceptions can be thrown in low-memory situations (CWE-248, CWE-400)",
      "Use InitializeCriticalSectionAndSpinCount instead",
      "misc", "", {}, "FF1057"),
 
