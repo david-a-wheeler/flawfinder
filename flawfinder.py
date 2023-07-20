@@ -587,6 +587,8 @@ class Hit(object):
     # Help uri for each defined rule. e.g. "https://dwheeler.com/flawfinder#FF1002"
     # return first CWE link for now
     def helpuri(self):
+        if self.cwes() == '':
+            return 'https://dwheeler.com/flawfinder#{}'.format(self.ruleid)
         cwe = re.split(',|!', self.cwes())[0] + ")"
         return link_cwe_pattern.sub(
                 r'https://cwe.mitre.org/data/definitions/\2.html',
@@ -1500,7 +1502,7 @@ c_ruleset = {
      "access", "", {}, "FF1056"),
 
     "InitializeCriticalSection":
-    (normal, 3, "Exceptions can be thrown in low-memory situations",
+    (normal, 3, "Exceptions can be thrown in low-memory situations (CWE-248, CWE-400)",
      "Use InitializeCriticalSectionAndSpinCount instead",
      "misc", "", {}, "FF1057"),
 
