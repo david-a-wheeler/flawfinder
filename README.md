@@ -128,6 +128,26 @@ by clicking "Use latest/xxx version" button.
 - arguments: [Flawfinder command arguments](ttps://github.com/david-a-wheeler/flawfinder/blob/master/README.md#usage)
 - output: Flawfinder output file name. Can be uploaded to GitHub.
 
+# SonarQube Integration
+
+Flawfinder integrates with SonarQube's cxx plugin. Add the Flawfinder rules in
+SonarQube under "Administration > CXX External Analyers > Other Rule Definitions"
+by running Flawfinder once using the following options.
+
+~~~~
+flawfinder --listrules --sonar
+~~~~
+
+The in your CI/CD run Flawfinder like this to generate output that SonarQube
+can understand.
+
+~~~~
+flawfinder -CDQ --sonar [...]
+~~~~
+
+You want to redirect the output to a file that you can then load into
+SonarQube via the `sonar.cxx.other.reportPaths` option.
+
 # Contributions
 
 We love contributions!  For more information on contributing, see
