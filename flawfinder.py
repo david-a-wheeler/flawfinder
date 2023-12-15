@@ -187,6 +187,9 @@ class SonarRulesLogger(object):
             str += '\t\t<severity>%s</severity>\n' % (SONAR_SEVERITIES[self._ruleset[key][1]])
             str += '\t\t<type>VULNERABILITY</type>\n'
             str += '\t\t<tag>cwe</tag>\n'
+            str += '\t\t<tag>flawfinder</tag>\n'
+            str += '\t\t<remediationFunction>CONSTANT_ISSUE</remediationFunction>\n'
+            str += '\t\t<remediationFunctionBaseEffort>2min</remediationFunctionBaseEffort>\n'
             str += '\t</rule>\n'
         str += '</rules>'
         return str

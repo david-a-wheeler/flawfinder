@@ -135,7 +135,7 @@ SonarQube under "Administration > CXX External Analyers > Other Rule Definitions
 by running Flawfinder once using the following options.
 
 ~~~~
-flawfinder --listrules --sonar
+flawfinder --listrules --sonar [...]
 ~~~~
 
 The in your CI/CD run Flawfinder like this to generate output that SonarQube
