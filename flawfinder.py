@@ -41,6 +41,7 @@
 
 from __future__ import division
 from __future__ import print_function
+from xml.sax.saxutils import quoteattr
 import functools
 import sys
 import re
@@ -88,6 +89,7 @@ single_line = 0  # 1 = singleline (can 't be 0 if html)
 csv_output = 0  # 1 = Generate CSV
 csv_writer = None
 sarif_output = 0  # 1 = Generate SARIF report
+sonar_output = 0  # 1 = Generate SonarQube report
 omit_time = 0  # 1 = omit time-to-run (needed for testing)
 required_regex = None  # If non-None, regex that must be met to report
 required_regex_compiled = None
@@ -129,6 +131,68 @@ def print_warning(message):
 def to_json(o):
     return json.dumps(o, default=lambda o: o.__dict__, sort_keys=False, indent=2)
 
+
+class SonarLogger(object):
+    _hitlist = None
+
+    def __init__ (self, hits):
+        self._hitlist = hits
+    
+    def output_sonar(self):
+        str  = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        str += '<results>\n'
+        for hit in self._hitlist:
+            file = os.path.realpath(hit.filename)
+            msg  = quoteattr(hit.warning)
+            str += '\t<error id="flawfinder.%s" file="%s" line="%s" column="%s" msg=%s />\n' % \
+                (hit.name, file, hit.line, hit.column, msg)
+        str += '</results>'
+        return str
+    
+class SonarRulesLogger(object):
+    _ruleset = None
+
+    def __init__(self, rules):
+        self._ruleset = rules
+
+    def output_rules(self):
+        SONAR_SEVERITIES = ["INFO", "INFO", "MINOR", "MAJOR", "CRITICAL", "BLOCKER"]
+        RULE_NAMES = {
+            'access':   'Unsafe privileges could occur using function "%s"',
+            'buffer':   'Buffer overflow using function "%s"',
+            'crypto':   'Insecure cryptography using function "%s"',
+            'format':   'Format string vulnerability using function "%s"',
+            'input':    'Input from outside program using function "%s"',
+            'integer':  'Integer overflow could occur using function "%s"',
+            'misc':     'Miscellaneous finding using function "%s"',
+            'obsolete': 'Obsolete function "%s"',
+            'race':     'Race condition using function "%s"',
+            'random':   'Insecure random function "%s"',
+            'shell':    'Program execution using function "%s"',
+            'tmpfile':  'Temporary file vulnerability using function "%s"',
+            'free':     'Avoid usage of function "%s"'
+        }
+        str  = '<?xml version="1.0" encoding="UTF-8"?>\n'
+        str += '<rules>\n'
+        for key in self._ruleset.keys():
+            name = RULE_NAMES[self._ruleset[key][4]] % (key)
+            str += '\t<rule>\n'
+            str += '\t\t<key>flawfinder.%s</key>\n' % (key)
+            str += '\t\t<name>%s</name>\n' % (name)
+            str += '\t\t<description><![CDATA[%s.' % (self._ruleset[key][2])
+            if self._ruleset[key][3] != '':
+                str += ' %s' % (self._ruleset[key][3])
+            str += ']]></description>\n'
+            str += '\t\t<internalKey>flawfinder/%s</internalKey>\n' % (key)
+            str += '\t\t<severity>%s</severity>\n' % (SONAR_SEVERITIES[self._ruleset[key][1]])
+            str += '\t\t<type>VULNERABILITY</type>\n'
+            str += '\t\t<tag>cwe</tag>\n'
+            str += '\t\t<tag>flawfinder</tag>\n'
+            str += '\t\t<remediationFunction>CONSTANT_ISSUE</remediationFunction>\n'
+            str += '\t\t<remediationFunctionBaseEffort>2min</remediationFunctionBaseEffort>\n'
+            str += '\t</rule>\n'
+        str += '</rules>'
+        return str
 
 # The following implements the SarifLogger.
 # We intentionally merge all of flawfinder's functionality into 1 file
@@ -608,6 +672,8 @@ class Hit(object):
             self.show_csv()
             return
         if sarif_output:
+            return
+        if sonar_output:
             return
         if output_format:
             print("<li>", end='')
@@ -1291,7 +1357,7 @@ c_ruleset = {
 
     "access":        # ???: TODO: analyze TOCTOU more carefully.
     (normal, 4,
-     "This usually indicates a security flaw.  If an "
+     "This usually indicates a security flaw. If an "
      "attacker can change anything along the path between the "
      "call to access() and the file's actual use (e.g., by moving "
      "files), the attacker can exploit the race condition (CWE-362/CWE-367!)",
@@ -1332,7 +1398,7 @@ c_ruleset = {
     (normal, 5,
      "This accepts filename arguments; if an attacker "
      "can move those files or change the link content, "
-     "a race condition results.  "
+     "a race condition results. "
      "Also, it does not terminate with ASCII NUL. (CWE-362, CWE-20)",
      # This is often just a bad idea, and it's hard to suggest a
      # simple alternative:
@@ -1360,7 +1426,7 @@ c_ruleset = {
 
     "mkstemp":
     (normal, 2,
-     "Potential for temporary file vulnerability in some circumstances.  Some older Unix-like systems create temp files with permission to write by all by default, so be sure to set the umask to override this. Also, some older Unix systems might fail to use O_EXCL when opening the file, so make sure that O_EXCL is used by the library (CWE-377)",
+     "Potential for temporary file vulnerability in some circumstances. Some older Unix-like systems create temp files with permission to write by all by default, so be sure to set the umask to override this. Also, some older Unix systems might fail to use O_EXCL when opening the file, so make sure that O_EXCL is used by the library (CWE-377)",
      "",
      "tmpfile", "avoid-race", {}, "FF1039"),
 
@@ -1469,7 +1535,7 @@ c_ruleset = {
 
     "getenv|curl_getenv":
     (normal, 3, "Environment variables are untrustable input if they can be"
-     " set by an attacker.  They can have any content and"
+     " set by an attacker. They can have any content and"
      " length, and the same variable can be set more than once (CWE-807, CWE-20)",
      "Check environment variables carefully before using them",
      "buffer", "", {'input': 1}, "FF1053"),
@@ -1477,7 +1543,7 @@ c_ruleset = {
     "g_get_home_dir":
     (normal, 3, "This function is synonymous with 'getenv(\"HOME\")';"
      "it returns untrustable input if the environment can be"
-     "set by an attacker.  It can have any content and length, "
+     "set by an attacker. It can have any content and length, "
      "and the same variable can be set more than once (CWE-807, CWE-20)",
      "Check environment variables carefully before using them",
      "buffer", "", {'input': 1}, "FF1054"),
@@ -1485,7 +1551,7 @@ c_ruleset = {
     "g_get_tmp_dir":
     (normal, 3, "This function is synonymous with 'getenv(\"TMP\")';"
      "it returns untrustable input if the environment can be"
-     "set by an attacker.  It can have any content and length, "
+     "set by an attacker. It can have any content and length, "
      "and the same variable can be set more than once (CWE-807, CWE-20)",
      "Check environment variables carefully before using them",
      "buffer", "", {'input': 1}, "FF1055"),
@@ -1544,25 +1610,25 @@ c_ruleset = {
 
     "getlogin":
     (normal, 4,
-     "It's often easy to fool getlogin.  Sometimes it does not work at all, because some program messed up the utmp file.  Often, it gives only the first 8 characters of the login name. The user currently logged in on the controlling tty of our program need not be the user who started it.  Avoid getlogin() for security-related purposes (CWE-807)",
+     "It's often easy to fool getlogin. Sometimes it does not work at all, because some program messed up the utmp file. Often, it gives only the first 8 characters of the login name. The user currently logged in on the controlling tty of our program need not be the user who started it. Avoid getlogin() for security-related purposes (CWE-807)",
      "Use getpwuid(geteuid()) and extract the desired information instead",
      "misc", "", {}, "FF1062"),
 
     "cuserid":
     (normal, 4,
-     "Exactly what cuserid() does is poorly defined (e.g., some systems use the effective uid, like Linux, while others like System V use the real uid). Thus, you can't trust what it does. It's certainly not portable (The cuserid function was included in the 1988 version of POSIX, but removed from the 1990 version).  Also, if passed a non-null parameter, there's a risk of a buffer overflow if the passed-in buffer is not at least L_cuserid characters long (CWE-120)",
+     "Exactly what cuserid() does is poorly defined (e.g., some systems use the effective uid, like Linux, while others like System V use the real uid). Thus, you can't trust what it does. It's certainly not portable (The cuserid function was included in the 1988 version of POSIX, but removed from the 1990 version). Also, if passed a non-null parameter, there's a risk of a buffer overflow if the passed-in buffer is not at least L_cuserid characters long (CWE-120)",
      "Use getpwuid(geteuid()) and extract the desired information instead",
      "misc", "", {}, "FF1063"),
 
     "getpw":
     (normal, 4,
-     "This function is dangerous; it may overflow the provided buffer. It extracts data from a 'protected' area, but most systems have many commands to let users modify the protected area, and it's not always clear what their limits are.  Best to avoid using this function altogether (CWE-676, CWE-120)",
+     "This function is dangerous; it may overflow the provided buffer. It extracts data from a 'protected' area, but most systems have many commands to let users modify the protected area, and it's not always clear what their limits are. Best to avoid using this function altogether (CWE-676, CWE-120)",
      "Use getpwuid() instead",
      "buffer", "", {}, "FF1064"),
 
     "getpass":
     (normal, 4,
-     "This function is obsolete and not portable. It was in SUSv2 but removed by POSIX.2.  What it does exactly varies considerably between systems, particularly in where its prompt is displayed and where it gets its data (e.g., /dev/tty, stdin, stderr, etc.). In addition, some implementations overflow buffers. (CWE-676, CWE-120, CWE-20)",
+     "This function is obsolete and not portable. It was in SUSv2 but removed by POSIX.2. What it does exactly varies considerably between systems, particularly in where its prompt is displayed and where it gets its data (e.g., /dev/tty, stdin, stderr, etc.). In addition, some implementations overflow buffers. (CWE-676, CWE-120, CWE-20)",
      "Make the specific calls to do exactly what you want.  If you continue to use it, or write your own, be sure to zero the password as soon as possible to avoid leaving the cleartext password visible in the process' address space",
      "misc", "", {'input': 1}, "FF1065"),
 
@@ -1574,7 +1640,7 @@ c_ruleset = {
 
     "memalign":
     (normal, 1,
-     "On some systems (though not Linux-based systems) an attempt to free() results from memalign() may fail. This may, on a few systems, be exploitable.  Also note that memalign() may not check that the boundary parameter is correct (CWE-676)",
+     "On some systems (though not Linux-based systems) an attempt to free() results from memalign() may fail. This may, on a few systems, be exploitable. Also note that memalign() may not check that the boundary parameter is correct (CWE-676)",
      "Use posix_memalign instead (defined in POSIX's 1003.1d).  Don't switch to valloc(); it is marked as obsolete in BSD 4.3, as legacy in SUSv2, and is no longer defined in SUSv3.  In some cases, malloc()'s alignment may be sufficient",
      "free", "", {}, "FF1067"),
 
@@ -1586,7 +1652,7 @@ c_ruleset = {
 
     "usleep":
     (normal, 1,
-     "This C routine is considered obsolete (as opposed to the shell command by the same name).   The interaction of this function with SIGALRM and other timer functions such as sleep(), alarm(), setitimer(), and nanosleep() is unspecified (CWE-676)",
+     "This C routine is considered obsolete (as opposed to the shell command by the same name). The interaction of this function with SIGALRM and other timer functions such as sleep(), alarm(), setitimer(), and nanosleep() is unspecified (CWE-676)",
      "Use nanosleep(2) or setitimer(2) instead",
      "obsolete", "", {}, "FF1069"),
 
@@ -1955,7 +2021,10 @@ def initialize_ruleset():
         if output_format:
             print("<p>")
     if list_rules:
-        display_ruleset(c_ruleset)
+        if sonar_output:
+            print(SonarRulesLogger(c_ruleset).output_rules())
+        else:
+            display_ruleset(c_ruleset)
         sys.exit(0)
 
 
@@ -1969,6 +2038,8 @@ def display_header():
         ])
         return
     if sarif_output:
+        return
+    if sonar_output:
         return
     if not showheading:
         return
@@ -2131,8 +2202,8 @@ flawfinder [--help | -h] [--version] [--listrules]
   [--inputs | -I] [--minlevel X | -m X]
            [--falsepositive | -F] [--neverignore | -n]
   [--context | -c] [--columns | -C] [--dataonly | -D]
-           [--html | -H] [--immediate | -i] [--singleline | -S]
-           [--omittime] [--quiet | -Q]
+           [--html | -H] [--immediate | -i] [--sarif | --sonar]
+           [--singleline | -S] [--omittime] [--quiet | -Q]
   [--loadhitlist F] [--savehitlist F] [--diffhitlist F]
   [--] [source code file or source root directory]+
 
@@ -2193,6 +2264,7 @@ flawfinder [--help | -h] [--version] [--listrules]
   --immediate | -i
               Immediately display hits (don't just wait until the end).
   --sarif     Generate output in SARIF format.
+  --sonar     Generate output in SonarQube format.
   --singleline | -S
               Single-line output.
   --omittime  Omit time to run.
@@ -2225,7 +2297,7 @@ flawfinder [--help | -h] [--version] [--listrules]
 def process_options():
     global show_context, show_inputs, allowlink, skipdotdir, omit_time
     global output_format, minimum_level, show_immediately, single_line
-    global csv_output, csv_writer, sarif_output
+    global csv_output, csv_writer, sarif_output, sonar_output
     global error_level
     global required_regex, required_regex_compiled
     global falsepositive
@@ -2239,7 +2311,7 @@ def process_options():
             "falsepositive", "falsepositives", "columns", "listrules",
             "omittime", "allowlink", "patch=", "followdotdir", "neverignore",
             "regex=", "quiet", "dataonly", "html", "singleline", "csv",
-            "error-level=", "sarif",
+            "error-level=", "sarif", "sonar",
             "loadhitlist=", "savehitlist=", "diffhitlist=", "version", "help"
         ])
         for (opt, value) in optlist:
@@ -2280,6 +2352,12 @@ def process_options():
                 csv_writer = csv.writer(sys.stdout)
             elif opt == "--sarif":
                 sarif_output = 1
+                quiet = 1
+                showheading = 0
+                sonar_output = 0
+            elif opt == "--sonar":
+                sarif_output = 0
+                sonar_output = 1
                 quiet = 1
                 showheading = 0
             elif opt == "--error-level":
@@ -2538,6 +2616,8 @@ def flawfind():
     if process_files():
         if sarif_output:
             print(SarifLogger(hitlist).output_sarif())
+        elif sonar_output:
+            print(SonarLogger(hitlist).output_sonar())
         else:
             show_final_results()
         save_if_desired()
