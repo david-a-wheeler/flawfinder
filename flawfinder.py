@@ -137,7 +137,7 @@ class SonarLogger(object):
 
     def __init__ (self, hits):
         self._hitlist = hits
-    
+
     def output_sonar(self):
         str  = '<?xml version="1.0" encoding="UTF-8"?>\n'
         str += '<results>\n'
@@ -148,7 +148,7 @@ class SonarLogger(object):
                 (hit.name, file, hit.line, hit.column, msg)
         str += '</results>'
         return str
-    
+
 class SonarRulesLogger(object):
     _ruleset = None
 
