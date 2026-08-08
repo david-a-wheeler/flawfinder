@@ -1,0 +1,3 @@
+test-cxx-attribute.cpp:21:5:  [4] (format) printf:
+  If format strings can be influenced by an attacker, they can be exploited
+  (CWE-134). Use a constant for the format specification.

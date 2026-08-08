@@ -1921,6 +1921,42 @@ def _skip_attribute_args(text, pos):
     return pos
 
 
+def _skip_cxx_attribute(text, pos):
+    """Advance past a C++11/C23 attribute specifier "[[...]]".
+
+    "pos" must point at the first "[".  Returns the position just after the
+    closing "]]", or "pos" unchanged if this is not a well-formed attribute
+    (in which case the caller simply keeps scanning as before).
+
+    Attribute arguments are metadata, not calls: in
+    "[[gnu::format(printf, 1, 2)]]" the token "printf" names a format
+    family, exactly as it does in the equivalent
+    "__attribute__((format(printf, 1, 2)))" spelling that
+    _skip_attribute_args() already skips.
+
+    Limitation: bracket counting ignores string literals, so an unbalanced
+    "[" or "]" inside an attribute string argument (e.g.
+    deprecated("a[b")) makes the specifier look malformed and it is left
+    unskipped.  This is the conservative direction (no text is lost) and
+    such strings are very rare.
+    """
+    n = len(text)
+    if not text.startswith('[[', pos):
+        return pos
+    depth = 0
+    i = pos
+    while i < n:
+        ch = text[i]
+        if ch == '[':
+            depth += 1
+        elif ch == ']':
+            depth -= 1
+            if depth == 0:
+                return i + 1
+        i += 1
+    return pos  # No closing "]]" found; do not skip anything.
+
+
 def process_directive():
     "Given a directive, process it."
     global ignoreline, num_ignored_hits
@@ -2133,6 +2169,13 @@ def process_c_file(f, patch_infos):
             elif c == "'":
                 instring = 2
                 codeinline = 1
+            elif c == '[' and nextc == '[':
+                # C++11/C23 attribute specifier; its contents are metadata,
+                # not calls.  Skip it like __attribute__((...)) below.
+                codeinline = 1
+                # max() guards against a malformed specifier, where
+                # _skip_cxx_attribute() returns its starting position.
+                i = max(i, _skip_cxx_attribute(text, i - 1))
             else:
                 codeinline = 1  # It's not whitespace, comment, or string.
                 m = p_c_word.match(text, i - 1)
