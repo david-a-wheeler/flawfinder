@@ -112,12 +112,20 @@ test_012: $(FLAWFINDER) test-modern-cpp.cpp
 	  test-modern-cpp.cpp > test-results-012.txt
 	@diff -u correct-results-012.txt test-results-012.txt
 
+test_016: $(FLAWFINDER) test-cxx-attribute.cpp
+	@echo 'test_016 ([[gnu::format(printf,...)]] not flagged; real calls still flagged)'
+# The C++11 attribute spelling [[...]] must be skipped like the GNU
+# __attribute__((...)) spelling; real printf calls must still fire.
+	@$(PYTHON) $(FLAWFINDER) --omittime -m0 -DC --quiet \
+	  test-cxx-attribute.cpp > test-results-016.txt
+	@diff -u correct-results-016.txt test-results-016.txt
+
 # Run all tests on *one* version of Python;
 # output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
 test: test_001 test_002 test_003 test_004 test_005 test_006 test_007 test_008 \
-	  test_009 test_010 test_011 test_012 test_013 test_014
+	  test_009 test_010 test_011 test_012 test_013 test_014 test_016
 	@echo 'All tests pass!'
 
 check: test
@@ -134,5 +142,6 @@ test-is-correct: test-results.txt
 	cp -p test-results-011.txt correct-results-011.txt
 	cp -p test-results-012.txt correct-results-012.txt
 	cp -p test-results-013.txt correct-results-013.txt
+	cp -p test-results-016.txt correct-results-016.txt
 
 .PHONY: test check test-is-correct
