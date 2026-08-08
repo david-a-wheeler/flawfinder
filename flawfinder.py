@@ -1158,8 +1158,10 @@ def c_hit_if_null(hit):
         null_text = hit.parameters[null_position]
         if p_null_text.search(null_text):
             add_warning(hit)
-        else:
-            return
+        # Either way we have made our decision about this hit; falling
+        # through to the add_warning() below would report a null argument
+        # a second time.
+        return
     add_warning(hit)  # If insufficient # of parameters.
 
 

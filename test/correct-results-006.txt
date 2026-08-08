@@ -4,4 +4,3 @@ test.c:61:3:  [5] (buffer) _tcsncat:Easily used incorrectly (e.g., incorrectly c
 test.c:70:3:  [5] (buffer) MultiByteToWideChar:Requires maximum length in CHARACTERS, not bytes (CWE-120).  Risk is high, it appears that the size is given as bytes, but the function requires size as characters.
 test.c:72:3:  [5] (buffer) MultiByteToWideChar:Requires maximum length in CHARACTERS, not bytes (CWE-120).  Risk is high, it appears that the size is given as bytes, but the function requires size as characters.
 test.c:83:3:  [5] (misc) SetSecurityDescriptorDacl:Never create NULL ACLs; an attacker can set it to Everyone (Deny All Access), which would even forbid administrator access (CWE-732).  
-test.c:83:3:  [5] (misc) SetSecurityDescriptorDacl:Never create NULL ACLs; an attacker can set it to Everyone (Deny All Access), which would even forbid administrator access (CWE-732).  

@@ -1,0 +1,8 @@
+test-hit-if-null.c:9:5:  [5] (misc) SetSecurityDescriptorDacl:
+  Never create NULL ACLs; an attacker can set it to Everyone (Deny All
+  Access), which would even forbid administrator access (CWE-732).
+test-hit-if-null.c:13:5:  [3] (shell) CreateProcess:
+  This causes a new process to execute and is difficult to use safely
+  (CWE-78). Specify the application path in the first argument, NOT as part
+  of the second, or embedded spaces could allow an attacker to force a
+  different program to run.

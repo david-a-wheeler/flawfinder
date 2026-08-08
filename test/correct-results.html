@@ -69,13 +69,6 @@ Examining test2.c <br>
 <pre>
   SetSecurityDescriptorDacl(&amp;sd,TRUE,NULL,FALSE);
 </pre>
-<li>test.c:83: <b>  [5] </b> (misc) <i> SetSecurityDescriptorDacl:
-  Never create NULL ACLs; an attacker can set it to Everyone (Deny All
-  Access), which would even forbid administrator access (<a
-  href="https://cwe.mitre.org/data/definitions/732.html">CWE-732</a>). </i></li>
-<pre>
-  SetSecurityDescriptorDacl(&amp;sd,TRUE,NULL,FALSE);
-</pre>
 <li>test.c:17: <b>  [4] </b> (buffer) <i> strcpy:
   Does not check for buffer overflows when copying to destination [MS-banned]
   (<a href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>).
@@ -152,15 +145,6 @@ Examining test2.c <br>
   href="https://cwe.mitre.org/data/definitions/120.html">CWE-120</a>). </i></li>
 <pre>
   lstrcat(d,s);
-</pre>
-<li>test.c:85: <b>  [3] </b> (shell) <i> CreateProcess:
-  This causes a new process to execute and is difficult to use safely (<a
-  href="https://cwe.mitre.org/data/definitions/78.html">CWE-78</a>). Specify
-  the application path in the first argument, NOT as part of the second, or
-  embedded spaces could allow an attacker to force a different program to
-  run. </i></li>
-<pre>
-  CreateProcess(NULL, "C:\\Program Files\\GoodGuy\\GoodGuy.exe -x", "");
 </pre>
 <li>test.c:85: <b>  [3] </b> (shell) <i> CreateProcess:
   This causes a new process to execute and is difficult to use safely (<a
@@ -331,15 +315,15 @@ Examining test2.c <br>
 </ul>
 <h2>Analysis Summary</h2>
 <p>
-Hits = 39
+Hits = 37
 <br>
 Lines analyzed = 132
 <br>
 Physical Source Lines of Code (SLOC) = 91
 <br>
-Hits@level = [0]  16 [1]   9 [2]   9 [3]   4 [4]  10 [5]   7 <br>
-Hits@level+ = [0+]  55 [1+]  39 [2+]  30 [3+]  21 [4+]  17 [5+]   7 <br>
-Hits/KSLOC@level+ = [0+] 604.396 [1+] 428.571 [2+] 329.67 [3+] 230.769 [4+] 186.813 [5+] 76.9231 <br>
+Hits@level = [0]  16 [1]   9 [2]   9 [3]   3 [4]  10 [5]   6 <br>
+Hits@level+ = [0+]  53 [1+]  37 [2+]  28 [3+]  19 [4+]  16 [5+]   6 <br>
+Hits/KSLOC@level+ = [0+] 582.418 [1+] 406.593 [2+] 307.692 [3+] 208.791 [4+] 175.824 [5+] 65.9341 <br>
 Suppressed hits = 2 (use --neverignore to show them)
 <br>
 Minimum risk level = 1
