@@ -29,9 +29,6 @@ test.c:72:  [5] (buffer) MultiByteToWideChar:
 test.c:83:  [5] (misc) SetSecurityDescriptorDacl:
   Never create NULL ACLs; an attacker can set it to Everyone (Deny All
   Access), which would even forbid administrator access (CWE-732).
-test.c:83:  [5] (misc) SetSecurityDescriptorDacl:
-  Never create NULL ACLs; an attacker can set it to Everyone (Deny All
-  Access), which would even forbid administrator access (CWE-732).
 test.c:17:  [4] (buffer) strcpy:
   Does not check for buffer overflows when copying to destination [MS-banned]
   (CWE-120). Consider using snprintf, strcpy_s, or strlcpy (warning: strncpy
@@ -65,11 +62,6 @@ test.c:49:  [4] (buffer) _mbscpy:
 test.c:56:  [4] (buffer) lstrcat:
   Does not check for buffer overflows when concatenating to destination
   [MS-banned] (CWE-120).
-test.c:85:  [3] (shell) CreateProcess:
-  This causes a new process to execute and is difficult to use safely
-  (CWE-78). Specify the application path in the first argument, NOT as part
-  of the second, or embedded spaces could allow an attacker to force a
-  different program to run.
 test.c:85:  [3] (shell) CreateProcess:
   This causes a new process to execute and is difficult to use safely
   (CWE-78). Specify the application path in the first argument, NOT as part
@@ -150,12 +142,12 @@ test.c:76:  [1] (buffer) MultiByteToWideChar:
 
 ANALYSIS SUMMARY:
 
-Hits = 39
+Hits = 37
 Lines analyzed = 132
 Physical Source Lines of Code (SLOC) = 91
-Hits@level = [0]  16 [1]   9 [2]   9 [3]   4 [4]  10 [5]   7
-Hits@level+ = [0+]  55 [1+]  39 [2+]  30 [3+]  21 [4+]  17 [5+]   7
-Hits/KSLOC@level+ = [0+] 604.396 [1+] 428.571 [2+] 329.67 [3+] 230.769 [4+] 186.813 [5+] 76.9231
+Hits@level = [0]  16 [1]   9 [2]   9 [3]   3 [4]  10 [5]   6
+Hits@level+ = [0+]  53 [1+]  37 [2+]  28 [3+]  19 [4+]  16 [5+]   6
+Hits/KSLOC@level+ = [0+] 582.418 [1+] 406.593 [2+] 307.692 [3+] 208.791 [4+] 175.824 [5+] 65.9341
 Suppressed hits = 2 (use --neverignore to show them)
 Minimum risk level = 1
 

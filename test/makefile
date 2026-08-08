@@ -112,12 +112,20 @@ test_012: $(FLAWFINDER) test-modern-cpp.cpp
 	  test-modern-cpp.cpp > test-results-012.txt
 	@diff -u correct-results-012.txt test-results-012.txt
 
+test_015: $(FLAWFINDER) test-hit-if-null.c
+	@echo 'test_015 (null-argument rules report each hit exactly once)'
+# A null argument in the checked position must produce ONE hit, not two;
+# a non-null argument in that position must produce no hit at all.
+	@$(PYTHON) $(FLAWFINDER) --omittime -m0 -DC --quiet \
+	  test-hit-if-null.c > test-results-015.txt
+	@diff -u correct-results-015.txt test-results-015.txt
+
 # Run all tests on *one* version of Python;
 # output shows differences from expected results.
 # If everything works as expected, it just prints test numbers.
 # Set PYTHON as needed, including to ""
 test: test_001 test_002 test_003 test_004 test_005 test_006 test_007 test_008 \
-	  test_009 test_010 test_011 test_012 test_013 test_014
+	  test_009 test_010 test_011 test_012 test_013 test_014 test_015
 	@echo 'All tests pass!'
 
 check: test
@@ -134,5 +142,6 @@ test-is-correct: test-results.txt
 	cp -p test-results-011.txt correct-results-011.txt
 	cp -p test-results-012.txt correct-results-012.txt
 	cp -p test-results-013.txt correct-results-013.txt
+	cp -p test-results-015.txt correct-results-015.txt
 
 .PHONY: test check test-is-correct
