@@ -47,6 +47,14 @@ To examine all files in the *current* directory and down recursively:
 flawfinder ./
 ~~~~
 
+In a terminal, that report is drawn as a compact color summary: risk
+levels are grouped, each hit stays on a short block, and the totals sit
+in a single frame. Redirecting the output, or passing `--classic`, keeps
+the original plain text so scripts and diffs do not change. `--pretty`
+forces the color report even when output is redirected (color is still
+omitted unless the stream is a terminal or `FORCE_COLOR` is set).
+`NO_COLOR` turns the colors off and leaves the layout.
+
 Hits (findings) are given a risk level from 0 (very low risk) to 5 (high risk),
 By default, findings of risk level 1 or higher are shown.
 You can show only the hits of risk level 4 or higher in the current

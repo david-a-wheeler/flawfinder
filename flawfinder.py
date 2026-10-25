@@ -6,11 +6,14 @@
 
  See the man page for a description of the options."""
 
-# The default output is as follows:
+# When stdout is not a terminal (a pipe or a file), the default output is:
 # filename:line_number [risk_level] (type) function_name: message
 #   where "risk_level" goes from 0 to 5. 0=no risk, 5=maximum risk.
 # The final output is sorted by risk level, most risky first.
 # Optionally ":column_number" can be added after the line number.
+# When stdout is a terminal, a compact color report is shown instead.
+# --classic forces the plain report. --pretty forces the color report
+# (it is ignored for HTML, CSV, SARIF, and SonarQube output).
 #
 # Currently this program can only analyze C/C++ code.
 #
@@ -95,6 +98,7 @@ csv_output = 0  # 1 = Generate CSV
 csv_writer = None
 sarif_output = 0  # 1 = Generate SARIF report
 sonar_output = 0  # 1 = Generate SonarQube report
+pretty_output = 0  # 1 = compact color report for a terminal
 omit_time = 0  # 1 = omit time-to-run (needed for testing)
 required_regex = None  # If non-None, regex that must be met to report
 required_regex_compiled = None
@@ -106,6 +110,8 @@ error_level_exceeded = False
 displayed_header = 0  # Have we displayed the header yet?
 num_ignored_hits = 0  # Number of ignored hits (used if never_ignore==0)
 num_encoding_errors = 0  # Number of files skipped due to encoding errors.
+num_files_examined = 0  # C/C++ files actually read.
+only_examined_file = ""  # Set when exactly one file was read.
 exclude_patterns = []  # Patterns passed to --exclude
 
 
@@ -707,6 +713,10 @@ class Hit(object):  # Python 2 compat: explicit new-style class
         ])
 
     def show(self):
+        # Drawn later as one report. Printing here would duplicate hits.
+        if (pretty_output and not csv_output and not sarif_output
+                and not sonar_output and not output_format):
+            return
         if csv_output:
             self.show_csv()
             return
@@ -1970,7 +1980,7 @@ max_lookahead = 500  # Lookahead limit for c_static_array.
 
 def process_c_file(f, patch_infos):
     global filename, linenumber, ignoreline, sumlines, num_links_skipped
-    global sloc
+    global sloc, num_files_examined, only_examined_file
     filename = f
     linenumber = 1
     ignoreline = -1
@@ -2017,7 +2027,9 @@ def process_c_file(f, patch_infos):
     # Better to load it all in, and get the increased speed and reduced
     # development time that results.
 
-    if not quiet:
+    # The color report replaces the per-file "Examining" lines. Those
+    # lines otherwise land above the summary and break the layout.
+    if not quiet and not pretty_output:
         if output_format:
             print("Examining", h(f), "<br>")
         else:
@@ -2059,6 +2071,12 @@ def process_c_file(f, patch_infos):
         print('In the long term, we recommend using UTF-8 for source code.')
         print('For more information, see the documentation.')
         return
+
+    num_files_examined += 1
+    if num_files_examined == 1:
+        only_examined_file = f
+    else:
+        only_examined_file = ""
 
     i = 0
     while i < len(text):
@@ -2221,7 +2239,7 @@ def display_ruleset(ruleset):
 
 def initialize_ruleset():
     expand_ruleset(c_ruleset)
-    if showheading:
+    if showheading and not pretty_output:
         print("Number of rules (primarily dangerous function names) in C/C++ ruleset:", len(
             c_ruleset))
         if output_format:
@@ -2246,6 +2264,8 @@ def display_header():
     if sarif_output:
         return
     if sonar_output:
+        return
+    if pretty_output:
         return
     if not showheading:
         return
@@ -2428,6 +2448,7 @@ flawfinder [--help | -h] [--version] [--listrules]
   [--context | -c] [--columns | -C] [--dataonly | -D]
            [--html | -H] [--immediate | -i] [--sarif | --sonar]
            [--singleline | -S] [--omittime] [--quiet | -Q]
+           [--pretty] [--classic]
   [--loadhitlist F] [--savehitlist F] [--diffhitlist F]
   [--] [source code file or source root directory]+
 
@@ -2496,6 +2517,11 @@ flawfinder [--help | -h] [--version] [--listrules]
   --sonar     Generate output in SonarQube format.
   --singleline | -S
               Single-line output.
+  --pretty    Compact color report. This is the default when stdout
+              is a terminal. Ignored for HTML, CSV, SARIF, and SonarQube.
+              Hits are drawn together at the end, including with --immediate.
+  --classic   Historical plain-text report. This is the default when
+              stdout is redirected, so pipes and regression tests stay stable.
   --omittime  Omit time to run.
   --quiet | -Q
               Don't display status information (i.e., which files are being
@@ -2531,6 +2557,7 @@ def process_options():
     global show_context, show_inputs, allowlink, skipdotdir, omit_time
     global output_format, minimum_level, show_immediately, single_line
     global csv_output, csv_writer, sarif_output, sonar_output
+    global pretty_output
     global error_level
     global required_regex, required_regex_compiled
     global falsepositive
@@ -2544,10 +2571,11 @@ def process_options():
             "falsepositive", "falsepositives", "columns", "listrules",
             "omittime", "allowlink", "patch=", "followdotdir", "neverignore",
             "regex=", "quiet", "dataonly", "html", "singleline", "csv",
-            "error-level=", "sarif", "sonar",
+            "error-level=", "sarif", "sonar", "pretty", "classic",
             "loadhitlist=", "savehitlist=", "diffhitlist=", "version", "help",
             "exclude="
         ])
+        pretty_output = _resolve_pretty(optlist)
         for (opt, value) in optlist:
             if opt in ("--context", "-c"):
                 show_context = 1
@@ -2596,6 +2624,10 @@ def process_options():
                 showheading = 0
             elif opt == "--error-level":
                 error_level = int(value)
+            elif opt == "--pretty":
+                pass  # Resolved before this loop.
+            elif opt == "--classic":
+                pass
             elif opt == "--exclude":
                 exclude_patterns.append(value)
             elif opt in ("--immediate", "-i"):
@@ -2618,17 +2650,17 @@ def process_options():
             elif opt == "--loadhitlist":
                 loadhitlist = value
                 display_header()
-                if showheading:
+                if showheading and not pretty_output:
                     print("Loading hits from", value)
             elif opt == "--savehitlist":
                 savehitlist = value
                 display_header()
-                if showheading:
+                if showheading and not pretty_output:
                     print("Saving hitlist to", value)
             elif opt == "--diffhitlist":
                 diffhitlist_filename = value
                 display_header()
-                if showheading:
+                if showheading and not pretty_output:
                     print("Showing hits not in", value)
             elif opt == "--version":
                 print(version)
@@ -2686,8 +2718,576 @@ def hitlist_sort_key(hit):
     return (-hit.level, hit.filename, hit.line, hit.column, hit.name)
 
 
+_MACHINE_FORMAT_OPTS = ("--html", "-H", "--csv", "--sarif", "--sonar")
+
+# Set when the color report is drawn. Kept off for pipes and --classic.
+_PRETTY_COLOR = False
+
+
+def _resolve_pretty(optlist):
+    """Return 1 for the color report, 0 for the historical plain report.
+
+    A terminal gets the color report unless --classic is set. A pipe or
+    file keeps the plain report unless --pretty is set. HTML, CSV, SARIF,
+    and SonarQube always stay machine-readable.
+    """
+    mode = None
+    machine = False
+    for opt, _value in optlist:
+        if opt == "--pretty":
+            mode = "on"
+        elif opt == "--classic":
+            mode = "off"
+        elif opt in _MACHINE_FORMAT_OPTS:
+            machine = True
+    if machine or mode == "off":
+        return 0
+    if mode == "on":
+        return 1
+    try:
+        return 1 if sys.stdout.isatty() else 0
+    except Exception:
+        return 0
+
+
+def _enable_windows_vt():
+    """Turn on ANSI colors in the Windows console. True if colors are safe."""
+    if os.name != "nt":
+        return True
+    try:
+        import ctypes
+        kernel32 = ctypes.windll.kernel32
+        handle = kernel32.GetStdHandle(-11)  # STD_OUTPUT_HANDLE
+        mode = ctypes.c_ulong()
+        if not kernel32.GetConsoleMode(handle, ctypes.byref(mode)):
+            # Not the legacy console (mintty, Windows Terminal pty). ANSI is fine.
+            return True
+        enable_vt = 0x0004  # ENABLE_VIRTUAL_TERMINAL_PROCESSING
+        return bool(kernel32.SetConsoleMode(handle, mode.value | enable_vt))
+    except Exception:
+        return False
+
+
+def _color_allowed():
+    """True when ANSI colors will help instead of leaking into a file."""
+    if os.environ.get("NO_COLOR", None) is not None:
+        return False
+    if os.environ.get("TERM", "") == "dumb":
+        return False
+    forced = os.environ.get("FORCE_COLOR", None) is not None
+    try:
+        is_tty = sys.stdout.isatty()
+    except Exception:
+        is_tty = False
+    if not is_tty and not forced:
+        return False
+    if is_tty and not _enable_windows_vt():
+        return False
+    return True
+
+
+def _stdout_can_encode(text):
+    enc = getattr(sys.stdout, "encoding", None) or "ascii"
+    try:
+        text.encode(enc)
+    except Exception:
+        return False
+    return True
+
+
+def _safe_text(text):
+    """Drop characters the console cannot print, without breaking the line."""
+    if text is None:
+        return ""
+    enc = getattr(sys.stdout, "encoding", None) or "ascii"
+    try:
+        text.encode(enc)
+        return text
+    except Exception:
+        try:
+            return text.encode(enc, "replace").decode(enc, "replace")
+        except Exception:
+            return text.encode("ascii", "replace").decode("ascii")
+
+
+def _emit(text=""):
+    sys.stdout.write(_safe_text(text) + "\n")
+
+
+def _term_columns():
+    """Width of the report. Capped so a wide window does not stretch it."""
+    detected = 0
+    env_cols = os.environ.get("COLUMNS", "")
+    if env_cols:
+        try:
+            detected = int(env_cols)
+        except ValueError:
+            detected = 0
+    if detected <= 0:
+        try:
+            import shutil
+            getter = getattr(shutil, "get_terminal_size", None)
+            if getter is not None:
+                detected = getter((80, 24)).columns
+        except Exception:
+            detected = 0
+    if detected <= 0:
+        detected = 80
+    # A line of exactly COLUMNS characters wraps on some terminals.
+    width = detected - 1
+    if width > 100:
+        width = 100
+    if width < 36:
+        width = detected if detected >= 20 else 36
+    return width
+
+
+def _glyphs():
+    """Box characters when the console can print them, otherwise ASCII."""
+    if sys.version_info[0] >= 3 and _stdout_can_encode(u"\u250c\u2500\u2502\u00b7"):
+        return {
+            "tl": "\u250c",
+            "tr": "\u2510",
+            "bl": "\u2514",
+            "br": "\u2518",
+            "h": "\u2500",
+            "v": "\u2502",
+            "dot": "\u00b7",
+        }
+    return {
+        "tl": "+",
+        "tr": "+",
+        "bl": "+",
+        "br": "+",
+        "h": "-",
+        "v": "|",
+        "dot": "|",
+    }
+
+
+def _paint(style, text):
+    if not text:
+        return ""
+    if not _PRETTY_COLOR:
+        return text
+    codes = {
+        "bold": "1",
+        "dim": "2",
+        "green": "32",
+        "yellow": "33",
+        "bred": "91",
+        "byellow": "93",
+        "bblue": "94",
+        "bcyan": "96",
+    }
+    return "\033[" + codes[style] + "m" + text + "\033[0m"
+
+
+def _level_style(level):
+    return {5: "bred", 4: "byellow", 3: "yellow", 2: "bcyan", 1: "bblue"}.get(level, "dim")
+
+
+def _level_name(level):
+    return {
+        5: "critical",
+        4: "high",
+        3: "medium",
+        2: "low",
+        1: "info",
+        0: "note",
+    }.get(level, "level")
+
+
+def _clip(text, width):
+    text = strip_controls(text or "")
+    if width < 1:
+        return ""
+    if len(text) <= width:
+        return text
+    if width <= 3:
+        return text[:width]
+    return text[:width - 3] + "..."
+
+
+def _clip_path(text, width):
+    """Keep the end of a path visible when it does not fit."""
+    text = strip_controls(text or "")
+    if len(text) <= width:
+        return text
+    if width <= 3:
+        return text[:width]
+    tail = width // 2
+    if tail < 4:
+        tail = 4
+    head = width - 3 - tail
+    if head < 1:
+        return "..." + text[-(width - 3):]
+    return text[:head] + "..." + text[-tail:]
+
+
+def _wrap_lines(text, width):
+    text = " ".join(strip_controls(text or "").split())
+    if not text:
+        return []
+    if width < 8:
+        width = 8
+    lines = []
+    while text:
+        if len(text) <= width:
+            lines.append(text)
+            break
+        cut = text.rfind(" ", 0, width + 1)
+        if cut <= 0:
+            cut = width
+        lines.append(text[:cut].rstrip())
+        text = text[cut:].lstrip()
+    return lines
+
+
+def _finish_sentence(text):
+    text = strip_controls(text or "").strip()
+    if not text:
+        return ""
+    if text[-1] not in ".!?":
+        text += "."
+    return text
+
+
+def _hit_body(hit):
+    parts = []
+    warning = _finish_sentence(hit.warning)
+    if warning:
+        parts.append(warning)
+    note = strip_controls(hit.note or "").strip()
+    if note:
+        parts.append(note)
+    return " ".join(parts)
+
+
+def _fit_bits(bits, sep, width):
+    kept = list(bits)
+    while kept:
+        text = sep.join(kept)
+        if len(text) <= width:
+            return text
+        if len(kept) == 1:
+            return _clip(text, width)
+        kept.pop()
+    return ""
+
+
+def _box_top(title, width, g):
+    inner = width - 2
+    core = " " + title + " "
+    if len(core) > inner - 1:
+        core = _clip(core, inner - 1)
+    fill = inner - 1 - len(core)
+    if fill < 0:
+        fill = 0
+    return g["tl"] + g["h"] + core + (g["h"] * fill) + g["tr"]
+
+
+def _box_mid(text, width, g):
+    inner = width - 2
+    text = _clip(text, inner)
+    return g["v"] + text + (" " * (inner - len(text))) + g["v"]
+
+
+def _box_bot(width, g):
+    return g["bl"] + (g["h"] * (width - 2)) + g["br"]
+
+
+def _emit_rule(text):
+    _emit(_paint("dim", text))
+
+
+def _summary_line(count_per_level, width):
+    # Only levels that are actually listed below. Lower hits are a separate note.
+    levels = tuple(level for level in (5, 4, 3, 2, 1, 0) if level >= minimum_level)
+
+    def labels(with_names):
+        built = []
+        for level in levels:
+            n = count_per_level.get(level, 0)
+            if with_names:
+                built.append((level, "%s %d" % (_level_name(level), n)))
+            else:
+                built.append((level, "%d:%d" % (level, n)))
+        return built
+
+    def length_of(built):
+        if not built:
+            return 0
+        return 2 + sum(len(label) for _level, label in built) + 3 * (len(built) - 1)
+
+    chosen = labels(True)
+    if length_of(chosen) > width:
+        chosen = labels(False)
+    pieces = []
+    for level, label in chosen:
+        pieces.append(_paint(_level_style(level), label))
+    return "  " + "   ".join(pieces)
+
+
+def _level_plus_line(count_per_level, width):
+    levels = (0, 1, 2, 3, 4, 5)
+    up = {}
+    for i in levels:
+        total = 0
+        for j in levels:
+            if j >= i:
+                total += count_per_level.get(j, 0)
+        up[i] = total
+    parts = ["[%d+] %d" % (i, up[i]) for i in (5, 4, 3, 2, 1, 0)]
+    text = "  level+   " + "   ".join(parts)
+    if len(text) <= width:
+        return text
+    text = "  level+  " + "  ".join(parts)
+    if len(text) <= width:
+        return text
+    return ""
+
+
+def _emit_wrapped(prefix_plain, prefix_drawn, text, width):
+    room = width - len(prefix_plain)
+    if room < 16:
+        _emit(prefix_drawn)
+        for line in _wrap_lines(text, max(8, width - 4)):
+            _emit("    " + line)
+        return
+    lines = _wrap_lines(text, room)
+    if not lines:
+        return
+    _emit(prefix_drawn + lines[0])
+    pad = " " * len(prefix_plain)
+    for line in lines[1:]:
+        _emit(pad + line)
+
+
+def _emit_context(hit, width, g):
+    if not show_context:
+        return
+    raw = strip_controls(hit.context_text or "").expandtabs(4).strip()
+    if not raw:
+        return
+    for source_line in raw.splitlines():
+        source_line = source_line.rstrip()
+        if not source_line:
+            continue
+        body = _wrap_lines(source_line, max(8, width - 6))
+        for line in body:
+            _emit(_paint("dim", "    " + g["v"] + " " + line))
+
+
+def _emit_hit(hit, width, g):
+    badge = str(hit.level)
+    gutter = "  " + badge + "  "
+    loc = strip_controls(hit.filename) + ":" + str(hit.line)
+    if show_columns:
+        loc += ":" + str(hit.column)
+    name = strip_controls(hit.name)
+    category = strip_controls(str(hit.category or "")).strip()
+    badge_drawn = "  " + _paint(_level_style(hit.level), badge) + "  "
+
+    if single_line:
+        tail = "  " + name + "  "
+        room = width - len(gutter) - len(tail)
+        loc_drawn = _clip_path(loc, room if room > 8 else 8)
+        used = len(gutter) + len(loc_drawn) + len(tail)
+        msg = _clip(_hit_body(hit), max(0, width - used))
+        _emit(badge_drawn + _paint("bold", loc_drawn) + "  "
+              + _paint("bold", name) + "  " + msg)
+        _emit_context(hit, width, g)
+        return
+
+    room = width - len(gutter)
+    cat_bit = ("  " + category) if category else ""
+    one_line = loc + "  " + name + cat_bit
+    if len(one_line) <= room:
+        drawn = (badge_drawn + _paint("bold", loc) + "  "
+                 + _paint("bold", name))
+        if category:
+            drawn += "  " + _paint("dim", category)
+        _emit(drawn)
+    else:
+        _emit(badge_drawn + _paint("bold", _clip_path(loc, room)))
+        name_line = " " * len(gutter) + name
+        if category and len(name_line) + len(cat_bit) <= width:
+            _emit(" " * len(gutter) + _paint("bold", name) + "  "
+                  + _paint("dim", category))
+        else:
+            _emit(" " * len(gutter) + _paint("bold", _clip(name, room)))
+            if category:
+                _emit(" " * len(gutter) + _paint("dim", _clip(category, room)))
+
+    body = _hit_body(hit)
+    if body:
+        _emit_wrapped(" " * len(gutter), " " * len(gutter), body, width)
+    suggestion = _finish_sentence(hit.suggestion)
+    if suggestion:
+        fix_plain = " " * len(gutter) + "Fix  "
+        fix_drawn = " " * len(gutter) + _paint("green", "Fix") + "  "
+        _emit_wrapped(fix_plain, fix_drawn, suggestion, width)
+    _emit_context(hit, width, g)
+
+
+def _emit_section(level, count, width, g):
+    label = _level_name(level).upper()
+    number = str(count)
+    visible = 2 + len(label) + 2 + len(number) + 2
+    bars = width - visible
+    if bars < 0:
+        bars = 0
+    _emit("  " + _paint(_level_style(level), label)
+          + "  " + _paint("bold", number)
+          + "  " + _paint("dim", g["h"] * bars))
+
+
+def _report_bits(time_analyzing):
+    bits = []
+    if loadhitlist:
+        bits.append("hitlist " + os.path.basename(loadhitlist))
+    else:
+        nfiles = num_files_examined
+        bits.append("%d file%s" % (nfiles, "" if nfiles == 1 else "s"))
+    bits.append("min %d" % minimum_level)
+    bits.append("%d lines" % sumlines)
+    bits.append("%d SLOC" % sloc)
+    if (not omit_time) and time_analyzing > 0:
+        bits.append("%.2fs" % time_analyzing)
+    try:
+        bits.append("%d rules" % len(c_ruleset))
+    except Exception:
+        pass
+    if (not omit_time) and time_analyzing > 0 and sumlines:
+        bits.append("%.0f lines/s" % (sumlines / time_analyzing))
+    if diffhitlist_filename:
+        bits.append("diff " + os.path.basename(diffhitlist_filename))
+    return bits
+
+
+def _extra_notes():
+    notes = []
+    if required_regex:
+        notes.append("Hits limited to regular expression " + required_regex)
+    if num_links_skipped:
+        notes.append("Symlinks skipped = %d (--allowlink overrides)" % num_links_skipped)
+    if num_dotdirs_skipped:
+        notes.append("Dot directories skipped = %d (--followdotdir overrides)"
+                     % num_dotdirs_skipped)
+    if num_encoding_errors > 0:
+        notes.append("Files with encoding errors (skipped) = %d" % num_encoding_errors)
+    if num_ignored_hits > 0:
+        notes.append("Suppressed hits = %d (use --neverignore to show them)"
+                     % num_ignored_hits)
+    return notes
+
+
+def _render_pretty(shown, count, count_per_level):
+    global _PRETTY_COLOR
+    _PRETTY_COLOR = _color_allowed()
+    width = _term_columns()
+    g = _glyphs()
+    time_analyzing = time.time() - starttime
+    inner = width - 4
+
+    if showheading:
+        _emit_rule(_box_top("flawfinder " + version, width, g))
+        if only_examined_file and not loadhitlist:
+            shown_name = only_examined_file
+            if shown_name == "-":
+                shown_name = "(stdin)"
+            _emit_rule(_box_mid("  " + _clip_path(shown_name, inner), width, g))
+        if count == 0:
+            _emit_rule(_box_mid(
+                "  No hits at level %d or higher." % minimum_level, width, g))
+        else:
+            _emit_rule(_box_mid(
+                "  %d hit%s shown." % (count, "" if count == 1 else "s"),
+                width, g))
+        meta = _fit_bits(_report_bits(time_analyzing),
+                         " " + g["dot"] + " ", inner)
+        if meta:
+            _emit_rule(_box_mid("  " + meta, width, g))
+        _emit_rule(_box_bot(width, g))
+        _emit("")
+        _emit(_summary_line(count_per_level, width))
+        plus = _level_plus_line(count_per_level, width)
+        if plus:
+            _emit(_paint("dim", plus))
+        hidden = 0
+        for level in (0, 1, 2, 3, 4, 5):
+            if level < minimum_level:
+                hidden += count_per_level.get(level, 0)
+        if hidden:
+            _emit(_paint(
+                "dim",
+                "  %d hit%s below minimum level not shown." % (
+                    hidden, "" if hidden == 1 else "s")))
+        _emit("")
+
+    last_level = None
+    for hit in shown:
+        if hit.level != last_level:
+            if last_level is not None:
+                _emit("")
+            how_many = 0
+            for other in shown:
+                if other.level == hit.level:
+                    how_many += 1
+            _emit_section(hit.level, how_many, width, g)
+            last_level = hit.level
+        else:
+            _emit("")
+        _emit_hit(hit, width, g)
+
+    if showheading:
+        _emit("")
+        _emit_rule(g["h"] * width)
+        for note in _extra_notes():
+            for line in _wrap_lines(note, width - 2):
+                _emit(_paint("dim", "  " + line))
+        if count > 0:
+            _emit(_paint("dim", "  Not every hit is a security vulnerability."))
+            _emit(_paint("dim", "  Hide a false positive with:  // flawfinder: ignore"))
+        _emit(_paint("dim", "  There may be other vulnerabilities; review your code."))
+        _emit(_paint("dim", "  https://dwheeler.com/secure-programs"))
+    elif count == 0:
+        _emit("No hits found.")
+    sys.stdout.flush()
+
+
+def show_pretty_results():
+    """Draw the terminal report. Counts match the plain-text summary."""
+    global error_level_exceeded
+    count = 0
+    count_per_level = {}
+    possible_levels = (0, 1, 2, 3, 4, 5)
+    for i in possible_levels:
+        count_per_level[i] = 0
+    hitlist.sort(key=hitlist_sort_key)
+    diff_hitlist = []
+    if diffhitlist_filename:
+        with open(diffhitlist_filename, "rb") as diff_file:
+            diff_hitlist = SafeUnpickler(diff_file).load()
+    shown = []
+    for hit in hitlist:
+        if not diffhitlist_filename or hit not in diff_hitlist:
+            count_per_level[hit.level] = count_per_level[hit.level] + 1
+            if hit.level >= minimum_level:
+                shown.append(hit)
+                count += 1
+            if hit.level >= error_level:
+                error_level_exceeded = True
+    _render_pretty(shown, count, count_per_level)
+
+
 def show_final_results():
     global error_level_exceeded
+    if (pretty_output and not csv_output and not sarif_output
+            and not sonar_output and not output_format):
+        show_pretty_results()
+        return
     count = 0
     count_per_level = {}
     count_per_level_and_up = {}

@@ -54,6 +54,8 @@ flawfinder \- lexically find potential security flaws ("hits") in source code
 .RB [ \-\-immediate | -i ]
 .RB [ \-\-sarif ]
 .RB [ \-\-singleline | \-S ]
+.RB [ \-\-pretty ]
+.RB [ \-\-classic ]
 .RB [ \-\-omittime ]
 .RB [ \-\-quiet | \-Q ]
 .RB [ \-\-error-level=\fRLEVEL\fR ]
@@ -552,6 +554,7 @@ Format the output as HTML instead of as simple text.
 .TP
 .BI -i
 Immediately display hits (don't just wait until the end).
+With \-\-pretty, hits are still collected and drawn together at the end.
 
 
 .TP
@@ -588,6 +591,29 @@ https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=sarif
 .BI -S
 Display as single line of text output for each hit.
 Useful for interacting with compilation tools.
+
+.TP
+.BI \-\-pretty
+Draw a compact color report: a short summary frame, hits grouped by
+risk level, and a brief footer.
+This is the default when standard output is a terminal.
+It is ignored when HTML, CSV, SARIF, or SonarQube output is selected.
+Hits are printed together at the end, including when \-\-immediate is set,
+so the report stays in one piece.
+Color is omitted when output is not a terminal, when
+.I NO_COLOR
+is set, or when the terminal cannot show ANSI colors.
+Set
+.I FORCE_COLOR
+to request color anyway.
+If the console cannot print box-drawing characters, the same layout is
+drawn with ASCII.
+
+.TP
+.BI \-\-classic
+Use the historical plain-text report.
+This is the default when standard output is redirected, so pipes,
+files, and regression tests keep a stable format.
 
 .TP
 .BI "\-\-omittime"
